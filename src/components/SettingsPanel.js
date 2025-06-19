@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
   Box, Card, CardContent, Typography, TextField, Grid, Button,
-  Divider, IconButton, Alert, Tabs, Tab
+  Divider, IconButton, Alert, Tabs, Tab, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import { Folder, Save, Image } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import DataService from '../services/DataService';
 
 function TabPanel({ children, value, index, ...other }) {
@@ -25,6 +26,7 @@ function TabPanel({ children, value, index, ...other }) {
 }
 
 function SettingsPanel({ settings, onUpdateSettings }) {
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState(settings);
   const [activeTab, setActiveTab] = useState(0);
   const [saveMessage, setSaveMessage] = useState('');
@@ -48,8 +50,13 @@ function SettingsPanel({ settings, onUpdateSettings }) {
 
   const handleSave = () => {
     onUpdateSettings(formData);
-    setSaveMessage('Einstellungen gespeichert!');
+    setSaveMessage(t('settings.saved'));
     setTimeout(() => setSaveMessage(''), 3000);
+  };
+  
+  const handleLanguageChange = (language) => {
+    i18n.changeLanguage(language);
+    handleInputChange(null, 'language', language);
   };
 
   const handleSelectFolder = async (field) => {
@@ -78,7 +85,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Einstellungen
+        {t('settings.title')}
       </Typography>
 
       {saveMessage && (
@@ -89,9 +96,9 @@ function SettingsPanel({ settings, onUpdateSettings }) {
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
-          <Tab label="Rechnungsersteller" />
-          <Tab label="Pfade & Dateien" />
-          <Tab label="Über QuartaBill" />
+          <Tab label={t('settings.tabs.issuer')} />
+          <Tab label={t('settings.tabs.paths')} />
+          <Tab label={t('settings.tabs.about')} />
         </Tabs>
       </Box>
 
@@ -99,13 +106,13 @@ function SettingsPanel({ settings, onUpdateSettings }) {
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              Rechnungsersteller-Informationen
+              {t('settings.issuer.title')}
             </Typography>
             
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Name"
+                  label={t('settings.issuer.name')}
                   fullWidth
                   value={formData.issuer?.name || ''}
                   onChange={(e) => handleInputChange('issuer', 'name', e.target.value)}
@@ -114,7 +121,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
               
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Titel/Beruf"
+                  label={t('settings.issuer.profession')}
                   fullWidth
                   value={formData.issuer?.title || ''}
                   onChange={(e) => handleInputChange('issuer', 'title', e.target.value)}
@@ -123,19 +130,19 @@ function SettingsPanel({ settings, onUpdateSettings }) {
               
               <Grid item xs={12}>
                 <TextField
-                  label="Adresse"
+                  label={t('settings.issuer.address')}
                   fullWidth
                   multiline
                   rows={3}
                   value={formData.issuer?.address || ''}
                   onChange={(e) => handleInputChange('issuer', 'address', e.target.value)}
-                  placeholder="Straße&#10;PLZ Ort"
+                  placeholder={i18n.language === 'de' ? 'Straße\nPLZ Ort' : 'Street\nZIP City'}
                 />
               </Grid>
               
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Telefon"
+                  label={t('settings.issuer.phone')}
                   fullWidth
                   value={formData.issuer?.phone || ''}
                   onChange={(e) => handleInputChange('issuer', 'phone', e.target.value)}
@@ -144,7 +151,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
               
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Website"
+                  label={t('settings.issuer.website')}
                   fullWidth
                   value={formData.issuer?.website || ''}
                   onChange={(e) => handleInputChange('issuer', 'website', e.target.value)}
@@ -153,7 +160,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
               
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Email"
+                  label={t('settings.issuer.email')}
                   fullWidth
                   type="email"
                   value={formData.issuer?.email || ''}
@@ -163,7 +170,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
               
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="IBAN"
+                  label={t('settings.issuer.iban')}
                   fullWidth
                   value={formData.issuer?.iban || ''}
                   onChange={(e) => handleInputChange('issuer', 'iban', e.target.value)}
@@ -172,7 +179,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
               
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="UID"
+                  label={t('settings.issuer.uid')}
                   fullWidth
                   value={formData.issuer?.uid || ''}
                   onChange={(e) => handleInputChange('issuer', 'uid', e.target.value)}
@@ -181,17 +188,17 @@ function SettingsPanel({ settings, onUpdateSettings }) {
               
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Bank"
+                  label={t('settings.issuer.bank')}
                   fullWidth
                   value={formData.issuer?.bank || ''}
                   onChange={(e) => handleInputChange('issuer', 'bank', e.target.value)}
-                  placeholder="Name Ihrer Bank"
+                  placeholder={i18n.language === 'de' ? 'Name Ihrer Bank' : 'Your bank name'}
                 />
               </Grid>
               
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Zahlungsfrist (Tage)"
+                  label={t('settings.issuer.paymentTerms')}
                   fullWidth
                   type="number"
                   value={formData.issuer?.paymentTerms || 14}
@@ -201,32 +208,46 @@ function SettingsPanel({ settings, onUpdateSettings }) {
                 />
               </Grid>
               
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel>{t('settings.issuer.language')}</InputLabel>
+                  <Select
+                    value={formData.language || 'de'}
+                    label={t('settings.issuer.language')}
+                    onChange={(e) => handleLanguageChange(e.target.value)}
+                  >
+                    <MenuItem value="de">Deutsch</MenuItem>
+                    <MenuItem value="en">English</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              
               <Grid item xs={12}>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6" gutterBottom>
-                  Rechnungsnummer-Format
+                  {t('settings.issuer.invoiceNumber.title')}
                 </Typography>
               </Grid>
               
               <Grid item xs={12}>
                 <TextField
-                  label="Format für Rechnungsnummern"
+                  label={t('settings.issuer.invoiceNumber.format')}
                   fullWidth
                   value={formData.invoiceNumberFormat || '{QQ}{YY}{KK}'}
                   onChange={(e) => handleInputChange(null, 'invoiceNumberFormat', e.target.value)}
                   placeholder="{QQ}{YY}{KK}"
-                  helperText="Verfügbare Variablen: {Q}/{QQ} (Quartal), {YY}/{YYYY} (Jahr), {K}/{KK}/{KKK} (Kunde), {N}/{NN}/{NNN} (Nummer)"
+                  helperText={t('settings.issuer.invoiceNumber.help')}
                 />
               </Grid>
               
               <Grid item xs={12}>
                 <Alert severity="info" sx={{ mt: 1 }}>
                   <Typography variant="body2">
-                    <strong>Beispiele:</strong><br/>
-                    • <code>{'{QQ}{YY}{KK}'}</code> → 0124MA (Standard)<br/>
-                    • <code>{'{YYYY}-Q{Q}-{KKK}'}</code> → 2024-Q1-MAX<br/>
-                    • <code>R{'{YY}{QQ}{NNN}'}</code> → R24011234<br/>
-                    • <code>{'{K}{YY}{QQ}{NN}'}</code> → M240112
+                    <strong>{t('settings.issuer.invoiceNumber.examples.title')}</strong><br/>
+                    • <code>{'{QQ}{YY}{KK}'}</code> → 0124MA {t('settings.issuer.invoiceNumber.examples.standard')}<br/>
+                    • <code>{'{YYYY}-Q{Q}-{KKK}'}</code> → 2024-Q1-MAX {t('settings.issuer.invoiceNumber.examples.verbose')}<br/>
+                    • <code>R{'{YY}{QQ}{NNN}'}</code> → R24011234 {t('settings.issuer.invoiceNumber.examples.prefix')}<br/>
+                    • <code>{'{K}{YY}{QQ}{NN}'}</code> → M240112 {t('settings.issuer.invoiceNumber.examples.compact')}
                   </Typography>
                 </Alert>
               </Grid>
@@ -242,22 +263,22 @@ function SettingsPanel({ settings, onUpdateSettings }) {
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Logo-Pfade
+                  {t('settings.paths.logoTitle')}
                 </Typography>
                 
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                       <TextField
-                        label="Windows Logo-Pfad"
+                        label={t('settings.paths.logoWindows')}
                         fullWidth
                         value={formData.logoPathWindows || ''}
                         onChange={(e) => handleInputChange(null, 'logoPathWindows', e.target.value)}
-                        placeholder="C:\Pfad\zum\logo.png"
+                        placeholder={i18n.language === 'de' ? 'C:\\Pfad\\zum\\logo.png' : 'C:\\Path\\to\\logo.png'}
                       />
                       <IconButton 
                         onClick={() => handleSelectFile('logoPathWindows', [
-                          { name: 'Bilddateien', extensions: ['png', 'jpg', 'jpeg'] }
+                          { name: i18n.language === 'de' ? 'Bilddateien' : 'Image files', extensions: ['png', 'jpg', 'jpeg'] }
                         ])}
                       >
                         <Image />
@@ -268,15 +289,15 @@ function SettingsPanel({ settings, onUpdateSettings }) {
                   <Grid item xs={12} sm={6}>
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                       <TextField
-                        label="Mac Logo-Pfad"
+                        label={t('settings.paths.logoMac')}
                         fullWidth
                         value={formData.logoPathMac || ''}
                         onChange={(e) => handleInputChange(null, 'logoPathMac', e.target.value)}
-                        placeholder="/Pfad/zum/logo.png"
+                        placeholder={i18n.language === 'de' ? '/Pfad/zum/logo.png' : '/path/to/logo.png'}
                       />
                       <IconButton 
                         onClick={() => handleSelectFile('logoPathMac', [
-                          { name: 'Bilddateien', extensions: ['png', 'jpg', 'jpeg'] }
+                          { name: i18n.language === 'de' ? 'Bilddateien' : 'Image files', extensions: ['png', 'jpg', 'jpeg'] }
                         ])}
                       >
                         <Image />
@@ -286,8 +307,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
                 </Grid>
                 
                 <Alert severity="info" sx={{ mt: 2 }}>
-                  Das Logo wird in der oberen linken Ecke der Rechnung angezeigt. 
-                  Empfohlene Größe: 200x120 Pixel.
+                  {t('settings.paths.logoInfo')}
                 </Alert>
               </CardContent>
             </Card>
@@ -298,16 +318,16 @@ function SettingsPanel({ settings, onUpdateSettings }) {
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Daten-Synchronisation
+                  {t('settings.paths.dataTitle')}
                 </Typography>
                 
                 <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
                   <TextField
-                    label="Pfad zur Daten-Datei"
+                    label={t('settings.paths.dataPath')}
                     fullWidth
                     value={formData.dataFilePath || ''}
                     onChange={(e) => handleInputChange(null, 'dataFilePath', e.target.value)}
-                    placeholder="Pfad zur JSON-Datei für Nextcloud-Sync"
+                    placeholder={i18n.language === 'de' ? 'Pfad zur JSON-Datei für Cloud-Sync' : 'Path to JSON file for cloud sync'}
                   />
                   <IconButton onClick={handleSelectDataFile}>
                     <Folder />
@@ -315,8 +335,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
                 </Box>
                 
                 <Alert severity="info">
-                  Diese Datei wird beim Programmstart geladen und kann über z.B. Nextcloud, 
-                  iCloud, Dropbox, OneDrive etc. zwischen verschiedenen Geräten synchronisiert werden.
+                  {t('settings.paths.dataInfo')}
                 </Alert>
               </CardContent>
             </Card>
@@ -328,55 +347,54 @@ function SettingsPanel({ settings, onUpdateSettings }) {
         <Card>
           <CardContent sx={{ textAlign: 'center' }}>
             <Typography variant="h4" color="primary" gutterBottom>
-              QuartaBill
+              {t('settings.about.title')}
             </Typography>
             
             <Typography variant="h6" color="text.secondary" gutterBottom>
-              Professionelle Quartalsabrechnungen für Arbeitsmediziner
+              {t('settings.about.subtitle')}
             </Typography>
             
             <Divider sx={{ my: 3 }} />
             
             <Typography variant="h6" gutterBottom>
-              Entwickelt von Dr. Thomas Entner
+              {t('settings.about.developer')}
             </Typography>
             
             <Typography variant="body1" paragraph sx={{ mt: 3, maxWidth: 600, mx: 'auto' }}>
-              Diese Anwendung wurde speziell für Arbeitsmediziner entwickelt, um die quartalsweise 
-              Abrechnung ihrer Leistungen zu vereinfachen und zu automatisieren.
+              {t('settings.about.description')}
             </Typography>
             
             <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-              Features von QuartaBill:
+              {t('settings.about.features.title')}
             </Typography>
             
             <Grid container spacing={2} sx={{ mt: 2, maxWidth: 800, mx: 'auto' }}>
               <Grid item xs={12} sm={6}>
                 <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  • Kundendaten verwalten
+                  • {t('settings.about.features.customerManagement')}
                 </Typography>
                 <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  • Automatische Quartalsrechnungen
+                  • {t('settings.about.features.autoInvoices')}
                 </Typography>
                 <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  • PDF-Rechnungen generieren
+                  • {t('settings.about.features.pdfGeneration')}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  • E-Mail-Vorlagen erstellen
+                  • {t('settings.about.features.emailTemplates')}
                 </Typography>
                 <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  • Sichere Datensynchronisation
+                  • {t('settings.about.features.dataSync')}
                 </Typography>
                 <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  • Deutsche Steuerberechnung
+                  • {t('settings.about.features.taxCalculation')}
                 </Typography>
               </Grid>
             </Grid>
             
             <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
-              Version 1.0.0 - Für eine effiziente und professionelle Praxisverwaltung
+              {t('settings.about.version')}
             </Typography>
           </CardContent>
         </Card>
@@ -391,7 +409,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
           onClick={handleSave}
           sx={{ minWidth: 200 }}
         >
-          Einstellungen speichern
+          {t('settings.buttons.save')}
         </Button>
       </Box>
     </Box>

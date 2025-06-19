@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Box, Tabs, Tab, Container, AppBar, Toolbar, Typography } from '@mui/material';
 import { Receipt, People, Settings } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import CustomerManager from './components/CustomerManager';
 import InvoiceGenerator from './components/InvoiceGenerator';
 import SettingsPanel from './components/SettingsPanel';
 import OnboardingScreen from './components/OnboardingScreen';
 import DataService from './services/DataService';
+import './i18n';
 
 const theme = createTheme({
   palette: {
@@ -41,6 +43,7 @@ function TabPanel({ children, value, index, ...other }) {
 }
 
 function App() {
+  const { t, i18n } = useTranslation();
   const [tabValue, setTabValue] = useState(0);
   const [data, setData] = useState({
     customers: [],
@@ -59,7 +62,8 @@ function App() {
       logoPathMac: '',
       dataFilePath: '',
       hasSeenOnboarding: false,
-      invoiceNumberFormat: '{QQ}{YY}{KK}'
+      invoiceNumberFormat: '{QQ}{YY}{KK}',
+      language: 'de'
     }
   });
   const [isLoaded, setIsLoaded] = useState(false);
@@ -82,6 +86,12 @@ function App() {
       const loadedData = await DataService.loadData();
       if (loadedData) {
         setData(loadedData);
+        
+        // Sprache setzen
+        if (loadedData.settings?.language) {
+          i18n.changeLanguage(loadedData.settings.language);
+        }
+        
         // Zeige Onboarding nur beim ersten Start
         if (!loadedData.settings?.hasSeenOnboarding) {
           setShowOnboarding(true);
@@ -141,7 +151,7 @@ function App() {
           <Toolbar>
             <Receipt sx={{ mr: 2 }} />
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              QuartaBill
+              {t('app.title')}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -151,19 +161,19 @@ function App() {
             <Tabs value={tabValue} onChange={handleTabChange} aria-label="Navigation">
               <Tab 
                 icon={<People />} 
-                label="Kunden" 
+                label={t('nav.customers')} 
                 id="tab-0"
                 aria-controls="tabpanel-0"
               />
               <Tab 
                 icon={<Receipt />} 
-                label="Rechnungen erstellen" 
+                label={t('nav.invoices')} 
                 id="tab-1"
                 aria-controls="tabpanel-1"
               />
               <Tab 
                 icon={<Settings />} 
-                label="Einstellungen" 
+                label={t('nav.settings')} 
                 id="tab-2"
                 aria-controls="tabpanel-2"
               />

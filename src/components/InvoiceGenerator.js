@@ -8,11 +8,13 @@ import {
 import { Receipt, Email, CheckCircle, Error } from '@mui/icons-material';
 import { format, startOfYear, addMonths } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 import PDFService from '../services/PDFService';
 import EmailService from '../services/EmailService';
 import DataService from '../services/DataService';
 
 function InvoiceGenerator({ customers, settings }) {
+  const { t } = useTranslation();
   const [selectedQuarter, setSelectedQuarter] = useState('Q1');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedCustomers, setSelectedCustomers] = useState([]);
@@ -72,7 +74,7 @@ function InvoiceGenerator({ customers, settings }) {
 
   const handleGenerateInvoices = async () => {
     if (selectedCustomers.length === 0) {
-      alert('Bitte wählen Sie mindestens einen Kunden aus.');
+      alert(t('invoices.warnings.selectCustomers'));
       return;
     }
 
@@ -152,7 +154,7 @@ function InvoiceGenerator({ customers, settings }) {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Rechnungen erstellen
+        {t('invoices.title')}
       </Typography>
 
       <Grid container spacing={3}>
@@ -161,17 +163,17 @@ function InvoiceGenerator({ customers, settings }) {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Quartal & Jahr
+                {t('invoices.quarter')} & {t('invoices.year')}
               </Typography>
               
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <FormControl fullWidth>
-                    <InputLabel>Quartal</InputLabel>
+                    <InputLabel>{t('invoices.quarter')}</InputLabel>
                     <Select
                       value={selectedQuarter}
                       onChange={(e) => setSelectedQuarter(e.target.value)}
-                      label="Quartal"
+                      label={t('invoices.quarter')}
                     >
                       {quarters.map(q => (
                         <MenuItem key={q} value={q}>{q}</MenuItem>
@@ -182,11 +184,11 @@ function InvoiceGenerator({ customers, settings }) {
                 
                 <Grid item xs={6}>
                   <FormControl fullWidth>
-                    <InputLabel>Jahr</InputLabel>
+                    <InputLabel>{t('invoices.year')}</InputLabel>
                     <Select
                       value={selectedYear}
                       onChange={(e) => setSelectedYear(e.target.value)}
-                      label="Jahr"
+                      label={t('invoices.year')}
                     >
                       {years.map(year => (
                         <MenuItem key={year} value={year}>{year}</MenuItem>
@@ -204,7 +206,7 @@ function InvoiceGenerator({ customers, settings }) {
                       onChange={(e) => setGenerateEmail(e.target.checked)}
                     />
                   }
-                  label="Email (.eml) generieren"
+                  label={t('invoices.generateEmail')}
                 />
                 <br />
                 <FormControlLabel
@@ -214,15 +216,15 @@ function InvoiceGenerator({ customers, settings }) {
                       onChange={(e) => setAutoExport(e.target.checked)}
                     />
                   }
-                  label="Direkt in Kundenordner exportieren"
+                  label={t('invoices.autoExport')}
                 />
               </Box>
 
               {selectedQuarter && selectedYear && (
                 <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
                   <Typography variant="body2" color="textSecondary">
-                    <strong>Leistungszeitraum:</strong> {selectedQuarter}/{selectedYear}<br/>
-                    <strong>Rechnungsdatum:</strong> {format(getQuarterDates(selectedQuarter, selectedYear).invoiceDate, 'dd.MM.yyyy', { locale: de })}
+                    <strong>{t('invoices.period.serviceTime')}:</strong> {selectedQuarter}/{selectedYear}<br/>
+                    <strong>{t('invoices.period.invoiceDate')}:</strong> {format(getQuarterDates(selectedQuarter, selectedYear).invoiceDate, 'dd.MM.yyyy', { locale: de })}
                   </Typography>
                 </Box>
               )}
@@ -236,16 +238,16 @@ function InvoiceGenerator({ customers, settings }) {
             <CardContent>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
-                  Kunden auswählen
+                  {t('invoices.selectCustomers')}
                 </Typography>
                 <Button onClick={handleSelectAll} size="small">
-                  {selectedCustomers.length === customers.length ? 'Alle abwählen' : 'Alle auswählen'}
+                  {selectedCustomers.length === customers.length ? t('invoices.deselectAll') : t('invoices.selectAll')}
                 </Button>
               </Box>
 
               {customers.length === 0 ? (
                 <Alert severity="info">
-                  Keine Kunden vorhanden. Bitte legen Sie zuerst Kunden an.
+                  {t('invoices.warnings.noCustomers')}
                 </Alert>
               ) : (
                 <List dense>
@@ -278,13 +280,13 @@ function InvoiceGenerator({ customers, settings }) {
               <Grid container spacing={3} alignItems="center">
                 <Grid item xs={12} sm={6}>
                   <Typography variant="h6" gutterBottom>
-                    Zusammenfassung
+                    {t('invoices.summary')}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    {selectedCustomers.length} von {customers.length} Kunden ausgewählt
+                    {selectedCustomers.length} {t('invoices.customersSelected', { total: customers.length })}
                   </Typography>
                   <Typography variant="h6" color="primary" sx={{ mt: 1 }}>
-                    Gesamtsumme: {totalAmount.toFixed(2)}€
+                    {t('invoices.totalAmount')}: {totalAmount.toFixed(2)}€
                   </Typography>
                 </Grid>
                 
@@ -297,7 +299,7 @@ function InvoiceGenerator({ customers, settings }) {
                     disabled={isGenerating || selectedCustomers.length === 0}
                     sx={{ minWidth: 200 }}
                   >
-                    {isGenerating ? 'Generiere...' : 'PDFs generieren'}
+                    {isGenerating ? t('invoices.generating') : t('invoices.generate')}
                   </Button>
                 </Grid>
               </Grid>
@@ -308,7 +310,7 @@ function InvoiceGenerator({ customers, settings }) {
 
       {/* Ergebnis Dialog */}
       <Dialog open={resultDialogOpen} onClose={() => setResultDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Rechnungsgenerierung abgeschlossen</DialogTitle>
+        <DialogTitle>{t('invoices.results.title')}</DialogTitle>
         <DialogContent>
           <List>
             {results.map((result, index) => (
@@ -324,7 +326,7 @@ function InvoiceGenerator({ customers, settings }) {
                   secondary={
                     result.success 
                       ? `PDF: ${result.pdfPath}${result.emailPath ? ` | Email: ${result.emailPath}` : ''}`
-                      : `Fehler: ${result.error}`
+                      : `${t('invoices.results.error')}: ${result.error}`
                   }
                 />
               </ListItem>
@@ -333,7 +335,7 @@ function InvoiceGenerator({ customers, settings }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setResultDialogOpen(false)}>
-            Schließen
+            {t('invoices.results.close')}
           </Button>
         </DialogActions>
       </Dialog>

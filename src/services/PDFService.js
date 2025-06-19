@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
+import i18n from '../i18n';
 import DataService from './DataService';
 
 class PDFService {
@@ -43,7 +44,7 @@ class PDFService {
         return { path: fullPath, buffer: pdfBuffer, exported: true };
       } else {
         // Fallback: Normale Speicherung wenn kein Pfad hinterlegt
-        return { path: fileName, buffer: pdfBuffer, exported: false, message: 'Kein Speicherpfad hinterlegt' };
+        return { path: fileName, buffer: pdfBuffer, exported: false, message: i18n.t('settings.noSavePathMessage') };
       }
     } else {
       // Normale Speicherung mit Dialog
@@ -91,7 +92,7 @@ class PDFService {
     doc.rect(20, 20, 50, 30, 'F');
     doc.setFontSize(8);
     doc.setTextColor(100);
-    doc.text('LOGO', 43, 37);
+    doc.text(i18n.t('pdf.logoPlaceholder'), 43, 37);
     return false;
   }
 
@@ -151,13 +152,13 @@ class PDFService {
     doc.setTextColor(255);
     doc.setFontSize(8);
     doc.setFont(undefined, 'bold');
-    doc.text('RECHNUNGSDETAILS', 113, boxY + 8);
+    doc.text(i18n.t('pdf.invoiceDetails'), 113, boxY + 8);
     
     // Rechnungsnummer
     doc.setTextColor(0);
     doc.setFontSize(7);
     doc.setFont(undefined, 'normal');
-    doc.text('Rechnungsnummer:', 113, boxY + 20);
+    doc.text(i18n.t('pdf.invoiceNumber') + ':', 113, boxY + 20);
     doc.setFontSize(11);
     doc.setFont(undefined, 'bold');
     doc.text(invoiceNumber, 113, boxY + 27);
@@ -165,7 +166,7 @@ class PDFService {
     // Rechnungsdatum
     doc.setFontSize(7);
     doc.setFont(undefined, 'normal');
-    doc.text('Rechnungsdatum:', 155, boxY + 20);
+    doc.text(i18n.t('pdf.invoiceDate') + ':', 155, boxY + 20);
     doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
     doc.text(format(invoiceDate, 'dd.MM.yyyy'), 155, boxY + 27);
@@ -173,7 +174,7 @@ class PDFService {
     // Leistungszeitraum - zentral platziert
     doc.setFontSize(7);
     doc.setFont(undefined, 'normal');
-    doc.text('Leistungszeitraum:', 113, boxY + 34);
+    doc.text(i18n.t('pdf.serviceTime') + ':', 113, boxY + 34);
     doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(60, 90, 120);
@@ -202,7 +203,7 @@ class PDFService {
     doc.setTextColor(255);
     doc.setFontSize(8);
     doc.setFont(undefined, 'bold');
-    doc.text('RECHNUNGSADRESSE', 23, boxY + 8);
+    doc.text(i18n.t('pdf.invoiceAddress'), 23, boxY + 8);
     
     // Kundenname hervorgehoben
     doc.setTextColor(0);
@@ -261,10 +262,10 @@ class PDFService {
     doc.setTextColor(255);
     doc.setFontSize(8);
     doc.setFont(undefined, 'bold');
-    doc.text('LEISTUNGSBESCHREIBUNG', 22, startY + 8);
-    doc.text('STD.', 140, startY + 8);
-    doc.text('€/STD.', 160, startY + 8);
-    doc.text('BETRAG', 185, startY + 8);
+    doc.text(i18n.t('pdf.serviceDescription'), 22, startY + 8);
+    doc.text(i18n.t('pdf.hours'), 140, startY + 8);
+    doc.text(i18n.t('pdf.hourlyRate'), 160, startY + 8);
+    doc.text(i18n.t('pdf.amount'), 185, startY + 8);
     
     // Variable-Ersetzung für Tätigkeit
     const hours = customer.hours || 6;
@@ -279,7 +280,7 @@ class PDFService {
     };
     
     const activityText = this.replaceVariables(
-      customer.activity || 'Arbeitsmedizinische Leistungen [Quartal]', 
+      customer.activity || i18n.t('customers.form.placeholders.activity').replace('\\n', ' '), 
       variables
     );
     
@@ -342,7 +343,7 @@ class PDFService {
     doc.setTextColor(255);
     doc.setFontSize(8);
     doc.setFont(undefined, 'bold');
-    doc.text('RECHNUNGSSUMME', 118, yPos + 8);
+    doc.text(i18n.t('pdf.invoiceSum'), 118, yPos + 8);
     
     // Berechnungszeilen
     doc.setTextColor(0);
@@ -350,21 +351,21 @@ class PDFService {
     doc.setFont(undefined, 'normal');
     
     // Zwischensumme
-    doc.text('ZWISCHENSUMME', 118, yPos + 20);
+    doc.text(i18n.t('pdf.subtotal'), 118, yPos + 20);
     doc.setFont(undefined, 'bold');
     doc.text(`${subtotal.toFixed(2)} €`, 175, yPos + 20);
     
     // Steuersätze mit korrekten Beträgen
     doc.setFont(undefined, 'normal');
     doc.setTextColor(60);
-    doc.text('STEUERSATZ auf 90% der Summe', 118, yPos + 30);
+    doc.text(i18n.t('pdf.taxRate90'), 118, yPos + 30);
     doc.setTextColor(0);
     doc.setFont(undefined, 'bold');
     doc.text('20 %', 182, yPos + 30);
     
     doc.setFont(undefined, 'normal');
     doc.setTextColor(60);
-    doc.text('STEUERSATZ auf 10% der Summe', 118, yPos + 40);
+    doc.text(i18n.t('pdf.taxRate10'), 118, yPos + 40);
     doc.setTextColor(0);
     doc.setFont(undefined, 'bold');
     doc.text('0 %', 182, yPos + 40);
@@ -372,7 +373,7 @@ class PDFService {
     // USt. mit korrektem Betrag
     doc.setFont(undefined, 'normal');
     doc.setTextColor(0);
-    doc.text('USt.:', 118, yPos + 50);
+    doc.text(i18n.t('pdf.vat') + ':', 118, yPos + 50);
     doc.setFont(undefined, 'bold');
     doc.text(`${tax90.toFixed(2)} €`, 175, yPos + 50);
     
@@ -387,7 +388,7 @@ class PDFService {
     doc.setTextColor(0);
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
-    doc.text('Gesamt', 118, yPos + 68);
+    doc.text(i18n.t('pdf.total'), 118, yPos + 68);
     doc.setFontSize(14);
     doc.setTextColor(60, 90, 120);
     doc.text(`${total.toFixed(2)} €`, 165, yPos + 68);
@@ -436,7 +437,7 @@ class PDFService {
     doc.setFont(undefined, 'bold');
     doc.setTextColor(0);
     const paymentTerms = issuer.paymentTerms || 14;
-    doc.text(`Zahlungsfrist: ${paymentTerms} Tage`, centerX, footerEndY - 26, { align: 'center' });
+    doc.text(i18n.t('pdf.paymentTerms', { days: paymentTerms }), centerX, footerEndY - 26, { align: 'center' });
     
     // Reset styles
     doc.setFont(undefined, 'normal');

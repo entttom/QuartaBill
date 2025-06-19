@@ -5,9 +5,11 @@ import {
   DialogActions, TextField, Grid, Fab, Divider, Chip
 } from '@mui/material';
 import { Add, Edit, Delete, Email, Folder } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import DataService from '../services/DataService';
 
 function CustomerManager({ customers, onUpdateCustomers }) {
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [formData, setFormData] = useState(DataService.createCustomer());
@@ -47,7 +49,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
   };
 
   const handleDeleteCustomer = (customerId) => {
-    if (window.confirm('Sind Sie sicher, dass Sie diesen Kunden löschen möchten?')) {
+    if (window.confirm(t('customers.deleteCustomer'))) {
       const updatedCustomers = customers.filter(c => c.id !== customerId);
       onUpdateCustomers(updatedCustomers);
     }
@@ -83,7 +85,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" gutterBottom>
-          Kundenverwaltung
+          {t('customers.title')}
         </Typography>
         <Button
           variant="contained"
@@ -91,7 +93,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
           onClick={() => handleOpenDialog()}
           size="large"
         >
-          Neuer Kunde
+          {t('customers.newCustomer')}
         </Button>
       </Box>
 
@@ -99,17 +101,17 @@ function CustomerManager({ customers, onUpdateCustomers }) {
         <Card>
           <CardContent sx={{ textAlign: 'center', py: 6 }}>
             <Typography variant="h6" color="textSecondary" gutterBottom>
-              Noch keine Kunden angelegt
+              {t('customers.noCustomers')}
             </Typography>
             <Typography variant="body2" color="textSecondary" paragraph>
-              Klicken Sie auf "Neuer Kunde" um Ihren ersten Kunden hinzuzufügen.
+              {t('customers.createFirst')}
             </Typography>
             <Button
               variant="outlined"
               startIcon={<Add />}
               onClick={() => handleOpenDialog()}
             >
-              Ersten Kunden anlegen
+              {t('customers.newCustomer')}
             </Button>
           </CardContent>
         </Card>
@@ -121,7 +123,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
                 <CardContent>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                     <Typography variant="h6" gutterBottom>
-                      {customer.name || 'Unbenannter Kunde'}
+                      {customer.name || t('customers.unnamedCustomer')}
                     </Typography>
                     <Box>
                       <IconButton onClick={() => handleOpenDialog(customer)} size="small">
@@ -134,17 +136,17 @@ function CustomerManager({ customers, onUpdateCustomers }) {
                   </Box>
                   
                   <Typography variant="body2" color="textSecondary" paragraph>
-                    {customer.address || 'Keine Adresse hinterlegt'}
+                    {customer.address || t('customers.noAddress')}
                   </Typography>
                   
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
                     <Chip label={`${customer.hourlyRate}€/h`} size="small" />
-                    <Chip label={`${customer.hours || 6} Std.`} size="small" />
+                    <Chip label={`${customer.hours || 6} ${t('customers.hours')}`} size="small" />
                     {customer.email && <Chip icon={<Email />} label="Email" size="small" />}
                   </Box>
                   
                   <Typography variant="caption" color="textSecondary">
-                    Beispiel-Rechnungsnummer: {generateInvoiceNumber(customer.name)}
+                    {t('customers.exampleInvoiceNumber')}: {generateInvoiceNumber(customer.name)}
                   </Typography>
                 </CardContent>
               </Card>
@@ -156,13 +158,13 @@ function CustomerManager({ customers, onUpdateCustomers }) {
       {/* Kunde bearbeiten/hinzufügen Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         <DialogTitle>
-          {editingCustomer ? 'Kunde bearbeiten' : 'Neuer Kunde'}
+          {editingCustomer ? t('customers.editCustomer') : t('customers.newCustomer')}
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Firmenname"
+                label={t('customers.form.name')}
                 fullWidth
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
@@ -171,7 +173,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Email"
+                label={t('customers.form.email')}
                 fullWidth
                 type="email"
                 value={formData.email}
@@ -181,19 +183,20 @@ function CustomerManager({ customers, onUpdateCustomers }) {
             
             <Grid item xs={12}>
               <TextField
-                label="Adresse"
+                label={t('customers.form.address')}
                 fullWidth
                 multiline
                 rows={3}
                 value={formData.address}
                 onChange={(e) => handleInputChange('address', e.target.value)}
+                placeholder={t('customers.form.placeholders.address')}
                 required
               />
             </Grid>
             
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Stundensatz (€)"
+                label={t('customers.form.hourlyRate')}
                 fullWidth
                 type="number"
                 value={formData.hourlyRate}
@@ -204,7 +207,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
             
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Stunden pro Quartal"
+                label={t('customers.form.hours')}
                 fullWidth
                 type="number"
                 value={formData.hours}
@@ -215,27 +218,27 @@ function CustomerManager({ customers, onUpdateCustomers }) {
             
             <Grid item xs={12}>
               <TextField
-                label="Tätigkeit"
+                label={t('customers.form.activity')}
                 fullWidth
                 value={formData.activity}
                 onChange={(e) => handleInputChange('activity', e.target.value)}
-                placeholder="z.B. Arbeitsmedizinische Leistungen [Quartal]"
-                helperText="Verfügbare Variablen: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]"
+                placeholder={t('customers.form.placeholders.activity')}
+                helperText={t('customers.form.placeholders.emailTemplate')}
               />
             </Grid>
             
             <Grid item xs={12}>
               <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" gutterBottom>Speicherpfade</Typography>
+              <Typography variant="h6" gutterBottom>{t('customers.form.storagePaths')}</Typography>
             </Grid>
             
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                PDF-Speicherpfade
+                {t('customers.form.pdfPaths')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
                 <TextField
-                  label="Windows PDF-Pfad"
+                  label={t('customers.form.savePathWindows')}
                   fullWidth
                   size="small"
                   value={formData.savePathWindows}
@@ -247,7 +250,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
               </Box>
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <TextField
-                  label="Mac PDF-Pfad"
+                  label={t('customers.form.savePathMac')}
                   fullWidth
                   size="small"
                   value={formData.savePathMac}
@@ -261,11 +264,11 @@ function CustomerManager({ customers, onUpdateCustomers }) {
             
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                EML-Speicherpfade
+                {t('customers.form.emlPaths')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
                 <TextField
-                  label="Windows EML-Pfad"
+                  label={t('customers.form.emlPathWindows')}
                   fullWidth
                   size="small"
                   value={formData.emlPathWindows}
@@ -277,7 +280,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
               </Box>
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <TextField
-                  label="Mac EML-Pfad"
+                  label={t('customers.form.emlPathMac')}
                   fullWidth
                   size="small"
                   value={formData.emlPathMac}
@@ -291,27 +294,27 @@ function CustomerManager({ customers, onUpdateCustomers }) {
             
             <Grid item xs={12}>
               <TextField
-                label="Email-Template"
+                label={t('customers.form.emailTemplate')}
                 fullWidth
                 multiline
                 rows={4}
                 value={formData.emailTemplate}
                 onChange={(e) => handleInputChange('emailTemplate', e.target.value)}
-                placeholder="Text der Email die mit der Rechnung versendet wird..."
+                placeholder={t('customers.form.emailTemplatePlaceholder')}
               />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>
-            Abbrechen
+            {t('customers.buttons.cancel')}
           </Button>
           <Button 
             onClick={handleSaveCustomer} 
             variant="contained"
             disabled={!formData.name || !formData.address || !formData.hourlyRate}
           >
-            {editingCustomer ? 'Speichern' : 'Hinzufügen'}
+            {editingCustomer ? t('customers.buttons.save') : t('customers.buttons.add')}
           </Button>
         </DialogActions>
       </Dialog>

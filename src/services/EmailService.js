@@ -1,3 +1,4 @@
+import i18n from '../i18n';
 import DataService from './DataService';
 
 class EmailService {
@@ -5,7 +6,7 @@ class EmailService {
     try {
       const emlContent = this.createEMLContent({
         to: customer.email,
-        subject: `Rechnung ${invoiceNumber}`,
+        subject: i18n.t('email.subject', { invoiceNumber }),
         body: customer.emailTemplate || this.getDefaultEmailTemplate(),
         attachmentName: `${invoiceNumber}_${customer.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
         attachmentBuffer: pdfBuffer
@@ -24,7 +25,7 @@ class EmailService {
           return { path: fullPath, exported: true };
         } else {
           // Fallback: Normale Speicherung wenn kein EML-Pfad hinterlegt
-          return { path: fileName, exported: false, message: 'Kein EML-Speicherpfad hinterlegt' };
+          return { path: fileName, exported: false, message: i18n.t('settings.noEmlPathMessage') };
         }
       } else {
         // Normale Speicherung mit Dialog
@@ -40,7 +41,7 @@ class EmailService {
         return { path: fileName, exported: false };
       }
     } catch (error) {
-      throw new Error(`Email-Generierung fehlgeschlagen: ${error.message}`);
+      throw new Error(i18n.t('email.generationFailed', { message: error.message }));
     }
   }
 
@@ -94,14 +95,7 @@ class EmailService {
   }
 
   static getDefaultEmailTemplate() {
-    return `Sehr geehrte Damen und Herren,
-
-anbei erhalten Sie die Rechnung für das vergangene Quartal.
-
-Bei Fragen stehen wir Ihnen gerne zur Verfügung.
-
-Mit freundlichen Grüßen
-${settings?.issuer?.name || 'Max Mustermann'}`;
+    return i18n.t('email.defaultTemplate').replace(/\\n/g, '\n');
   }
 }
 

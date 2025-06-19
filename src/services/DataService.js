@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 class DataService {
   static defaultDataPath = 'rechnung-data.json';
   
@@ -20,7 +22,8 @@ class DataService {
       logoPathMac: '',
       dataFilePath: this.defaultDataPath,
       hasSeenOnboarding: false,
-      invoiceNumberFormat: '{QQ}{YY}{KK}'
+      invoiceNumberFormat: '{QQ}{YY}{KK}',
+      language: 'de'
     }
   };
 
@@ -78,12 +81,12 @@ class DataService {
       address: '',
       hourlyRate: 0,
       email: '',
-      emailTemplate: 'Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie die Rechnung für das vergangene Quartal.\n\nMit freundlichen Grüßen',
+      emailTemplate: i18n.t('email.defaultTemplate').replace(/\\n/g, '\n'),
       savePathWindows: '',
       savePathMac: '',
       emlPathWindows: '',
       emlPathMac: '',
-      activity: 'Arbeitsmedizinische Leistungen [Quartal]',
+      activity: i18n.t('customers.form.placeholders.activity').replace(/\\n/g, '\n'),
       hours: 6
     };
   }
