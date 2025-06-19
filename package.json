@@ -1,7 +1,7 @@
 {
-  "name": "rechnung-generator",
+  "name": "quartabill",
   "version": "1.0.0",
-  "description": "Automatischer Rechnungsgenerator für Quartalsabrechnungen",
+  "description": "QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner",
   "main": "public/electron.js",
   "homepage": "./",
   "private": true,
@@ -17,17 +17,31 @@
     "dist:mac": "npm run build && electron-builder --mac"
   },
   "build": {
-    "appId": "com.rechnung.generator",
-    "productName": "Rechnung-Generator",
+    "appId": "com.quartabill.app",
+    "productName": "QuartaBill",
     "directories": {
       "output": "dist"
     },
     "files": [
       "build/**/*",
       "public/electron.js",
-      "node_modules/**/*"
+      "public/preload.js",
+      "node_modules/**/*",
+      "!node_modules/**/*.md",
+      "!node_modules/**/*.ts",
+      "!node_modules/**/*.d.ts",
+      "!node_modules/**/test/**",
+      "!node_modules/**/tests/**",
+      "!node_modules/**/*.test.js",
+      "!node_modules/**/*.spec.js",
+      "!node_modules/**/README*",
+      "!node_modules/**/CHANGELOG*",
+      "!node_modules/**/LICENSE*",
+      "!node_modules/**/.git*",
+      "!node_modules/**/docs/**",
+      "!node_modules/**/examples/**"
     ],
-    "compression": "store",
+    "compression": "maximum",
     "npmRebuild": false,
     "buildDependenciesFromSource": false,
     "win": {
@@ -41,10 +55,15 @@
       ],
       "sign": null,
       "certificateFile": null,
-      "certificatePassword": null
+      "certificatePassword": null,
+      "icon": "icon.iconset/icon_256x256.png"
+    },
+    "mac": {
+      "icon": "icon.iconset",
+      "category": "public.app-category.business"
     }
   },
-  "author": "Rechnung Generator",
+  "author": "Dr. Thomas Entner",
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",

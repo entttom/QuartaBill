@@ -18,17 +18,18 @@ class DataService {
       },
       logoPathWindows: '',
       logoPathMac: '',
-      dataFilePath: this.defaultDataPath
+      dataFilePath: this.defaultDataPath,
+      hasSeenOnboarding: false,
+      invoiceNumberFormat: '{QQ}{YY}{KK}'
     }
   };
 
   static async loadData(filePath = null) {
     try {
       // Lade aus localStorage für Browser oder über Electron IPC
-      if (window.require) {
+      if (window.electronAPI) {
         // Electron Umgebung
-        const { ipcRenderer } = window.require('electron');
-        return await ipcRenderer.invoke('load-data', filePath);
+        return await window.electronAPI.loadData(filePath);
       } else {
         // Browser Umgebung - verwende localStorage
         const data = localStorage.getItem('rechnung-data');
@@ -42,10 +43,9 @@ class DataService {
 
   static async saveData(data, filePath = null) {
     try {
-      if (window.require) {
+      if (window.electronAPI) {
         // Electron Umgebung
-        const { ipcRenderer } = window.require('electron');
-        return await ipcRenderer.invoke('save-data', data, filePath);
+        return await window.electronAPI.saveData(data, filePath);
       } else {
         // Browser Umgebung - verwende localStorage
         localStorage.setItem('rechnung-data', JSON.stringify(data));
@@ -89,35 +89,59 @@ class DataService {
   }
 
   static async selectFolder() {
-    if (window.require) {
-      const { ipcRenderer } = window.require('electron');
-      return await ipcRenderer.invoke('select-folder');
+    if (window.electronAPI) {
+      return await window.electronAPI.selectFolder();
     }
     return null;
   }
 
   static async selectFile(filters = []) {
-    if (window.require) {
-      const { ipcRenderer } = window.require('electron');
-      return await ipcRenderer.invoke('select-file', filters);
+    if (window.electronAPI) {
+      return await window.electronAPI.selectFile(filters);
     }
     return null;
   }
 
   static async saveFile(content, defaultPath) {
-    if (window.require) {
-      const { ipcRenderer } = window.require('electron');
-      return await ipcRenderer.invoke('save-file', content, defaultPath);
+    if (window.electronAPI) {
+      return await window.electronAPI.saveFile(content, defaultPath);
     }
     return null;
   }
 
   static async getPlatform() {
-    if (window.require) {
-      const { ipcRenderer } = window.require('electron');
-      return await ipcRenderer.invoke('get-platform');
+    if (window.electronAPI) {
+      return await window.electronAPI.getPlatform();
     }
     return 'unknown';
+  }
+
+  static generateInvoiceNumber(customer, quarter, year, format = '{QQ}{YY}{KK}') {
+    // Verfügbare Variablen für Rechnungsnummer
+    const quarterNum = quarter.replace('Q', '0'); // Q1 -> 01
+    const yearShort = year.toString().slice(-2); // 2024 -> 24
+    const yearFull = year.toString(); // 2024
+    const customerPrefix = customer.name.substring(0, 2).toUpperCase(); // "Max" -> "MA"
+    const customerPrefix3 = customer.name.substring(0, 3).toUpperCase(); // "Max" -> "MAX"
+    
+    // Aktuelle Rechnungsnummer (fortlaufend) - könnte später erweitert werden
+    const currentDate = new Date();
+    const invoiceCount = currentDate.getMonth() * 100 + currentDate.getDate(); // Einfache Sequenz
+    
+    // Variable-Ersetzung
+    let invoiceNumber = format
+      .replace(/{QQ}/g, quarterNum)           // Quartal zweistellig (01, 02, 03, 04)
+      .replace(/{Q}/g, quarter.replace('Q', ''))  // Quartal einstellig (1, 2, 3, 4)
+      .replace(/{YYYY}/g, yearFull)           // Jahr vierstellig (2024)
+      .replace(/{YY}/g, yearShort)            // Jahr zweistellig (24)
+      .replace(/{KKK}/g, customerPrefix3)     // Kunde dreistellig (MAX)
+      .replace(/{KK}/g, customerPrefix)       // Kunde zweistellig (MA)
+      .replace(/{K}/g, customer.name.substring(0, 1).toUpperCase()) // Kunde einstellig (M)
+      .replace(/{NNN}/g, invoiceCount.toString().padStart(3, '0')) // Fortlaufende Nummer dreistellig
+      .replace(/{NN}/g, invoiceCount.toString().padStart(2, '0'))  // Fortlaufende Nummer zweistellig
+      .replace(/{N}/g, invoiceCount.toString()); // Fortlaufende Nummer
+    
+    return invoiceNumber;
   }
 }
 

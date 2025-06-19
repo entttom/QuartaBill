@@ -1,6 +1,10 @@
-# Rechnung Generator
+# QuartaBill
 
-Eine Desktop-Anwendung für die automatische Erstellung von Quartalsrechnungen mit PDF-Export und Email-Generierung.
+**Professionelle Quartalsabrechnungen für Arbeitsmediziner**
+
+*Entwickelt von Dr. Thomas Entner*
+
+Eine speziell für Arbeitsmediziner entwickelte Desktop-Anwendung zur automatischen Erstellung von Quartalsrechnungen mit PDF-Export und Email-Generierung.
 
 ## Features
 

@@ -5,6 +5,7 @@ import { Receipt, People, Settings } from '@mui/icons-material';
 import CustomerManager from './components/CustomerManager';
 import InvoiceGenerator from './components/InvoiceGenerator';
 import SettingsPanel from './components/SettingsPanel';
+import OnboardingScreen from './components/OnboardingScreen';
 import DataService from './services/DataService';
 
 const theme = createTheme({
@@ -56,10 +57,13 @@ function App() {
       },
       logoPathWindows: '',
       logoPathMac: '',
-      dataFilePath: ''
+      dataFilePath: '',
+      hasSeenOnboarding: false,
+      invoiceNumberFormat: '{QQ}{YY}{KK}'
     }
   });
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Lade Daten beim Start
   useEffect(() => {
@@ -78,11 +82,20 @@ function App() {
       const loadedData = await DataService.loadData();
       if (loadedData) {
         setData(loadedData);
+        // Zeige Onboarding nur beim ersten Start
+        if (!loadedData.settings?.hasSeenOnboarding) {
+          setShowOnboarding(true);
+        }
+      } else {
+        // Neue Installation - zeige Onboarding
+        setShowOnboarding(true);
       }
       setIsLoaded(true);
     } catch (error) {
       console.error('Fehler beim Laden der Daten:', error);
       setIsLoaded(true);
+      // Bei Fehler trotzdem Onboarding zeigen
+      setShowOnboarding(true);
     }
   };
 
@@ -108,6 +121,18 @@ function App() {
     // saveData() wird automatisch durch useEffect aufgerufen
   };
 
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+    // Markiere Onboarding als gesehen
+    setData(prev => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        hasSeenOnboarding: true
+      }
+    }));
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -116,7 +141,7 @@ function App() {
           <Toolbar>
             <Receipt sx={{ mr: 2 }} />
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Rechnung Generator
+              QuartaBill
             </Typography>
           </Toolbar>
         </AppBar>
@@ -167,6 +192,12 @@ function App() {
           </TabPanel>
         </Container>
       </Box>
+      
+      {/* Onboarding Screen */}
+      <OnboardingScreen 
+        open={showOnboarding} 
+        onClose={handleCloseOnboarding} 
+      />
     </ThemeProvider>
   );
 }

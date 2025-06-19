@@ -10,6 +10,7 @@ import { format, startOfYear, addMonths } from 'date-fns';
 import { de } from 'date-fns/locale';
 import PDFService from '../services/PDFService';
 import EmailService from '../services/EmailService';
+import DataService from '../services/DataService';
 
 function InvoiceGenerator({ customers, settings }) {
   const [selectedQuarter, setSelectedQuarter] = useState('Q1');
@@ -49,10 +50,8 @@ function InvoiceGenerator({ customers, settings }) {
   };
 
   const generateInvoiceNumber = (customer, quarter, year) => {
-    const quarterNum = quarter.replace('Q', '0');
-    const yearShort = year.toString().slice(-2);
-    const customerPrefix = customer.name.substring(0, 2).toUpperCase();
-    return `${quarterNum}${yearShort}${customerPrefix}`;
+    const format = settings?.invoiceNumberFormat || '{QQ}{YY}{KK}';
+    return DataService.generateInvoiceNumber(customer, quarter, year, format);
   };
 
   const handleCustomerToggle = (customerId) => {

@@ -73,9 +73,10 @@ function CustomerManager({ customers, onUpdateCustomers }) {
     }
   };
 
-  const generateInvoiceNumber = (customerName, quarter = 'Q1', year = '24') => {
-    const prefix = customerName.substring(0, 2).toUpperCase();
-    return `${quarter.replace('Q', '0')}${year}${prefix}`;
+  const generateInvoiceNumber = (customerName, quarter = 'Q1', year = 2024) => {
+    const mockCustomer = { name: customerName };
+    const format = '{QQ}{YY}{KK}'; // Standard-Format für Beispiel
+    return DataService.generateInvoiceNumber(mockCustomer, quarter, year, format);
   };
 
   return (
