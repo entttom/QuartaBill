@@ -80,15 +80,22 @@ class DataService {
       id: Date.now().toString(),
       name: '',
       address: '',
-      hourlyRate: 0,
       email: '',
       emailTemplate: i18n.t('email.defaultTemplate').replace(/\\n/g, '\n'),
       savePathWindows: '',
       savePathMac: '',
       emlPathWindows: '',
       emlPathMac: '',
-      activity: i18n.t('customers.form.placeholders.activity').replace(/\\n/g, '\n'),
-      hours: 6
+      lineItems: [
+        {
+          id: Date.now().toString() + '_1',
+          description: i18n.t('customers.form.placeholders.activity').replace(/\\n/g, '\n'),
+          quantity: 6,
+          unit: 'Stunden',
+          unitPrice: 0,
+          taxType: '20' // Standard 20% oder 'mixed' für (90%@20% + 10%@0%)
+        }
+      ]
     };
   }
 
@@ -109,6 +116,13 @@ class DataService {
   static async saveFile(content, defaultPath) {
     if (window.electronAPI) {
       return await window.electronAPI.saveFile(content, defaultPath);
+    }
+    return null;
+  }
+
+  static async saveFileDirect(content, filePath) {
+    if (window.electronAPI) {
+      return await window.electronAPI.saveFileDirect(content, filePath);
     }
     return null;
   }

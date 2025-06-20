@@ -89,6 +89,25 @@ function createWindow() {
       ]
     },
     {
+      label: 'Entwicklung',
+      submenu: [
+        {
+          label: 'Developer Tools öffnen',
+          accelerator: 'F12',
+          click: () => {
+            mainWindow.webContents.openDevTools();
+          }
+        },
+        {
+          label: 'Neu laden',
+          accelerator: 'CmdOrCtrl+R',
+          click: () => {
+            mainWindow.webContents.reload();
+          }
+        }
+      ]
+    },
+    {
       label: 'Hilfe',
       submenu: [
         {
@@ -153,6 +172,27 @@ ipcMain.handle('save-file', async (event, content, defaultPath) => {
     return result.filePath;
   }
   return null;
+});
+
+// Direkte Datei-Speicherung ohne Dialog (für Auto-Export)
+ipcMain.handle('save-file-direct', async (event, content, filePath) => {
+  try {
+    console.log('Electron: Speichere Datei direkt:', filePath);
+    console.log('Content type:', typeof content, 'Länge:', content?.length);
+    
+    // Stelle sicher, dass der Ordner existiert
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    
+    fs.writeFileSync(filePath, content);
+    console.log('Electron: Datei erfolgreich gespeichert:', filePath);
+    return filePath;
+  } catch (error) {
+    console.error('Electron: Fehler beim direkten Speichern:', error);
+    throw error;
+  }
 });
 
 ipcMain.handle('get-platform', () => {

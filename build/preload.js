@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   selectFolder: () => ipcRenderer.invoke('select-folder'),
   selectFile: (filters) => ipcRenderer.invoke('select-file', filters),
   saveFile: (content, defaultPath) => ipcRenderer.invoke('save-file', content, defaultPath),
+  saveFileDirect: (content, filePath) => ipcRenderer.invoke('save-file-direct', content, filePath),
   
   // System-Info
   getPlatform: () => ipcRenderer.invoke('get-platform'),
@@ -23,6 +24,34 @@ contextBridge.exposeInMainWorld('electronAPI', {
   removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel),
   
   // Buffer-Funktionalität
-  bufferFrom: (data, encoding) => Buffer.from(data, encoding),
-  bufferToString: (buffer, encoding) => Buffer.isBuffer(buffer) ? buffer.toString(encoding) : buffer
+  bufferFrom: (data, encoding) => {
+    try {
+      const buffer = Buffer.from(data, encoding);
+      console.log('bufferFrom erstellt:', buffer.constructor.name, 'Länge:', buffer.length);
+      return buffer;
+    } catch (error) {
+      console.error('bufferFrom Fehler:', error);
+      return null;
+    }
+  },
+  bufferToString: (buffer, encoding) => {
+    try {
+      console.log('bufferToString Input:', buffer?.constructor?.name, 'isBuffer:', Buffer.isBuffer(buffer));
+      if (Buffer.isBuffer(buffer)) {
+        const result = buffer.toString(encoding || 'utf8');
+        console.log('bufferToString erfolgreich, Länge:', result.length);
+        return result;
+      } else {
+        console.warn('bufferToString: Input ist kein Buffer:', typeof buffer, buffer?.constructor?.name);
+        // Fallback: versuche direkte Konvertierung 
+        if (buffer && typeof buffer.toString === 'function') {
+          return buffer.toString(encoding || 'utf8');
+        }
+        return String(buffer);
+      }
+    } catch (error) {
+      console.error('bufferToString Fehler:', error);
+      return null;
+    }
+  }
 }); 

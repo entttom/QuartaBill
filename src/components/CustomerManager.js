@@ -2,17 +2,38 @@ import React, { useState } from 'react';
 import {
   Box, Card, CardContent, Typography, Button, IconButton, List, ListItem,
   ListItemText, ListItemSecondaryAction, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Grid, Fab, Divider, Chip
+  DialogActions, TextField, Grid, Fab, Divider, Chip, Tabs, Tab,
+  FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell,
+  TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
-import { Add, Edit, Delete, Email, Folder } from '@mui/icons-material';
+import { Add, Edit, Delete, Email, Folder, DragHandle } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import DataService from '../services/DataService';
+
+function TabPanel({ children, value, index, ...other }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
 
 function CustomerManager({ customers, onUpdateCustomers }) {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [formData, setFormData] = useState(DataService.createCustomer());
+  const [tabValue, setTabValue] = useState(0);
 
   const handleOpenDialog = (customer = null) => {
     if (customer) {
@@ -23,12 +44,14 @@ function CustomerManager({ customers, onUpdateCustomers }) {
       setFormData(DataService.createCustomer());
     }
     setDialogOpen(true);
+    setTabValue(0); // Reset to first tab
   };
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setEditingCustomer(null);
     setFormData(DataService.createCustomer());
+    setTabValue(0);
   };
 
   const handleSaveCustomer = () => {
@@ -72,6 +95,73 @@ function CustomerManager({ customers, onUpdateCustomers }) {
       if (field) {
         handleInputChange(field, folder);
       }
+    }
+  };
+
+  // Leistungspositionen Verwaltung
+  const handleAddLineItem = () => {
+    const newLineItem = {
+      id: Date.now().toString(),
+      description: '',
+      quantity: 1,
+      unit: 'Stunden',
+      unitPrice: 0,
+      taxType: '20'
+    };
+    setFormData(prev => ({
+      ...prev,
+      lineItems: [...prev.lineItems, newLineItem]
+    }));
+  };
+
+  const handleDeleteLineItem = (itemId) => {
+    setFormData(prev => ({
+      ...prev,
+      lineItems: prev.lineItems.filter(item => item.id !== itemId)
+    }));
+  };
+
+  const handleLineItemChange = (itemId, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      lineItems: prev.lineItems.map(item =>
+        item.id === itemId ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const handleMoveLineItem = (dragIndex, hoverIndex) => {
+    const draggedItem = formData.lineItems[dragIndex];
+    const newItems = [...formData.lineItems];
+    newItems.splice(dragIndex, 1);
+    newItems.splice(hoverIndex, 0, draggedItem);
+    setFormData(prev => ({ ...prev, lineItems: newItems }));
+  };
+
+  const calculateCustomerTotal = (customer) => {
+    if (!customer.lineItems || customer.lineItems.length === 0) return 0;
+    
+    return customer.lineItems.reduce((total, item) => {
+      const subtotal = item.quantity * item.unitPrice;
+      let tax = 0;
+      
+      if (item.taxType === 'mixed') {
+        tax = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+      } else {
+        const taxRate = parseFloat(item.taxType) / 100;
+        tax = subtotal * taxRate;
+      }
+      
+      return total + subtotal + tax;
+    }, 0);
+  };
+
+  const getTaxTypeLabel = (taxType) => {
+    switch (taxType) {
+      case 'none': return '0%';
+      case 'standard': return '20%';
+      case 'mixed': return '90%@20% + 10%@0%';
+      default: return 'Unbekannt';
     }
   };
 
@@ -140,8 +230,15 @@ function CustomerManager({ customers, onUpdateCustomers }) {
                   </Typography>
                   
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                    <Chip label={`${customer.hourlyRate}€/h`} size="small" />
-                    <Chip label={`${customer.hours || 6} ${t('customers.hours')}`} size="small" />
+                    <Chip 
+                      label={`${(customer.lineItems || []).length} Position${(customer.lineItems || []).length !== 1 ? 'en' : ''}`} 
+                      size="small" 
+                    />
+                    <Chip 
+                      label={`${calculateCustomerTotal(customer).toFixed(2)}€ gesamt`} 
+                      size="small" 
+                      color="primary"
+                    />
                     {customer.email && <Chip icon={<Email />} label="Email" size="small" />}
                   </Box>
                   
@@ -156,165 +253,338 @@ function CustomerManager({ customers, onUpdateCustomers }) {
       )}
 
       {/* Kunde bearbeiten/hinzufügen Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
         <DialogTitle>
           {editingCustomer ? t('customers.editCustomer') : t('customers.newCustomer')}
         </DialogTitle>
         <DialogContent>
-          <Grid container spacing={3} sx={{ mt: 1 }}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('customers.form.name')}
-                fullWidth
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                required
-              />
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 2 }}>
+            <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
+              <Tab label="Grunddaten" />
+              <Tab label="Leistungspositionen" />
+              <Tab label="Pfade & Email" />
+            </Tabs>
+          </Box>
+
+          {/* Tab 1: Grunddaten */}
+          <TabPanel value={tabValue} index={0}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label={t('customers.form.name')}
+                  fullWidth
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label={t('customers.form.email')}
+                  fullWidth
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                />
+              </Grid>
+              
+              <Grid item xs={12}>
+                <TextField
+                  label={t('customers.form.address')}
+                  fullWidth
+                  multiline
+                  rows={3}
+                  value={formData.address}
+                  onChange={(e) => handleInputChange('address', e.target.value)}
+                  placeholder={t('customers.form.placeholders.address')}
+                  required
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('customers.form.email')}
-                fullWidth
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-              />
-            </Grid>
-            
-            <Grid item xs={12}>
-              <TextField
-                label={t('customers.form.address')}
-                fullWidth
-                multiline
-                rows={3}
-                value={formData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                placeholder={t('customers.form.placeholders.address')}
-                required
-              />
-            </Grid>
-            
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('customers.form.hourlyRate')}
-                fullWidth
-                type="number"
-                value={formData.hourlyRate}
-                onChange={(e) => handleInputChange('hourlyRate', parseFloat(e.target.value) || 0)}
-                required
-              />
-            </Grid>
-            
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label={t('customers.form.hours')}
-                fullWidth
-                type="number"
-                value={formData.hours}
-                onChange={(e) => handleInputChange('hours', parseInt(e.target.value) || 6)}
-                required
-              />
-            </Grid>
-            
-            <Grid item xs={12}>
-              <TextField
-                label={t('customers.form.activity')}
-                fullWidth
-                value={formData.activity}
-                onChange={(e) => handleInputChange('activity', e.target.value)}
-                placeholder={t('customers.form.placeholders.activity')}
-                helperText={t('customers.form.placeholders.emailTemplate')}
-              />
-            </Grid>
-            
-            <Grid item xs={12}>
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" gutterBottom>{t('customers.form.storagePaths')}</Typography>
-            </Grid>
-            
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                {t('customers.form.pdfPaths')}
+          </TabPanel>
+
+          {/* Tab 2: Leistungspositionen */}
+          <TabPanel value={tabValue} index={1}>
+            <Box sx={{ mb: 2 }}>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={handleAddLineItem}
+              >
+                Position hinzufügen
+              </Button>
+            </Box>
+
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell width={40}></TableCell>
+                    <TableCell>Beschreibung</TableCell>
+                    <TableCell width={100}>Menge</TableCell>
+                    <TableCell width={120}>Einheit</TableCell>
+                    <TableCell width={120}>Einzelpreis</TableCell>
+                    <TableCell width={180}>Steuersatz</TableCell>
+                    <TableCell width={120}>Gesamt</TableCell>
+                    <TableCell width={60}></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {formData.lineItems?.map((item, index) => {
+                    const subtotal = item.quantity * item.unitPrice;
+                    let tax = 0;
+                    if (item.taxType === 'mixed') {
+                      tax = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+                    } else {
+                      const taxRate = parseFloat(item.taxType) / 100;
+                      tax = subtotal * taxRate;
+                    }
+                    const total = subtotal + tax;
+
+                    return (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <IconButton size="small">
+                            <DragHandle />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell>
+                          <TextField
+                            fullWidth
+                            multiline
+                            rows={2}
+                            value={item.description}
+                            onChange={(e) => handleLineItemChange(item.id, 'description', e.target.value)}
+                            placeholder="Beschreibung der Leistung..."
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <TextField
+                            type="number"
+                            value={item.quantity}
+                            onChange={(e) => handleLineItemChange(item.id, 'quantity', parseFloat(e.target.value) || 0)}
+                            inputProps={{ min: 0, step: 0.1 }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <FormControl fullWidth>
+                            <Select
+                              value={item.unit}
+                              onChange={(e) => handleLineItemChange(item.id, 'unit', e.target.value)}
+                            >
+                              <MenuItem value="Stunden">Stunden</MenuItem>
+                              <MenuItem value="Tage">Tage</MenuItem>
+                              <MenuItem value="Pauschal">Pauschal</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </TableCell>
+                        <TableCell>
+                          <TextField
+                            type="number"
+                            value={item.unitPrice}
+                            onChange={(e) => handleLineItemChange(item.id, 'unitPrice', parseFloat(e.target.value) || 0)}
+                            inputProps={{ min: 0, step: 0.01 }}
+                            InputProps={{ endAdornment: '€' }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <FormControl fullWidth>
+                            <Select
+                              value={item.taxType}
+                              onChange={(e) => handleLineItemChange(item.id, 'taxType', e.target.value)}
+                            >
+                              {/* Alle Steuersätze von 0% bis 30% */}
+                              {Array.from({ length: 31 }, (_, i) => (
+                                <MenuItem key={i} value={i.toString()}>{i}%</MenuItem>
+                              ))}
+                              <MenuItem value="mixed">90%@20% + 10%@0%</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                            {total.toFixed(2)}€
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton 
+                            size="small" 
+                            color="error"
+                            onClick={() => handleDeleteLineItem(item.id)}
+                            disabled={formData.lineItems?.length <= 1}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+            <Box sx={{ mt: 2, textAlign: 'right' }}>
+              <Typography variant="h6">
+                Gesamtsumme: {calculateCustomerTotal(formData).toFixed(2)}€
               </Typography>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
-                <TextField
-                  label={t('customers.form.savePathWindows')}
-                  fullWidth
-                  size="small"
-                  value={formData.savePathWindows}
-                  onChange={(e) => handleInputChange('savePathWindows', e.target.value)}
-                />
-                <IconButton onClick={() => handleSelectFolder('pdfWindows')} size="small">
-                  <Folder />
-                </IconButton>
-              </Box>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <TextField
-                  label={t('customers.form.savePathMac')}
-                  fullWidth
-                  size="small"
-                  value={formData.savePathMac}
-                  onChange={(e) => handleInputChange('savePathMac', e.target.value)}
-                />
-                <IconButton onClick={() => handleSelectFolder('pdfMac')} size="small">
-                  <Folder />
-                </IconButton>
-              </Box>
-            </Grid>
-            
-            <Grid item xs={12} sm={6}>
-              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                {t('customers.form.emlPaths')}
+            </Box>
+
+            {/* Hilfe / Legende für Variablen */}
+            <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid', borderColor: 'grey.200' }}>
+              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                💡 Verfügbare Variablen in Beschreibungen:
               </Typography>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
-                <TextField
-                  label={t('customers.form.emlPathWindows')}
-                  fullWidth
-                  size="small"
-                  value={formData.emlPathWindows}
-                  onChange={(e) => handleInputChange('emlPathWindows', e.target.value)}
-                />
-                <IconButton onClick={() => handleSelectFolder('emlWindows')} size="small">
-                  <Folder />
-                </IconButton>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 1 }}>
+                <Box sx={{ minWidth: '200px' }}>
+                  <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                    📅 Zeit & Quartal:
+                  </Typography>
+                  <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+                    [Quartal] → Q1, Q2, Q3, Q4<br/>
+                    [Jahr] → 2024
+                  </Typography>
+                </Box>
+                <Box sx={{ minWidth: '200px' }}>
+                  <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                    👤 Kunde & Rechnung:
+                  </Typography>
+                  <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+                    [Kunde] → {formData.name || 'Kundenname'}<br/>
+                    [Rechnungsnummer] → 0124MA
+                  </Typography>
+                </Box>
               </Box>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'text.secondary', fontStyle: 'italic' }}>
+                Beispiel: "Beratung für [Kunde] im [Quartal]/[Jahr]" wird zu "Beratung für {formData.name || 'Max Muster'} im Q1/2024"
+              </Typography>
+            </Box>
+          </TabPanel>
+
+          {/* Tab 3: Pfade & Email */}
+          <TabPanel value={tabValue} index={2}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom>
+                  Email Template
+                </Typography>
                 <TextField
-                  label={t('customers.form.emlPathMac')}
+                  label={t('customers.form.emailTemplate')}
                   fullWidth
-                  size="small"
-                  value={formData.emlPathMac}
-                  onChange={(e) => handleInputChange('emlPathMac', e.target.value)}
+                  multiline
+                  rows={4}
+                  value={formData.emailTemplate}
+                  onChange={(e) => handleInputChange('emailTemplate', e.target.value)}
+                  placeholder={t('customers.form.placeholders.emailTemplate')}
                 />
-                <IconButton onClick={() => handleSelectFolder('emlMac')} size="small">
-                  <Folder />
-                </IconButton>
-              </Box>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="h6" gutterBottom>
+                  {t('customers.form.paths')}
+                </Typography>
+              </Grid>
+
+              {/* PDF Speicherpfade */}
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <TextField
+                    label={t('customers.form.savePathWindows')}
+                    fullWidth
+                    value={formData.savePathWindows}
+                    onChange={(e) => handleInputChange('savePathWindows', e.target.value)}
+                    placeholder={t('customers.form.placeholders.savePathWindows')}
+                  />
+                  <IconButton onClick={() => handleSelectFolder('pdfWindows')}>
+                    <Folder />
+                  </IconButton>
+                </Box>
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <TextField
+                    label={t('customers.form.savePathMac')}
+                    fullWidth
+                    value={formData.savePathMac}
+                    onChange={(e) => handleInputChange('savePathMac', e.target.value)}
+                    placeholder={t('customers.form.placeholders.savePathMac')}
+                  />
+                  <IconButton onClick={() => handleSelectFolder('pdfMac')}>
+                    <Folder />
+                  </IconButton>
+                </Box>
+              </Grid>
+
+              {/* EML Speicherpfade */}
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <TextField
+                    label={t('customers.form.emlPathWindows')}
+                    fullWidth
+                    value={formData.emlPathWindows}
+                    onChange={(e) => handleInputChange('emlPathWindows', e.target.value)}
+                    placeholder={t('customers.form.placeholders.emlPathWindows')}
+                  />
+                  <IconButton onClick={() => handleSelectFolder('emlWindows')}>
+                    <Folder />
+                  </IconButton>
+                </Box>
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <TextField
+                    label={t('customers.form.emlPathMac')}
+                    fullWidth
+                    value={formData.emlPathMac}
+                    onChange={(e) => handleInputChange('emlPathMac', e.target.value)}
+                    placeholder={t('customers.form.placeholders.emlPathMac')}
+                  />
+                  <IconButton onClick={() => handleSelectFolder('emlMac')}>
+                    <Folder />
+                  </IconButton>
+                </Box>
+              </Grid>
+
+              {/* Hilfe für Pfade-Einstellungen */}
+              <Grid item xs={12}>
+                <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid', borderColor: 'grey.200' }}>
+                  <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
+                    ℹ️ Wann sollten Sie kundenspezifische Pfade setzen?
+                  </Typography>
+                  <Box sx={{ mt: 1 }}>
+                    <Typography variant="body2" paragraph sx={{ mb: 1 }}>
+                      <strong>📁 PDF-Pfade:</strong> Wenn Rechnungen für diesen Kunden in einen besonderen Ordner sollen
+                    </Typography>
+                    <Typography variant="caption" component="div" sx={{ ml: 2, mb: 2, opacity: 0.9 }}>
+                      • Für wichtige Kunden mit eigenem Projekt-Ordner<br/>
+                      • Bei automatisierter Buchhaltung mit kundenspezifischen Ordnern<br/>
+                      • Wenn Kunde direkten Zugang zu einem freigegebenen Ordner hat
+                    </Typography>
+                    
+                    <Typography variant="body2" paragraph sx={{ mb: 1 }}>
+                      <strong>📧 EML-Pfade:</strong> Für automatischen Import in Email-Programme
+                    </Typography>
+                    <Typography variant="caption" component="div" sx={{ ml: 2, mb: 2, opacity: 0.9 }}>
+                      • EML-Dateien können direkt in Outlook/Thunderbird importiert werden<br/>
+                      • Ideal für Backup oder CRM-Integration<br/>
+                      • Synchronisation mit Cloud-Email-Diensten
+                    </Typography>
+                    
+                    <Typography variant="body2" sx={{ fontStyle: 'italic', opacity: 0.9 }}>
+                      💡 <strong>Tipp:</strong> Leer lassen = Standard-Pfade aus den Haupteinstellungen verwenden
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
             </Grid>
-            
-            <Grid item xs={12}>
-              <TextField
-                label={t('customers.form.emailTemplate')}
-                fullWidth
-                multiline
-                rows={4}
-                value={formData.emailTemplate}
-                onChange={(e) => handleInputChange('emailTemplate', e.target.value)}
-                placeholder={t('customers.form.emailTemplatePlaceholder')}
-              />
-            </Grid>
-          </Grid>
+          </TabPanel>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>
-            {t('customers.buttons.cancel')}
-          </Button>
-          <Button 
-            onClick={handleSaveCustomer} 
-            variant="contained"
-            disabled={!formData.name || !formData.address || !formData.hourlyRate}
-          >
-            {editingCustomer ? t('customers.buttons.save') : t('customers.buttons.add')}
+          <Button onClick={handleCloseDialog}>{t('customers.buttons.cancel')}</Button>
+          <Button onClick={handleSaveCustomer} variant="contained" disabled={!formData.name}>
+            {t('customers.buttons.save')}
           </Button>
         </DialogActions>
       </Dialog>

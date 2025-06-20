@@ -104,14 +104,28 @@ function InvoiceGenerator({ customers, settings }) {
           });
 
           let emailResult = null;
+          console.log('Email-Generierung Check:', {
+            customer: customer.name,
+            generateEmail,
+            customerEmail: customer.email,
+            willGenerateEmail: generateEmail && customer.email
+          });
+          
           if (generateEmail && customer.email) {
-            // Email generieren
-            emailResult = await EmailService.generateEmail({
-              customer,
-              invoiceNumber,
-              pdfBuffer: pdfResult.buffer,
-              autoExport
-            });
+            try {
+              console.log('Starte EML-Generierung für:', customer.name);
+              // Email generieren
+              emailResult = await EmailService.generateEmail({
+                customer,
+                invoiceNumber,
+                pdfBuffer: pdfResult.buffer,
+                autoExport
+              });
+              console.log('EML-Generierung erfolgreich:', emailResult);
+            } catch (emailError) {
+              console.error('EML-Generierung fehlgeschlagen:', emailError);
+              // EML-Fehler nicht die gesamte PDF-Generierung beenden lassen
+            }
           }
 
           generationResults.push({
@@ -120,7 +134,9 @@ function InvoiceGenerator({ customers, settings }) {
             pdfPath: pdfResult.path,
             emailPath: emailResult?.path || null,
             success: true,
-            error: null
+            error: null,
+            message: pdfResult.message || null,
+            browserDownload: pdfResult.browserDownload || false
           });
         } catch (error) {
           generationResults.push({
@@ -142,13 +158,21 @@ function InvoiceGenerator({ customers, settings }) {
 
   const totalAmount = selectedCustomers.reduce((total, customerId) => {
     const customer = customers.find(c => c.id === customerId);
-    if (!customer) return total;
+    if (!customer || !customer.lineItems) return total;
     
-    const hours = customer.hours || 6;
-    const rate = customer.hourlyRate || 0;
-    const subtotal = hours * rate;
-    const tax90 = subtotal * 0.9 * 0.2; // 20% auf 90%
-    return total + subtotal + tax90;
+    return customer.lineItems.reduce((customerTotal, item) => {
+      const subtotal = item.quantity * item.unitPrice;
+      let tax = 0;
+      
+      if (item.taxType === 'mixed') {
+        tax = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+      } else {
+        const taxRate = parseFloat(item.taxType) / 100;
+        tax = subtotal * taxRate;
+      }
+      
+      return customerTotal + subtotal + tax;
+    }, total);
   }, 0);
 
   return (
@@ -263,7 +287,25 @@ function InvoiceGenerator({ customers, settings }) {
                       </ListItemIcon>
                       <ListItemText
                         primary={customer.name}
-                        secondary={`${customer.hourlyRate}€/h × ${customer.hours || 6}h = ${((customer.hourlyRate || 0) * (customer.hours || 6) * 1.18).toFixed(2)}€`}
+                        secondary={(() => {
+                          if (!customer.lineItems || customer.lineItems.length === 0) {
+                            return 'Keine Leistungspositionen definiert';
+                          }
+                          
+                          const total = customer.lineItems.reduce((sum, item) => {
+                            const subtotal = item.quantity * item.unitPrice;
+                            let tax = 0;
+                            if (item.taxType === 'mixed') {
+                              tax = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+                            } else {
+                              const taxRate = parseFloat(item.taxType) / 100;
+                              tax = subtotal * taxRate;
+                            }
+                            return sum + subtotal + tax;
+                          }, 0);
+                          
+                          return `${customer.lineItems.length} Position${customer.lineItems.length !== 1 ? 'en' : ''} = ${total.toFixed(2)}€`;
+                        })()}
                       />
                     </ListItem>
                   ))}
@@ -325,7 +367,13 @@ function InvoiceGenerator({ customers, settings }) {
                   primary={`${result.customer} - ${result.invoiceNumber}`}
                   secondary={
                     result.success 
-                      ? `PDF: ${result.pdfPath}${result.emailPath ? ` | Email: ${result.emailPath}` : ''}`
+                      ? (() => {
+                          let message = `PDF: ${result.pdfPath}`;
+                          if (result.emailPath) message += ` | Email: ${result.emailPath}`;
+                          if (result.browserDownload) message += ' (Browser-Download)';
+                          if (result.message) message += ` | ${result.message}`;
+                          return message;
+                        })()
                       : `${t('invoices.results.error')}: ${result.error}`
                   }
                 />

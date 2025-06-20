@@ -14,34 +14,106 @@ class EmailService {
 
       const fileName = `${invoiceNumber}_${customer.name.replace(/[^a-zA-Z0-9]/g, '_')}.eml`;
       
+      console.log('EML-Generierung Debug:', {
+        customer: customer.name,
+        autoExport,
+        hasElectronAPI: !!window.electronAPI,
+        emlPathMac: customer.emlPathMac,
+        emlPathWindows: customer.emlPathWindows
+      });
+      
       if (autoExport) {
         // Automatischer Export in EML-Ordner
         const platform = await DataService.getPlatform();
-        const emlPath = platform === 'win32' ? customer.emlPathWindows : customer.emlPathMac;
+        let emlPath;
         
-        if (emlPath) {
-          const fullPath = `${emlPath}/${fileName}`;
-          await DataService.saveFile(emlContent, fullPath);
-          return { path: fullPath, exported: true };
+        if (platform === 'win32') {
+          emlPath = customer.emlPathWindows;
+        } else if (platform === 'darwin') {
+          emlPath = customer.emlPathMac;
         } else {
-          // Fallback: Normale Speicherung wenn kein EML-Pfad hinterlegt
-          return { path: fileName, exported: false, message: i18n.t('settings.noEmlPathMessage') };
+          // Browser oder unbekanntes System - verwende Fallback
+          emlPath = null;
+        }
+        
+        if (emlPath && emlPath.trim() !== '') {
+          try {
+            const fullPath = `${emlPath}/${fileName}`;
+            console.log('Versuche EML-Export nach:', fullPath);
+            console.log('EML-Content Länge:', emlContent.length, 'Type:', typeof emlContent);
+            await DataService.saveFileDirect(emlContent, fullPath);
+            console.log('EML-Export erfolgreich:', fullPath);
+            return { path: fullPath, exported: true };
+          } catch (error) {
+            console.error('EML Export fehlgeschlagen:', error);
+            // Fallback: Browser-Download
+            return this.fallbackBrowserDownload(fileName, emlContent, 'EML Export fehlgeschlagen');
+          }
+        } else {
+          // Fallback: Browser-Download wenn kein EML-Pfad hinterlegt
+          return this.fallbackBrowserDownload(fileName, emlContent, i18n.t('settings.noEmlPathMessage'));
         }
       } else {
         // Normale Speicherung mit Dialog
         const platform = await DataService.getPlatform();
-        const savePath = platform === 'win32' ? customer.savePathWindows : customer.savePathMac;
+        let emlPath;
         
-        if (savePath) {
-          const fullPath = `${savePath}/${fileName}`;
-          await DataService.saveFile(emlContent, fullPath);
-          return { path: fullPath, exported: false };
+        if (platform === 'win32') {
+          emlPath = customer.emlPathWindows;
+        } else if (platform === 'darwin') {
+          emlPath = customer.emlPathMac;
+        } else {
+          // Browser oder unbekanntes System - verwende Fallback
+          emlPath = null;
         }
         
-        return { path: fileName, exported: false };
+        if (emlPath && emlPath.trim() !== '') {
+          try {
+            const fullPath = `${emlPath}/${fileName}`;
+            await DataService.saveFileDirect(emlContent, fullPath);
+            return { path: fullPath, exported: false };
+          } catch (error) {
+            console.warn('EML Speicherung fehlgeschlagen:', error);
+            // Fallback: Browser-Download
+            return this.fallbackBrowserDownload(fileName, emlContent, 'EML Speicherung fehlgeschlagen');
+          }
+        } else {
+          // Fallback: Browser-Download wenn kein Pfad konfiguriert
+          return this.fallbackBrowserDownload(fileName, emlContent, 'Kein EML-Speicherpfad konfiguriert');
+        }
       }
     } catch (error) {
       throw new Error(i18n.t('email.generationFailed', { message: error.message }));
+    }
+  }
+
+  static fallbackBrowserDownload(fileName, content, message) {
+    try {
+      // Browser-Download als Fallback für EML-Dateien
+      const blob = new Blob([content], { type: 'message/rfc822' });
+      const url = URL.createObjectURL(blob);
+      
+      // Download-Link erstellen und automatisch klicken
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // URL freigeben
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      
+      return { 
+        path: fileName, 
+        exported: false,
+        browserDownload: true,
+        message: message || 'EML als Browser-Download gespeichert'
+      };
+    } catch (error) {
+      console.error('EML Browser-Download fehlgeschlagen:', error);
+      throw new Error(`Email-Generierung fehlgeschlagen: ${error.message}`);
     }
   }
 
@@ -50,9 +122,29 @@ class EmailService {
     const attachmentBoundary = `----=_Part_Attachment_${Date.now()}`;
     
     // Base64-kodierung des PDF-Anhangs
-    const base64Attachment = window.electronAPI ? 
-      window.electronAPI.bufferToString(window.electronAPI.bufferFrom(attachmentBuffer), 'base64') :
-      btoa(String.fromCharCode(...new Uint8Array(attachmentBuffer)));
+    let base64Attachment;
+    try {
+      if (window.electronAPI) {
+        // Electron: Verwende Buffer für Base64-Kodierung
+        const buffer = window.electronAPI.bufferFrom(attachmentBuffer);
+        base64Attachment = window.electronAPI.bufferToString(buffer, 'base64');
+        console.log('Base64-Kodierung (Electron) erfolgreich, Länge:', base64Attachment.length);
+      } else {
+        // Browser: Verwende btoa
+        base64Attachment = btoa(String.fromCharCode(...new Uint8Array(attachmentBuffer)));
+        console.log('Base64-Kodierung (Browser) erfolgreich, Länge:', base64Attachment.length);
+      }
+    } catch (error) {
+      console.error('Fehler bei Base64-Kodierung:', error);
+      // Fallback auf Browser-Methode
+      try {
+        base64Attachment = btoa(String.fromCharCode(...new Uint8Array(attachmentBuffer)));
+        console.log('Base64-Kodierung Fallback erfolgreich, Länge:', base64Attachment.length);
+      } catch (fallbackError) {
+        console.error('Auch Fallback Base64-Kodierung fehlgeschlagen:', fallbackError);
+        throw new Error('PDF konnte nicht für Email-Anhang kodiert werden');
+      }
+    }
     
     // EML-Header
     const headers = [

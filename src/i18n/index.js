@@ -46,8 +46,13 @@ const de = {
         placeholders: {
           address: 'Straße\\nPLZ Ort',
           activity: 'Arbeitsmedizinische Leistungen [Quartal]',
-          emailTemplate: 'Verfügbare Variablen: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]'
+          emailTemplate: 'Verfügbare Variablen: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]',
+          savePathWindows: 'C:\\Pfad\\zu\\Kundenordner',
+          savePathMac: '/Pfad/zu/Kundenordner',
+          emlPathWindows: 'C:\\Pfad\\zu\\Email-Ordner',
+          emlPathMac: '/Pfad/zu/Email-Ordner'
         },
+        paths: 'Pfade',
         storagePaths: 'Speicherpfade',
         pdfPaths: 'PDF-Speicherpfade',
         emlPaths: 'EML-Speicherpfade',
@@ -325,8 +330,13 @@ const en = {
         placeholders: {
           address: 'Street\\nZIP City',
           activity: 'Occupational Health Services [Quarter]',
-          emailTemplate: 'Available variables: [Quarter], [Year], [Invoice Number], [Customer]'
+          emailTemplate: 'Available variables: [Quarter], [Year], [Invoice Number], [Customer]',
+          savePathWindows: 'C:\\Path\\to\\Customer-Folder',
+          savePathMac: '/Path/to/Customer-Folder',
+          emlPathWindows: 'C:\\Path\\to\\Email-Folder',
+          emlPathMac: '/Path/to/Email-Folder'
         },
+        paths: 'Paths',
         storagePaths: 'Storage Paths',
         pdfPaths: 'PDF Storage Paths',
         emlPaths: 'EML Storage Paths',
