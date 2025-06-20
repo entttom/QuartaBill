@@ -23,7 +23,8 @@ class DataService {
       dataFilePath: this.defaultDataPath,
       hasSeenOnboarding: false,
       invoiceNumberFormat: '{QQ}{YY}{KK}',
-      language: 'de'
+      language: 'de',
+      darkMode: false
     }
   };
 

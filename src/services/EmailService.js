@@ -50,7 +50,9 @@ class EmailService {
     const attachmentBoundary = `----=_Part_Attachment_${Date.now()}`;
     
     // Base64-kodierung des PDF-Anhangs
-    const base64Attachment = Buffer.from(attachmentBuffer).toString('base64');
+    const base64Attachment = window.electronAPI ? 
+      window.electronAPI.bufferToString(window.electronAPI.bufferFrom(attachmentBuffer), 'base64') :
+      btoa(String.fromCharCode(...new Uint8Array(attachmentBuffer)));
     
     // EML-Header
     const headers = [

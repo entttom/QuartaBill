@@ -124,6 +124,7 @@ const de = {
         bank: 'Bank',
         paymentTerms: 'Zahlungsfrist (Tage)',
         language: 'Sprache',
+        darkMode: 'Dunkles Design',
         
         // Rechnungsnummer
         invoiceNumber: {
@@ -402,6 +403,7 @@ const en = {
         bank: 'Bank',
         paymentTerms: 'Payment Terms (Days)',
         language: 'Language',
+        darkMode: 'Dark Mode',
         
         // Invoice Number
         invoiceNumber: {

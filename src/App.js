@@ -10,17 +10,39 @@ import OnboardingScreen from './components/OnboardingScreen';
 import DataService from './services/DataService';
 import './i18n';
 
-const theme = createTheme({
+// Theme erstellen basierend auf Dark Mode
+const createAppTheme = (darkMode) => createTheme({
   palette: {
+    mode: darkMode ? 'dark' : 'light',
     primary: {
-      main: '#1976d2',
+      main: darkMode ? '#90caf9' : '#1976d2',
     },
     secondary: {
-      main: '#dc004e',
+      main: darkMode ? '#f48fb1' : '#dc004e',
+    },
+    background: {
+      default: darkMode ? '#121212' : '#fafafa',
+      paper: darkMode ? '#1e1e1e' : '#ffffff',
     },
   },
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
+  components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: darkMode ? '#1e1e1e' : '#1976d2',
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+        },
+      },
+    },
   },
 });
 
@@ -63,7 +85,8 @@ function App() {
       dataFilePath: '',
       hasSeenOnboarding: false,
       invoiceNumberFormat: '{QQ}{YY}{KK}',
-      language: 'de'
+      language: 'de',
+      darkMode: false
     }
   });
   const [isLoaded, setIsLoaded] = useState(false);
@@ -144,7 +167,7 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={createAppTheme(data.settings.darkMode)}>
       <CssBaseline />
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">

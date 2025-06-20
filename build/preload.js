@@ -20,5 +20,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onExportData: (callback) => ipcRenderer.on('export-data', callback),
   
   // Event Listener entfernen
-  removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel)
+  removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel),
+  
+  // Buffer-Funktionalität
+  bufferFrom: (data, encoding) => Buffer.from(data, encoding),
+  bufferToString: (buffer, encoding) => Buffer.isBuffer(buffer) ? buffer.toString(encoding) : buffer
 }); 

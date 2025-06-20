@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
   Box, Card, CardContent, Typography, TextField, Grid, Button,
-  Divider, IconButton, Alert, Tabs, Tab, FormControl, InputLabel, Select, MenuItem
+  Divider, IconButton, Alert, Tabs, Tab, FormControl, InputLabel, Select, MenuItem,
+  FormControlLabel, Switch
 } from '@mui/material';
 import { Folder, Save, Image } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
@@ -220,6 +221,19 @@ function SettingsPanel({ settings, onUpdateSettings }) {
                     <MenuItem value="en">English</MenuItem>
                   </Select>
                 </FormControl>
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.darkMode || false}
+                      onChange={(e) => handleInputChange(null, 'darkMode', e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label={t('settings.issuer.darkMode')}
+                />
               </Grid>
               
               <Grid item xs={12}>

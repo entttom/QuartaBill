@@ -60,7 +60,17 @@
     },
     "mac": {
       "icon": "icon.iconset",
-      "category": "public.app-category.business"
+      "category": "public.app-category.business",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "identity": null
     }
   },
   "author": "Dr. Thomas Entner",

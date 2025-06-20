@@ -40,7 +40,7 @@ class PDFService {
       
       if (savePath) {
         const fullPath = `${savePath}/${fileName}`;
-        await DataService.saveFile(Buffer.from(pdfBuffer), fullPath);
+        await DataService.saveFile(window.electronAPI ? window.electronAPI.bufferFrom(pdfBuffer) : new Uint8Array(pdfBuffer), fullPath);
         return { path: fullPath, buffer: pdfBuffer, exported: true };
       } else {
         // Fallback: Normale Speicherung wenn kein Pfad hinterlegt
@@ -53,7 +53,7 @@ class PDFService {
       
       if (savePath) {
         const fullPath = `${savePath}/${fileName}`;
-        await DataService.saveFile(Buffer.from(pdfBuffer), fullPath);
+        await DataService.saveFile(window.electronAPI ? window.electronAPI.bufferFrom(pdfBuffer) : new Uint8Array(pdfBuffer), fullPath);
         return { path: fullPath, buffer: pdfBuffer, exported: false };
       }
       
