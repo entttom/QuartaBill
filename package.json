@@ -14,7 +14,8 @@
     "eject": "react-scripts eject",
     "dist": "npm run build && electron-builder",
     "dist:win": "npm run build && electron-builder --win",
-    "dist:mac": "npm run build && electron-builder --mac"
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux"
   },
   "build": {
     "appId": "com.quartabill.app",
@@ -47,7 +48,8 @@
     "win": {
       "target": [
         {
-          "target": "dir",
+          "nsis": true,
+          "portable": true,
           "arch": [
             "x64"
           ]
@@ -71,6 +73,24 @@
         }
       ],
       "identity": null
+    },
+    "linux": {
+      "icon": "icon.iconset/icon_256x256.png",
+      "category": "Office",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        }
+      ]
     }
   },
   "author": "Dr. Thomas Entner",

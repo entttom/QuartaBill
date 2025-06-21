@@ -1,156 +1,191 @@
 # QuartaBill
 
-**Professionelle Quartalsabrechnungen für Arbeitsmediziner**
+QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner
 
-*Entwickelt von Dr. Thomas Entner*
+![Build Status](https://github.com/YOURUSERNAME/QuartaBill/workflows/Build%20and%20Release/badge.svg)
 
-Eine speziell für Arbeitsmediziner entwickelte Desktop-Anwendung zur automatischen Erstellung von Quartalsrechnungen mit PDF-Export und Email-Generierung.
+## 🚀 Entwickelt von Dr. Thomas Entner
 
-## Features
+Diese Anwendung wurde speziell für Arbeitsmediziner entwickelt, um die quartalsweise Abrechnung ihrer Leistungen zu vereinfachen und zu automatisieren.
 
-- ✅ **Kundenverwaltung**: Mehrere Kunden anlegen und verwalten
-- ✅ **Automatische Rechnungserstellung**: Batch-Generierung für alle Kunden eines Quartals
-- ✅ **PDF-Export**: Professionelle Rechnungen im originalgetreuen Design
-- ✅ **Email-Integration**: Automatische .eml-Datei-Generierung mit PDF-Anhang
-- ✅ **Plattform-übergreifend**: Windows und Mac Support
-- ✅ **Nextcloud-Sync**: Datensynchronisation zwischen Geräten
-- ✅ **Steuerberechnung**: Automatischer 90%/10%-Split (20%/0% USt.)
+## ✨ Features
 
-## Installation
+### 🏢 **Kundenverwaltung**
+- **Umfassende Kundendaten**: Name, Adresse, Kontaktdaten, E-Mail
+- **Mehrere Leistungspositionen**: Individuelle Services pro Kunde mit verschiedenen Stundensätzen
+- **Drag-and-Drop Sortierung**: Einfache Neuanordnung der Leistungspositionen
+- **Verschiedene Steuersätze**: 0%, 7%, 19%, 20% pro Position konfigurierbar
+- **E-Mail-Templates**: Personalisierte Nachrichten pro Kunde
+- **Speicherpfade**: Separate PDF- und EML-Pfade für Windows und Mac
 
-### Entwicklungsumgebung
+### 📊 **Rechnungserstellung**
+- **Batch-Generierung**: Alle Kunden eines Quartals mit einem Klick
+- **Anpassbare Rechnungsnummern**: Flexibles Format (z.B. `{QQ}{YY}{KK}` → `0124EC`)
+- **Deutsche Steuerberechnung**: Automatischer 90%/10%-Split (20%/0% USt.) oder individuelle Sätze
+- **Quartalsweise Datierung**: Automatisch korrekte Rechnungsdaten
+- **Logo-Integration**: Firmenbild in Rechnungen (PNG/JPG)
 
-1. **Dependencies installieren**:
-   ```bash
-   npm install
-   ```
+### 🎨 **Professionelle PDF-Ausgabe**
+- **Modernes Design**: Sauberes, professionelles Layout
+- **Logo-Unterstützung**: Automatisches Laden und Skalieren
+- **Responsive Tabellen**: Automatische Anpassung an Inhalt
+- **Deutsche Formatierung**: Währung, Datum, Steuersätze
+- **Druckoptimiert**: A4-Format, professionelle Schriftarten
 
-2. **Development starten**:
-   ```bash
-   # Terminal 1: React Development Server
-   npm start
-   
-   # Terminal 2: Electron App
-   npm run electron-dev
-   ```
+### 📧 **E-Mail Integration**
+- **Automatische EML-Generierung**: .eml-Dateien mit PDF-Anhang
+- **MIME-konforme E-Mails**: RFC-compliant E-Mail-Format
+- **Base64-Anhänge**: Sichere PDF-Übertragung
+- **Personalisierte Betreffzeilen**: Mit Rechnungsnummer
+- **Plattform-übergreifend**: Windows und Mac kompatibel
 
-### Produktionsversion erstellen
+### ⚙️ **Einstellungen & Konfiguration**
+- **Rechnungsersteller-Daten**: Vollständige Firmeninformationen
+- **Mehrsprachigkeit**: Deutsch/Englisch (i18next)
+- **Dark/Light Mode**: Benutzerfreundliche Themes
+- **Datenpfad-Konfiguration**: Flexible Speicherorte
+- **Logo-Pfade**: Separate Pfade für verschiedene Systeme
+- **Zahlungsbedingungen**: Anpassbare Fristen
 
+### 💾 **Datenverwaltung**
+- **Lokale Speicherung**: Alle Daten bleiben auf Ihrem Gerät
+- **JSON-basiert**: Einfache, lesbare Datenstruktur
+- **Cloud-Sync möglich**: Via Nextcloud, iCloud, Dropbox etc.
+- **Backup-freundlich**: Einfache Datensicherung
+- **Import/Export**: Datenübertragung zwischen Geräten
+
+### 🎯 **Benutzerfreundlichkeit**
+- **Onboarding-System**: Geführte Ersteinrichtung
+- **Intuitive Navigation**: Tab-basierte Oberfläche
+- **Keyboard-Shortcuts**: Effiziente Bedienung
+- **Responsive Design**: Funktioniert auf verschiedenen Bildschirmgrößen
+- **Fehlerbehandlung**: Robuste Fehlermeldungen und Fallbacks
+
+### 🔧 **Technische Features**
+- **Multi-Platform**: Windows, macOS, Linux
+- **Electron-basiert**: Native Desktop-Performance
+- **React Frontend**: Moderne, reaktive Benutzeroberfläche
+- **Material-UI**: Professionelles Design-System
+- **Automatische Updates**: Via GitHub Actions und Releases
+
+## 🔧 Entwicklung
+
+### Voraussetzungen
+- Node.js 18 oder höher
+- npm
+
+### Installation
 ```bash
-# Für Windows
-npm run dist:win
+git clone https://github.com/YOURUSERNAME/QuartaBill.git
+cd QuartaBill
+npm install
+```
 
-# Für Mac
-npm run dist:mac
+### Development Server starten
+```bash
+npm start
+```
 
-# Für beide Plattformen
+### Electron App starten
+```bash
+npm run electron
+```
+
+### Builds erstellen
+```bash
+# Alle Plattformen
 npm run dist
+
+# Spezifische Plattformen
+npm run dist:win    # Windows
+npm run dist:mac    # macOS
+npm run dist:linux  # Linux
 ```
 
-## Verwendung
+## 🏗️ Automatische Builds
 
-### 1. Erste Einrichtung
+Das Projekt nutzt GitHub Actions für automatische Builds:
 
-1. **Einstellungen** → **Rechnungsersteller**: Ihre Daten eingeben
-2. **Einstellungen** → **Pfade & Dateien**: Logo- und Datenpfade konfigurieren
-3. **Kunden**: Erste Kunden anlegen
+- **Push/PR auf main/develop**: Automatische Builds für alle Plattformen
+- **Git Tags (v\*)**: Automatische Releases mit Builds für Windows, macOS und Linux
+- **Artifacts**: Builds werden 30 Tage lang gespeichert
 
-### 2. Kunden anlegen
-
-- **Name**: Firmenname des Kunden
-- **Adresse**: Rechnungsadresse
-- **Stundensatz**: Preis pro Stunde in Euro
-- **Stunden pro Quartal**: Standardmäßig 6 Stunden
-- **Email**: Für automatische Email-Generierung
-- **Speicherpfade**: Getrennt für Windows und Mac
-- **Email-Template**: Individueller Text für jede Rechnung
-
-### 3. Rechnungen erstellen
-
-1. **Rechnungen erstellen** Tab öffnen
-2. **Quartal und Jahr** auswählen
-3. **Kunden auswählen** (standardmäßig alle)
-4. **Email-Generierung** aktivieren/deaktivieren
-5. **PDFs generieren** klicken
-
-### 4. Ergebnis
-
-- **PDF-Dateien**: Werden im konfigurierten Kundenpfad gespeichert
-- **EML-Dateien**: Email-Dateien mit PDF-Anhang (falls aktiviert)
-- **Dateinamen**: Format `0124EC_Firmenname.pdf` (Quartal+Jahr+Kunde)
-
-## Rechnungsformat
-
-### Rechnungsnummer
-Format: `QQYYKK`
-- `QQ`: Quartal (01, 02, 03, 04)
-- `YY`: Jahr (zweistellig)
-- `KK`: Erste zwei Buchstaben des Kundennamens
-
-**Beispiele:**
-- Q1/2024 → ecosio GmbH → `0124EC`
-- Q4/2023 → Firma XY → `0423FI`
-
-### Rechnungsdatum
-- **Q1** (Jan-Mar) → Rechnungsdatum: 1. April
-- **Q2** (Apr-Jun) → Rechnungsdatum: 1. Juli
-- **Q3** (Jul-Sep) → Rechnungsdatum: 1. Oktober
-- **Q4** (Oct-Dez) → Rechnungsdatum: 1. Januar (Folgejahr)
-
-### Steuerberechnung
-- **90% der Summe**: 20% Umsatzsteuer
-- **10% der Summe**: 0% Umsatzsteuer
-- Automatische Berechnung von Zwischensumme, USt. und Gesamtbetrag
-
-## Datensynchronisation
-
-### Nextcloud-Integration
-1. JSON-Datei in Nextcloud-Ordner speichern
-2. Pfad in **Einstellungen** → **Daten-Synchronisation** eintragen
-3. Datei wird beim Programmstart automatisch geladen
-4. Änderungen werden sofort gespeichert
-
-### Datenformat
-```json
-{
-  "customers": [...],
-  "settings": {
-    "issuer": {...},
-    "logoPathWindows": "C:\\...",
-    "logoPathMac": "/...",
-    "dataFilePath": "..."
-  }
-}
+### Release erstellen
+```bash
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
-## Technische Details
+Dies löst automatisch einen Build und Release aus.
 
-- **Framework**: Electron + React
-- **UI**: Material-UI (MUI)
+## 📦 Downloads
+
+Die neuesten Releases finden Sie unter [Releases](https://github.com/YOURUSERNAME/QuartaBill/releases).
+
+### Verfügbare Formate:
+- **Windows**: `.exe` (Installer), `.zip` (Portable)
+- **macOS**: `.dmg` (Disk Image)
+- **Linux**: `.AppImage`, `.deb`, `.rpm`
+
+## 🛠️ Technischer Stack
+
+- **Frontend**: React 18, Material-UI
+- **Desktop**: Electron 25
 - **PDF-Generierung**: jsPDF
-- **Dateiformate**: PDF, EML, JSON
-- **Plattformen**: Windows 10+, macOS 10.14+
+- **Internationalisierung**: i18next
+- **Build**: electron-builder
+- **CI/CD**: GitHub Actions
 
-## Troubleshooting
+## 📋 Systemanforderungen
 
-### PDF-Generierung funktioniert nicht
-- Überprüfen Sie die Speicherpfade der Kunden
-- Stellen Sie sicher, dass die Ordner existieren
+- **Windows**: Windows 10 oder höher
+- **macOS**: macOS 10.14 oder höher
+- **Linux**: Ubuntu 18.04 oder höher (oder äquivalent)
 
-### Logo wird nicht angezeigt
-- Überprüfen Sie den Logo-Pfad in den Einstellungen
-- Unterstützte Formate: PNG, JPG, JPEG
-- Empfohlene Größe: 200x120 Pixel
+## 🚀 Erste Schritte
 
-### Email-Generierung fehlgeschlagen
-- Überprüfen Sie die Email-Adresse des Kunden
-- EML-Dateien können mit Standard-Email-Programmen geöffnet werden
+### 1. Installation und Start
+1. QuartaBill herunterladen und installieren
+2. Beim ersten Start wird das Onboarding gestartet
 
-### Datensynchronisation
-- JSON-Datei muss gültig formatiert sein
-- Backup vor Änderungen erstellen
-- Bei Problemen: Datei löschen → automatische Neuerstellung
+### 2. Grundkonfiguration
+1. **Einstellungen** → **Rechnungsersteller**: Ihre Firmendaten eingeben
+2. **Einstellungen** → **Pfade & Dateien**: Logo- und Speicherpfade konfigurieren
+3. **Einstellungen** → **Rechnungsnummern**: Format anpassen
 
-## Support
+### 3. Kunden einrichten
+1. **Kunden** → **Neuer Kunde**
+2. Grunddaten eingeben (Name, Adresse, E-Mail)
+3. **Leistungen-Tab**: Services mit Stundensätzen definieren
+4. **Pfade-Tab**: Speicherorte für PDFs und E-Mails festlegen
 
-Bei Fragen oder Problemen erstellen Sie bitte ein Issue in diesem Repository. 
+### 4. Erste Rechnungen erstellen
+1. **Rechnungen generieren** → Quartal und Jahr wählen
+2. Kunden auswählen (alle oder einzelne)
+3. **PDF generieren** und optional **E-Mail erstellen** aktivieren
+4. **Rechnungen generieren** klicken
+
+## 🔒 Datenschutz
+
+- **Lokale Speicherung**: Alle Daten bleiben auf Ihrem Gerät
+- **Keine Cloud-Übertragung**: QuartaBill sendet keine Daten an externe Server
+- **Optionale Synchronisation**: Sie können selbst entscheiden, ob Sie Daten über Cloud-Dienste synchronisieren
+- **DSGVO-konform**: Designed für deutsche Datenschutzanforderungen
+
+## 🆘 Support & Hilfe
+
+### Häufige Probleme
+- **Logo wird nicht angezeigt**: Überprüfen Sie den Dateipfad in den Einstellungen
+- **EML-Generierung fehlgeschlagen**: Stellen Sie sicher, dass EML-Pfade konfiguriert sind
+- **PDF nicht gespeichert**: Überprüfen Sie Schreibrechte für den Ausgabeordner
+
+### Support erhalten
+Bei Fragen oder Problemen erstellen Sie bitte ein [Issue](https://github.com/YOURUSERNAME/QuartaBill/issues).
+
+## 📄 Lizenz
+
+Copyright (c) 2024 Dr. Thomas Entner. Alle Rechte vorbehalten.
+
+## 🙏 Danksagungen
+
+Entwickelt mit modernen Web-Technologien für eine effiziente und professionelle Praxisverwaltung. 
