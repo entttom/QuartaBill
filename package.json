@@ -48,11 +48,12 @@
     "win": {
       "target": [
         {
-          "nsis": true,
-          "portable": true,
-          "arch": [
-            "x64"
-          ]
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
         }
       ],
       "sign": null,
