@@ -4,9 +4,9 @@ import {
   ListItemText, ListItemSecondaryAction, Dialog, DialogTitle, DialogContent,
   DialogActions, TextField, Grid, Fab, Divider, Chip, Tabs, Tab,
   FormControl, InputLabel, Select, MenuItem, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, Paper
+  TableContainer, TableHead, TableRow, Paper, Accordion, AccordionSummary, AccordionDetails
 } from '@mui/material';
-import { Add, Edit, Delete, Email, Folder, DragHandle } from '@mui/icons-material';
+import { Add, Edit, Delete, Email, Folder, DragHandle, ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import DataService from '../services/DataService';
 
@@ -430,34 +430,38 @@ function CustomerManager({ customers, onUpdateCustomers }) {
             </Box>
 
             {/* Hilfe / Legende für Variablen */}
-            <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid', borderColor: 'grey.200' }}>
-              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                💡 Verfügbare Variablen in Beschreibungen:
-              </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 1 }}>
-                <Box sx={{ minWidth: '200px' }}>
-                  <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                    📅 Zeit & Quartal:
-                  </Typography>
-                  <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
-                    [Quartal] → Q1, Q2, Q3, Q4<br/>
-                    [Jahr] → 2024
-                  </Typography>
+            <Accordion sx={{ mt: 3 }}>
+              <AccordionSummary expandIcon={<ExpandMore />}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                  💡 Verfügbare Variablen in Beschreibungen
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 1 }}>
+                  <Box sx={{ minWidth: '200px' }}>
+                    <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      📅 Zeit & Quartal:
+                    </Typography>
+                    <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+                      [Quartal] → Q1, Q2, Q3, Q4<br/>
+                      [Jahr] → 2024
+                    </Typography>
+                  </Box>
+                  <Box sx={{ minWidth: '200px' }}>
+                    <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      👤 Kunde & Rechnung:
+                    </Typography>
+                    <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+                      [Kunde] → {formData.name || 'Kundenname'}<br/>
+                      [Rechnungsnummer] → 0124MA
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box sx={{ minWidth: '200px' }}>
-                  <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                    👤 Kunde & Rechnung:
-                  </Typography>
-                  <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
-                    [Kunde] → {formData.name || 'Kundenname'}<br/>
-                    [Rechnungsnummer] → 0124MA
-                  </Typography>
-                </Box>
-              </Box>
-              <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'text.secondary', fontStyle: 'italic' }}>
-                Beispiel: "Beratung für [Kunde] im [Quartal]/[Jahr]" wird zu "Beratung für {formData.name || 'Max Muster'} im Q1/2024"
-              </Typography>
-            </Box>
+                <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'text.secondary', fontStyle: 'italic' }}>
+                  Beispiel: "Beratung für [Kunde] im [Quartal]/[Jahr]" wird zu "Beratung für {formData.name || 'Max Muster'} im Q1/2024"
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
           </TabPanel>
 
           {/* Tab 3: Pfade & Email */}
@@ -549,34 +553,38 @@ function CustomerManager({ customers, onUpdateCustomers }) {
 
               {/* Hilfe für Pfade-Einstellungen */}
               <Grid item xs={12}>
-                <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid', borderColor: 'grey.200' }}>
-                  <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
-                    ℹ️ Wann sollten Sie kundenspezifische Pfade setzen?
-                  </Typography>
-                  <Box sx={{ mt: 1 }}>
-                    <Typography variant="body2" paragraph sx={{ mb: 1 }}>
-                      <strong>📁 PDF-Pfade:</strong> Wenn Rechnungen für diesen Kunden in einen besonderen Ordner sollen
+                <Accordion sx={{ mt: 2 }}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                      ℹ️ Wann sollten Sie kundenspezifische Pfade setzen?
                     </Typography>
-                    <Typography variant="caption" component="div" sx={{ ml: 2, mb: 2, opacity: 0.9 }}>
-                      • Für wichtige Kunden mit eigenem Projekt-Ordner<br/>
-                      • Bei automatisierter Buchhaltung mit kundenspezifischen Ordnern<br/>
-                      • Wenn Kunde direkten Zugang zu einem freigegebenen Ordner hat
-                    </Typography>
-                    
-                    <Typography variant="body2" paragraph sx={{ mb: 1 }}>
-                      <strong>📧 EML-Pfade:</strong> Für automatischen Import in Email-Programme
-                    </Typography>
-                    <Typography variant="caption" component="div" sx={{ ml: 2, mb: 2, opacity: 0.9 }}>
-                      • EML-Dateien können direkt in Outlook/Thunderbird importiert werden<br/>
-                      • Ideal für Backup oder CRM-Integration<br/>
-                      • Synchronisation mit Cloud-Email-Diensten
-                    </Typography>
-                    
-                    <Typography variant="body2" sx={{ fontStyle: 'italic', opacity: 0.9 }}>
-                      💡 <strong>Tipp:</strong> Leer lassen = Standard-Pfade aus den Haupteinstellungen verwenden
-                    </Typography>
-                  </Box>
-                </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="body2" paragraph sx={{ mb: 1 }}>
+                        <strong>📁 PDF-Pfade:</strong> Wenn Rechnungen für diesen Kunden in einen besonderen Ordner sollen
+                      </Typography>
+                      <Typography variant="caption" component="div" sx={{ ml: 2, mb: 2, opacity: 0.9 }}>
+                        • Für wichtige Kunden mit eigenem Projekt-Ordner<br/>
+                        • Bei automatisierter Buchhaltung mit kundenspezifischen Ordnern<br/>
+                        • Wenn Kunde direkten Zugang zu einem freigegebenen Ordner hat
+                      </Typography>
+                      
+                      <Typography variant="body2" paragraph sx={{ mb: 1 }}>
+                        <strong>📧 EML-Pfade:</strong> Für automatischen Import in Email-Programme
+                      </Typography>
+                      <Typography variant="caption" component="div" sx={{ ml: 2, mb: 2, opacity: 0.9 }}>
+                        • EML-Dateien können direkt in Outlook/Thunderbird importiert werden<br/>
+                        • Ideal für Backup oder CRM-Integration<br/>
+                        • Synchronisation mit Cloud-Email-Diensten
+                      </Typography>
+                      
+                      <Typography variant="body2" sx={{ fontStyle: 'italic', opacity: 0.9 }}>
+                        💡 <strong>Tipp:</strong> Leer lassen = Standard-Pfade aus den Haupteinstellungen verwenden
+                      </Typography>
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
             </Grid>
           </TabPanel>

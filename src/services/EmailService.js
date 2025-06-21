@@ -125,20 +125,50 @@ class EmailService {
     let base64Attachment;
     try {
       if (window.electronAPI) {
-        // Electron: Verwende Buffer für Base64-Kodierung
-        const buffer = window.electronAPI.bufferFrom(attachmentBuffer);
-        base64Attachment = window.electronAPI.bufferToString(buffer, 'base64');
-        console.log('Base64-Kodierung (Electron) erfolgreich, Länge:', base64Attachment.length);
+        // Electron: Verbesserte Buffer-Verarbeitung
+        console.log('EML Base64 Debug - attachmentBuffer type:', attachmentBuffer?.constructor?.name);
+        console.log('EML Base64 Debug - attachmentBuffer length:', attachmentBuffer?.length);
+        
+        if (attachmentBuffer instanceof Uint8Array) {
+          // Direkte Konvertierung von Uint8Array zu Base64
+          const binaryString = Array.from(attachmentBuffer).map(byte => String.fromCharCode(byte)).join('');
+          base64Attachment = btoa(binaryString);
+          console.log('Base64-Kodierung (Uint8Array->btoa) erfolgreich, Länge:', base64Attachment.length);
+        } else {
+          // Fallback: Verwende electronAPI Buffer-Funktionen
+          const buffer = window.electronAPI.bufferFrom(attachmentBuffer);
+          if (buffer) {
+            base64Attachment = window.electronAPI.bufferToString(buffer, 'base64');
+            console.log('Base64-Kodierung (Electron Buffer) erfolgreich, Länge:', base64Attachment.length);
+          } else {
+            throw new Error('Buffer-Konvertierung fehlgeschlagen');
+          }
+        }
       } else {
         // Browser: Verwende btoa
-        base64Attachment = btoa(String.fromCharCode(...new Uint8Array(attachmentBuffer)));
+        if (attachmentBuffer instanceof Uint8Array) {
+          const binaryString = Array.from(attachmentBuffer).map(byte => String.fromCharCode(byte)).join('');
+          base64Attachment = btoa(binaryString);
+        } else {
+          base64Attachment = btoa(String.fromCharCode(...new Uint8Array(attachmentBuffer)));
+        }
         console.log('Base64-Kodierung (Browser) erfolgreich, Länge:', base64Attachment.length);
       }
+      
+      if (!base64Attachment || base64Attachment.length === 0) {
+        throw new Error('Base64-Kodierung ergab leeren String');
+      }
+      
     } catch (error) {
       console.error('Fehler bei Base64-Kodierung:', error);
       // Fallback auf Browser-Methode
       try {
-        base64Attachment = btoa(String.fromCharCode(...new Uint8Array(attachmentBuffer)));
+        if (attachmentBuffer instanceof Uint8Array) {
+          const binaryString = Array.from(attachmentBuffer).map(byte => String.fromCharCode(byte)).join('');
+          base64Attachment = btoa(binaryString);
+        } else {
+          base64Attachment = btoa(String.fromCharCode(...new Uint8Array(attachmentBuffer)));
+        }
         console.log('Base64-Kodierung Fallback erfolgreich, Länge:', base64Attachment.length);
       } catch (fallbackError) {
         console.error('Auch Fallback Base64-Kodierung fehlgeschlagen:', fallbackError);

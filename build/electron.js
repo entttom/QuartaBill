@@ -195,6 +195,25 @@ ipcMain.handle('save-file-direct', async (event, content, filePath) => {
   }
 });
 
+// Datei lesen (für Logo-Loading)
+ipcMain.handle('read-file', async (event, filePath) => {
+  try {
+    console.log('Electron: Lese Datei:', filePath);
+    
+    if (!fs.existsSync(filePath)) {
+      console.warn('Electron: Datei existiert nicht:', filePath);
+      return null;
+    }
+    
+    const fileData = fs.readFileSync(filePath);
+    console.log('Electron: Datei erfolgreich gelesen, Größe:', fileData.length, 'bytes');
+    return fileData;
+  } catch (error) {
+    console.error('Electron: Fehler beim Lesen der Datei:', error);
+    throw error;
+  }
+});
+
 ipcMain.handle('get-platform', () => {
   return process.platform;
 });

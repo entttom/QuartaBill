@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import {
   Box, Card, CardContent, Typography, TextField, Grid, Button,
   Divider, IconButton, Alert, Tabs, Tab, FormControl, InputLabel, Select, MenuItem,
-  FormControlLabel, Switch
+  FormControlLabel, Switch, Accordion, AccordionSummary, AccordionDetails
 } from '@mui/material';
-import { Folder, Save, Image } from '@mui/icons-material';
+import { Folder, Save, Image, ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import DataService from '../services/DataService';
 
@@ -234,6 +234,69 @@ function SettingsPanel({ settings, onUpdateSettings }) {
                   }
                   label={t('settings.issuer.darkMode')}
                 />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="h6" gutterBottom>
+                  Steuerliche Einstellungen
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.issuer?.smallBusiness || false}
+                      onChange={(e) => handleInputChange('issuer', 'smallBusiness', e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label="Kleinunternehmerregelung (§ 6 UStG)"
+                />
+                <Accordion sx={{ mt: 1 }}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                      ℹ️ Was ist die Kleinunternehmerregelung?
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="caption" color="text.secondary">
+                      • Für Unternehmen mit einem Jahresumsatz unter 22.000€ (Deutschland)<br/>
+                      • Keine Umsatzsteuer auf Rechnungen → Vereinfachte Buchhaltung<br/>
+                      • Auf Rechnungen wird automatisch der Hinweis "Es wird gemäß § 6 UStG keine Umsatzsteuer berechnet!" hinzugefügt<br/>
+                      • <strong>Achtung:</strong> Bei Aktivierung werden alle Steuersätze auf den Rechnungen ignoriert
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  label="Zusätzlicher Footer-Text (optional)"
+                  fullWidth
+                  multiline
+                  rows={3}
+                  value={formData.issuer?.footerText || ''}
+                  onChange={(e) => handleInputChange('issuer', 'footerText', e.target.value)}
+                  placeholder="z.B. Geschäftsbedingungen, Lieferbedingungen, persönliche Nachricht..."
+                />
+                <Accordion sx={{ mt: 1 }}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                      💡 Verwendungszwecke für Footer-Text
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="caption" color="text.secondary">
+                      • Geschäftsbedingungen oder AGB-Hinweise<br/>
+                      • Lieferbedingungen und Gewährleistung<br/>
+                      • Zusätzliche rechtliche Hinweise<br/>
+                      • Persönliche Nachricht oder Dankeschön<br/>
+                      • Kontaktinformationen für Rückfragen
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
               
               <Grid item xs={12}>

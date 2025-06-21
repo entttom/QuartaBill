@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   selectFile: (filters) => ipcRenderer.invoke('select-file', filters),
   saveFile: (content, defaultPath) => ipcRenderer.invoke('save-file', content, defaultPath),
   saveFileDirect: (content, filePath) => ipcRenderer.invoke('save-file-direct', content, filePath),
+  readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),
   
   // System-Info
   getPlatform: () => ipcRenderer.invoke('get-platform'),
@@ -34,21 +35,36 @@ contextBridge.exposeInMainWorld('electronAPI', {
       return null;
     }
   },
+  
   bufferToString: (buffer, encoding) => {
     try {
       console.log('bufferToString Input:', buffer?.constructor?.name, 'isBuffer:', Buffer.isBuffer(buffer));
+      
+      // Wenn es ein Buffer ist, direkt verwenden
       if (Buffer.isBuffer(buffer)) {
         const result = buffer.toString(encoding || 'utf8');
-        console.log('bufferToString erfolgreich, Länge:', result.length);
+        console.log('bufferToString erfolgreich (Buffer), Länge:', result.length);
         return result;
-      } else {
-        console.warn('bufferToString: Input ist kein Buffer:', typeof buffer, buffer?.constructor?.name);
-        // Fallback: versuche direkte Konvertierung 
-        if (buffer && typeof buffer.toString === 'function') {
-          return buffer.toString(encoding || 'utf8');
-        }
-        return String(buffer);
       }
+      
+      // Wenn es ein Uint8Array ist, in Buffer konvertieren
+      if (buffer instanceof Uint8Array) {
+        const bufferObj = Buffer.from(buffer);
+        const result = bufferObj.toString(encoding || 'utf8');
+        console.log('bufferToString erfolgreich (Uint8Array->Buffer), Länge:', result.length);
+        return result;
+      }
+      
+      // Fallback für andere Array-ähnliche Objekte
+      if (buffer && typeof buffer.length === 'number' && buffer.length > 0) {
+        const bufferObj = Buffer.from(buffer);
+        const result = bufferObj.toString(encoding || 'utf8');
+        console.log('bufferToString erfolgreich (Array->Buffer), Länge:', result.length);
+        return result;
+      }
+      
+      console.warn('bufferToString: Unbekannter Input-Typ:', typeof buffer, buffer?.constructor?.name);
+      return String(buffer);
     } catch (error) {
       console.error('bufferToString Fehler:', error);
       return null;

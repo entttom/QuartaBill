@@ -21,10 +21,10 @@ class PDFService {
     this.addCustomerInfo(doc, customer);
     
     // Leistungstabelle
-    const tableEndY = this.addServiceTable(doc, customer, quarter, invoiceNumber, year);
+    const tableEndY = this.addServiceTable(doc, customer, quarter, invoiceNumber, year, settings.issuer);
     
     // Berechnung (Zwischensumme, Steuer, Gesamt) - dynamische Position nach Tabelle
-    const calculationCreatedNewPage = this.addCalculation(doc, customer, tableEndY);
+    const calculationCreatedNewPage = this.addCalculation(doc, customer, tableEndY, settings.issuer);
     
     // Fußbereich (Bankdaten) - auf allen Seiten
     const totalPages = doc.getNumberOfPages();
@@ -135,7 +135,11 @@ class PDFService {
   static async addLogo(doc, settings) {
     try {
       const platform = await DataService.getPlatform();
-      let logoPath;
+      let logoPath = null;
+      
+      console.log('PDF Logo Debug - Platform:', platform);
+      console.log('PDF Logo Debug - Settings:', settings);
+      console.log('PDF Logo Debug - window.electronAPI available:', !!window.electronAPI);
       
       if (platform === 'win32') {
         logoPath = settings.logoPathWindows;
@@ -146,28 +150,89 @@ class PDFService {
         logoPath = null;
       }
       
-      if (logoPath && window.require) {
-        const fs = window.require('fs');
-        
-        if (fs.existsSync(logoPath)) {
-          // Lese die Datei als Base64
-          const logoData = fs.readFileSync(logoPath);
-          const base64Logo = `data:image/png;base64,${logoData.toString('base64')}`;
+      console.log('PDF Logo Debug - Selected logoPath:', logoPath);
+      
+      if (logoPath && logoPath.trim() !== '' && window.electronAPI) {
+        try {
+          const normalizedPath = logoPath.trim();
+          console.log('PDF Logo Debug - Reading file via electronAPI:', normalizedPath);
           
-          // Bestimme Dateityp
-          const ext = logoPath.toLowerCase().split('.').pop();
-          const format = ext === 'jpg' || ext === 'jpeg' ? 'JPEG' : 'PNG';
+          // Lese die Datei über die Electron-API
+          const logoData = await window.electronAPI.readFile(normalizedPath);
           
-          // Füge Logo hinzu (position: x, y, width, height)
-          doc.addImage(base64Logo, format, 20, 20, 50, 30);
-          return true;
+          if (logoData) {
+            console.log('PDF Logo Debug - File read successfully, size:', logoData.length, 'bytes');
+            console.log('PDF Logo Debug - Data type:', logoData.constructor.name);
+            
+            // Bestimme Dateityp
+            const ext = normalizedPath.toLowerCase().split('.').pop();
+            console.log('PDF Logo Debug - File extension:', ext);
+            
+            let format = 'PNG'; // Default
+            let mimeType = 'image/png';
+            
+            if (ext === 'jpg' || ext === 'jpeg') {
+              format = 'JPEG';
+              mimeType = 'image/jpeg';
+            } else if (ext === 'png') {
+              format = 'PNG';
+              mimeType = 'image/png';
+            }
+            
+            // Konvertiere zu Base64 - verbesserte Verarbeitung
+            let base64String;
+            try {
+              // Stelle sicher, dass wir richtig mit verschiedenen Datentypen umgehen
+              if (logoData instanceof Uint8Array) {
+                // Direkte Konvertierung von Uint8Array zu Base64
+                const binaryString = Array.from(logoData).map(byte => String.fromCharCode(byte)).join('');
+                base64String = btoa(binaryString);
+                console.log('PDF Logo Debug - Base64 conversion (Uint8Array->btoa)');
+              } else if (window.electronAPI.bufferToString) {
+                // Verwende die Electron Buffer-Funktionalität
+                base64String = window.electronAPI.bufferToString(logoData, 'base64');
+                console.log('PDF Logo Debug - Base64 conversion (electronAPI)');
+              } else {
+                throw new Error('Keine geeignete Base64-Konvertierungsmethode verfügbar');
+              }
+              
+              if (!base64String || base64String.length === 0) {
+                throw new Error('Base64-Konvertierung ergab leeren String');
+              }
+              
+              const base64Logo = `data:${mimeType};base64,${base64String}`;
+              console.log('PDF Logo Debug - Base64 created, length:', base64Logo.length);
+              
+              // Füge Logo hinzu (position: x, y, width, height)
+              doc.addImage(base64Logo, format, 20, 20, 50, 30);
+              console.log('PDF Logo Debug - Logo successfully added to PDF');
+              return true;
+              
+            } catch (base64Error) {
+              console.error('PDF Logo Debug - Base64 conversion failed:', base64Error);
+              throw base64Error;
+            }
+            
+          } else {
+            console.warn('PDF Logo Debug - File could not be read:', normalizedPath);
+          }
+        } catch (readError) {
+          console.error('PDF Logo Debug - Error reading file via electronAPI:', readError);
+        }
+      } else {
+        if (!logoPath || logoPath.trim() === '') {
+          console.warn('PDF Logo Debug - No logo path configured');
+        }
+        if (!window.electronAPI) {
+          console.warn('PDF Logo Debug - window.electronAPI not available (not in Electron)');
         }
       }
     } catch (error) {
-      console.warn('Logo konnte nicht geladen werden:', error);
+      console.error('PDF Logo Debug - General error:', error);
     }
     
     // Fallback: Logo-Platzhalter
+    console.log('PDF Logo Debug - Using logo placeholder');
     doc.setFillColor(240, 240, 240);
     doc.rect(20, 20, 50, 30, 'F');
     doc.setFontSize(8);
@@ -324,7 +389,7 @@ class PDFService {
     return result;
   }
 
-  static addServiceTable(doc, customer, quarter, invoiceNumber, year) {
+  static addServiceTable(doc, customer, quarter, invoiceNumber, year, issuer = {}) {
     const startY = 105; // 5pt höher
     const lineItems = customer.lineItems || [];
     
@@ -400,13 +465,19 @@ class PDFService {
         let tax = 0;
         let taxLabel = '';
         
-        if (item.taxType === 'mixed') {
-          tax = subtotal * 0.9 * 0.2;
-          taxLabel = 'Mix';
+        // Bei Kleinunternehmern wird keine Steuer berechnet
+        if (issuer.smallBusiness) {
+          tax = 0;
+          taxLabel = '0%';
         } else {
-          const taxRate = parseFloat(item.taxType) / 100;
-          tax = subtotal * taxRate;
-          taxLabel = `${item.taxType}%`;
+          if (item.taxType === 'mixed') {
+            tax = subtotal * 0.9 * 0.2;
+            taxLabel = 'Mix';
+          } else {
+            const taxRate = parseFloat(item.taxType) / 100;
+            tax = subtotal * taxRate;
+            taxLabel = `${item.taxType}%`;
+          }
         }
       
       const total = subtotal + tax;
@@ -443,7 +514,7 @@ class PDFService {
     return startY + tableHeight;
   }
 
-  static addCalculation(doc, customer, tableEndY = 150) {
+  static addCalculation(doc, customer, tableEndY = 150, issuer = {}) {
     const lineItems = customer.lineItems || [];
     
     if (lineItems.length === 0) {
@@ -462,13 +533,19 @@ class PDFService {
       let tax = 0;
       let taxKey = '';
       
-      if (item.taxType === 'mixed') {
-        tax = itemSubtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
-        taxKey = 'mixed';
+      // Bei Kleinunternehmern wird keine Steuer berechnet
+      if (issuer.smallBusiness) {
+        tax = 0;
+        taxKey = '0%';
       } else {
-        const taxRate = parseFloat(item.taxType) / 100;
-        tax = itemSubtotal * taxRate;
-        taxKey = `${item.taxType}%`;
+        if (item.taxType === 'mixed') {
+          tax = itemSubtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+          taxKey = 'mixed';
+        } else {
+          const taxRate = parseFloat(item.taxType) / 100;
+          tax = itemSubtotal * taxRate;
+          taxKey = `${item.taxType}%`;
+        }
       }
       
       totalTax += tax;
@@ -590,11 +667,35 @@ class PDFService {
   static addFooter(doc, issuer) {
     // Fußzeile ganz am Ende der Seite - arbeite rückwärts von unten
     const pageHeight = doc.internal.pageSize.height;
-    const footerEndY = pageHeight - 10; // 10pt Abstand vom Seitenrand
+    let footerEndY = pageHeight - 10; // 10pt Abstand vom Seitenrand
     
     const centerX = doc.internal.pageSize.width / 2;
     
-    // UID - ganz unten (letzte Zeile der Seite)
+    // Zusätzlicher Footer-Text - ganz unten (wenn vorhanden)
+    if (issuer.footerText && issuer.footerText.trim() !== '') {
+      doc.setFontSize(8);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(60, 60, 60);
+      
+      // Mehrzeiligen Text aufteilen und zentriert anzeigen
+      const footerLines = doc.splitTextToSize(issuer.footerText.trim(), 150);
+      for (let i = footerLines.length - 1; i >= 0; i--) {
+        doc.text(footerLines[i], centerX, footerEndY, { align: 'center' });
+        footerEndY -= 5; // Zeilenabstand
+      }
+      footerEndY -= 3; // Extra Abstand nach dem Freitext
+    }
+    
+    // Kleinunternehmer-Hinweis - darüber (wenn aktiviert)
+    if (issuer.smallBusiness) {
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'italic');
+      doc.setTextColor(80, 80, 80);
+      doc.text('Es wird gemäß § 6 UStG keine Umsatzsteuer berechnet!', centerX, footerEndY, { align: 'center' });
+      footerEndY -= 8; // Platz für die nächste Zeile
+    }
+    
+    // UID - darüber
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(60);
