@@ -1,6 +1,6 @@
 {
   "name": "quartabill",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner",
   "main": "public/electron.js",
   "homepage": "./",
@@ -48,12 +48,11 @@
     "win": {
       "target": [
         {
-          "target": "nsis",
-          "arch": ["x64"]
-        },
-        {
-          "target": "portable",
-          "arch": ["x64"]
+          "nsis": true,
+          "portable": true,
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "sign": null,
