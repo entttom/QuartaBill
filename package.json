@@ -26,7 +26,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "thomasentner",
+        "owner": "entttom",
         "repo": "QuartaBill"
       }
     ],
