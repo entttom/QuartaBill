@@ -1,6 +1,6 @@
 {
   "name": "quartabill",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner",
   "main": "public/electron.js",
   "homepage": "./",
@@ -94,7 +94,10 @@
       ]
     }
   },
-  "author": "Dr. Thomas Entner",
+  "author": {
+    "name": "Dr. Thomas Entner",
+    "email": "thomas.entner@quartabill.com"
+  },
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
