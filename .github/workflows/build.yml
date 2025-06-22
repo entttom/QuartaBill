@@ -7,6 +7,12 @@ on:
   pull_request:
     branches: [ main ]
 
+# Explizite Berechtigungen für GitHub Token
+permissions:
+  contents: write
+  actions: read
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -143,4 +149,4 @@ jobs:
         prerelease: false
         generate_release_notes: true
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} 
