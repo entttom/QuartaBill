@@ -1,9 +1,73 @@
 const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
 let mainWindow;
+
+// Auto-Updater Konfiguration
+autoUpdater.checkForUpdatesAndNotify();
+
+// Auto-Updater Event Handler
+autoUpdater.on('checking-for-update', () => {
+  console.log('Suche nach Updates...');
+  if (mainWindow) {
+    mainWindow.webContents.send('updater-message', 'checking-for-update');
+  }
+});
+
+autoUpdater.on('update-available', (info) => {
+  console.log('Update verfügbar:', info.version);
+  if (mainWindow) {
+    mainWindow.webContents.send('updater-message', 'update-available', info);
+  }
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  console.log('Keine Updates verfügbar');
+  if (mainWindow) {
+    mainWindow.webContents.send('updater-message', 'update-not-available');
+  }  
+});
+
+autoUpdater.on('error', (err) => {
+  console.error('Update-Fehler:', err);
+  if (mainWindow) {
+    mainWindow.webContents.send('updater-message', 'error', err.message);
+  }
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download-Geschwindigkeit: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Heruntergeladen ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  console.log(log_message);
+  
+  if (mainWindow) {
+    mainWindow.webContents.send('updater-message', 'download-progress', progressObj);
+  }
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  console.log('Update heruntergeladen:', info.version);
+  if (mainWindow) {
+    mainWindow.webContents.send('updater-message', 'update-downloaded', info);
+  }
+  
+  // Zeige Update-Dialog
+  dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: 'Update bereit',
+    message: `QuartaBill v${info.version} wurde heruntergeladen.`,
+    detail: 'Das Update wird beim nächsten Neustart der Anwendung installiert.',
+    buttons: ['Jetzt neustarten', 'Später']
+  }).then((result) => {
+    if (result.response === 0) {
+      autoUpdater.quitAndInstall();
+    }
+  });
+});
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -111,12 +175,25 @@ function createWindow() {
       label: 'Hilfe',
       submenu: [
         {
+          label: 'Nach Updates suchen',
+          click: () => {
+            autoUpdater.checkForUpdatesAndNotify();
+            dialog.showMessageBox(mainWindow, {
+              type: 'info',
+              title: 'Update-Suche',
+              message: 'Suche nach Updates...',
+              detail: 'Die Anwendung prüft automatisch nach verfügbaren Updates. Sie werden benachrichtigt, wenn ein Update verfügbar ist.'
+            });
+          }
+        },
+        { type: 'separator' },
+        {
           label: 'Über QuartaBill',
           click: () => {
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: 'Über QuartaBill',
-              message: 'QuartaBill v1.0.0',
+              message: `QuartaBill v${app.getVersion()}`,
               detail: `QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner
 
 Entwickelt von Dr. Thomas Entner
@@ -220,6 +297,23 @@ ipcMain.handle('get-platform', () => {
 
 ipcMain.handle('get-home-dir', () => {
   return os.homedir();
+});
+
+// Auto-Updater IPC Handlers
+ipcMain.handle('check-for-updates', () => {
+  autoUpdater.checkForUpdatesAndNotify();
+});
+
+ipcMain.handle('download-update', () => {
+  autoUpdater.downloadUpdate();
+});
+
+ipcMain.handle('install-update', () => {
+  autoUpdater.quitAndInstall();
+});
+
+ipcMain.handle('get-app-version', () => {
+  return app.getVersion();
 });
 
 ipcMain.handle('load-data', async (event, filePath) => {

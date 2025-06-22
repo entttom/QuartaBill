@@ -24,6 +24,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Event Listener entfernen
   removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel),
   
+  // Auto-Updater Funktionen
+  checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+  downloadUpdate: () => ipcRenderer.invoke('download-update'),
+  installUpdate: () => ipcRenderer.invoke('install-update'),
+  getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+  
+  // Auto-Updater Event Listener
+  onUpdaterMessage: (callback) => ipcRenderer.on('updater-message', callback),
+  removeUpdaterListener: (callback) => ipcRenderer.removeListener('updater-message', callback),
+  
   // Buffer-Funktionalität
   bufferFrom: (data, encoding) => {
     try {

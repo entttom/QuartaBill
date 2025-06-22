@@ -99,6 +99,7 @@ function SettingsPanel({ settings, onUpdateSettings }) {
         <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
           <Tab label={t('settings.tabs.issuer')} />
           <Tab label={t('settings.tabs.paths')} />
+          <Tab label={t('common.general')} />
           <Tab label={t('settings.tabs.about')} />
         </Tabs>
       </Box>
@@ -421,6 +422,59 @@ function SettingsPanel({ settings, onUpdateSettings }) {
       </TabPanel>
 
       <TabPanel value={activeTab} index={2}>
+        <Grid container spacing={3}>
+          {/* Sprach- und App-Einstellungen */}
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  {t('common.language')} & {t('common.appearance')}
+                </Typography>
+                
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl fullWidth>
+                      <InputLabel>{t('common.language')} / Language</InputLabel>
+                      <Select
+                        value={formData.language || 'de'}
+                        onChange={(e) => handleLanguageChange(e.target.value)}
+                        label={`${t('common.language')} / Language`}
+                      >
+                        <MenuItem value="de">🇩🇪 Deutsch</MenuItem>
+                        <MenuItem value="en">🇺🇸 English</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  
+                  <Grid item xs={12} sm={6}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={formData.darkMode || false}
+                          onChange={(e) => handleInputChange(null, 'darkMode', e.target.checked)}
+                          color="primary"
+                        />
+                      }
+                      label={t('settings.issuer.darkMode')}
+                    />
+                  </Grid>
+                </Grid>
+                
+                <Alert severity="info" sx={{ mt: 2 }}>
+                  <Typography variant="body2">
+                    {i18n.language === 'de' 
+                      ? 'Die Spracheinstellung wird sofort angewendet und beim nächsten Start der App wiederhergestellt.'
+                      : 'The language setting is applied immediately and will be restored the next time you start the app.'
+                    }
+                  </Typography>
+                </Alert>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </TabPanel>
+
+      <TabPanel value={activeTab} index={3}>
         <Card>
           <CardContent sx={{ textAlign: 'center' }}>
             <Typography variant="h4" color="primary" gutterBottom>

@@ -7,6 +7,7 @@ import CustomerManager from './components/CustomerManager';
 import InvoiceGenerator from './components/InvoiceGenerator';
 import SettingsPanel from './components/SettingsPanel';
 import OnboardingScreen from './components/OnboardingScreen';
+import UpdateNotification from './components/UpdateNotification';
 import DataService from './services/DataService';
 import './i18n';
 
@@ -176,6 +177,7 @@ function App() {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               {t('app.title')}
             </Typography>
+            <UpdateNotification />
           </Toolbar>
         </AppBar>
         

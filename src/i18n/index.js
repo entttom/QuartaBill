@@ -274,13 +274,47 @@ const de = {
       select: 'Auswählen'
     },
     
+    // Auto-Update
+    update: {
+      checking: 'Suche nach Updates...',
+      available: 'Update verfügbar',
+      notAvailable: 'Ihre App ist bereits auf dem neuesten Stand.',
+      downloaded: 'Update v{{version}} heruntergeladen. Neustart verfügbar.',
+      error: 'Update-Fehler: {{message}}',
+      ready: 'Update bereit',
+      downloading: 'Lädt... {{percent}}%',
+      checkError: 'Fehler beim Prüfen auf Updates.',
+      downloadError: 'Fehler beim Herunterladen des Updates.',
+      installError: 'Fehler beim Installieren des Updates.',
+      
+      dialog: {
+        title: 'Update verfügbar',
+        message: 'Eine neue Version von QuartaBill ist verfügbar.',
+        currentVersion: 'Aktuelle Version: v{{version}}',
+        newVersion: 'Neue Version: v{{version}}',
+        downloading: 'Download läuft... {{percent}}%',
+        later: 'Später',
+        downloadNow: 'Jetzt herunterladen',
+        installing: 'Lädt...'
+      },
+      
+      menu: {
+        checkForUpdates: 'Nach Updates suchen',
+        searching: 'Suche nach Updates...',
+        searchingMessage: 'Die Anwendung prüft automatisch nach verfügbaren Updates. Sie werden benachrichtigt, wenn ein Update verfügbar ist.'
+      }
+    },
+    
     // Allgemeine Begriffe
     common: {
       loading: 'Lädt...',
       error: 'Fehler',
       success: 'Erfolgreich',
       warning: 'Warnung',
-      info: 'Information'
+      info: 'Information',
+      language: 'Sprache',
+      general: 'Allgemein',
+      appearance: 'Darstellung'
     }
   }
 };
@@ -558,13 +592,47 @@ const en = {
       select: 'Select'
     },
     
+    // Auto-Update
+    update: {
+      checking: 'Checking for updates...',
+      available: 'Update available',
+      notAvailable: 'Your app is already up to date.',
+      downloaded: 'Update v{{version}} downloaded. Restart available.',
+      error: 'Update error: {{message}}',
+      ready: 'Update ready',
+      downloading: 'Loading... {{percent}}%',
+      checkError: 'Error checking for updates.',
+      downloadError: 'Error downloading update.',
+      installError: 'Error installing update.',
+      
+      dialog: {
+        title: 'Update available',
+        message: 'A new version of QuartaBill is available.',
+        currentVersion: 'Current version: v{{version}}',
+        newVersion: 'New version: v{{version}}',
+        downloading: 'Download in progress... {{percent}}%',
+        later: 'Later',
+        downloadNow: 'Download now',
+        installing: 'Loading...'
+      },
+      
+      menu: {
+        checkForUpdates: 'Check for updates',
+        searching: 'Checking for updates...',
+        searchingMessage: 'The application automatically checks for available updates. You will be notified when an update is available.'
+      }
+    },
+    
     // General Terms
     common: {
       loading: 'Loading...',
       error: 'Error',
       success: 'Success',
       warning: 'Warning',
-      info: 'Information'
+      info: 'Information',
+      language: 'Language',
+      general: 'General',
+      appearance: 'Appearance'
     }
   }
 };

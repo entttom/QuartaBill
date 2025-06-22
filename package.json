@@ -1,6 +1,6 @@
 {
   "name": "quartabill",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner",
   "main": "public/electron.js",
   "homepage": "./",
@@ -23,6 +23,13 @@
     "directories": {
       "output": "dist"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "thomasentner",
+        "repo": "QuartaBill"
+      }
+    ],
     "files": [
       "build/**/*",
       "public/electron.js",
@@ -49,17 +56,22 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "sign": null,
       "certificateFile": null,
       "certificatePassword": null,
-      "icon": "icon.iconset/icon_256x256.png"
+      "icon": "icon.iconset/icon_256x256.png",
+      "publisherName": "Dr. Thomas Entner"
     },
     "mac": {
       "icon": "icon.iconset",
@@ -81,15 +93,21 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     }
@@ -104,6 +122,7 @@
     "@mui/icons-material": "^5.14.0",
     "@mui/material": "^5.14.0",
     "date-fns": "^2.30.0",
+    "electron-updater": "^6.6.2",
     "i18next": "^23.15.1",
     "jspdf": "^2.5.1",
     "react": "^18.2.0",
