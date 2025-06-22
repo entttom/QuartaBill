@@ -469,8 +469,16 @@ function CustomerManager({ customers, onUpdateCustomers }) {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom>
-                  Email Template
+                  Email-Einstellungen
                 </Typography>
+                <TextField
+                  label={t('customers.form.emailSubject')}
+                  fullWidth
+                  value={formData.emailSubject}
+                  onChange={(e) => handleInputChange('emailSubject', e.target.value)}
+                  placeholder={t('customers.form.placeholders.emailSubject')}
+                  sx={{ mb: 2 }}
+                />
                 <TextField
                   label={t('customers.form.emailTemplate')}
                   fullWidth

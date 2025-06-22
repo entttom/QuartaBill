@@ -2,11 +2,18 @@ import i18n from '../i18n';
 import DataService from './DataService';
 
 class EmailService {
-  static async generateEmail({ customer, invoiceNumber, pdfBuffer, autoExport = false }) {
+  static async generateEmail({ customer, invoiceNumber, pdfBuffer, autoExport = false, quarter = null, year = null }) {
     try {
+      const subject = customer.emailSubject || i18n.t('email.defaultSubject');
+      const processedSubject = subject
+        .replace(/\{invoiceNumber\}/g, invoiceNumber)
+        .replace(/\{customer\}/g, customer.name)
+        .replace(/\{quarter\}/g, quarter || 'Q1')
+        .replace(/\{year\}/g, year || new Date().getFullYear());
+        
       const emlContent = this.createEMLContent({
         to: customer.email,
-        subject: i18n.t('email.subject', { invoiceNumber }),
+        subject: processedSubject,
         body: customer.emailTemplate || this.getDefaultEmailTemplate(),
         attachmentName: `${invoiceNumber}_${customer.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
         attachmentBuffer: pdfBuffer

@@ -38,6 +38,7 @@ const de = {
         hours: 'Stunden pro Quartal',
         email: 'Email-Adresse',
         activity: 'Tätigkeitsbeschreibung',
+        emailSubject: 'E-Mail-Betreff',
         emailTemplate: 'Email-Vorlage',
         savePathWindows: 'PDF-Pfad (Windows)',
         savePathMac: 'PDF-Pfad (Mac)',
@@ -46,6 +47,7 @@ const de = {
         placeholders: {
           address: 'Straße\\nPLZ Ort',
           activity: 'Arbeitsmedizinische Leistungen [Quartal]',
+          emailSubject: 'Verfügbare Variablen: {invoiceNumber}, {customer}, {quarter}, {year}',
           emailTemplate: 'Verfügbare Variablen: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]',
           savePathWindows: 'C:\\Pfad\\zu\\Kundenordner',
           savePathMac: '/Pfad/zu/Kundenordner',
@@ -260,6 +262,7 @@ const de = {
     // Email-Templates
     email: {
       subject: 'Rechnung {{invoiceNumber}}',
+      defaultSubject: 'Rechnung {invoiceNumber} - {customer}',
       defaultTemplate: 'Sehr geehrte Damen und Herren,\\n\\nanbei erhalten Sie die Rechnung für das vergangene Quartal.\\n\\nBei Fragen stehen wir Ihnen gerne zur Verfügung.\\n\\nMit freundlichen Grüßen',
       generationFailed: 'Email-Generierung fehlgeschlagen: {{message}}'
     },
@@ -356,6 +359,7 @@ const en = {
         hours: 'Hours per Quarter',
         email: 'Email Address',
         activity: 'Service Description',
+        emailSubject: 'Email Subject',
         emailTemplate: 'Email Template',
         savePathWindows: 'PDF Path (Windows)',
         savePathMac: 'PDF Path (Mac)',
@@ -364,6 +368,7 @@ const en = {
         placeholders: {
           address: 'Street\\nZIP City',
           activity: 'Occupational Health Services [Quarter]',
+          emailSubject: 'Available variables: {invoiceNumber}, {customer}, {quarter}, {year}',
           emailTemplate: 'Available variables: [Quarter], [Year], [Invoice Number], [Customer]',
           savePathWindows: 'C:\\Path\\to\\Customer-Folder',
           savePathMac: '/Path/to/Customer-Folder',
@@ -578,6 +583,7 @@ const en = {
     // Email Templates
     email: {
       subject: 'Invoice {{invoiceNumber}}',
+      defaultSubject: 'Invoice {invoiceNumber} - {customer}',
       defaultTemplate: 'Dear Sir or Madam,\\n\\nPlease find attached the invoice for the past quarter.\\n\\nIf you have any questions, please feel free to contact us.\\n\\nBest regards',
       generationFailed: 'Email generation failed: {{message}}'
     },

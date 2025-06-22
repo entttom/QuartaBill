@@ -81,6 +81,7 @@ class DataService {
       name: '',
       address: '',
       email: '',
+      emailSubject: i18n.t('email.defaultSubject'),
       emailTemplate: i18n.t('email.defaultTemplate').replace(/\\n/g, '\n'),
       savePathWindows: '',
       savePathMac: '',

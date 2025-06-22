@@ -119,7 +119,9 @@ function InvoiceGenerator({ customers, settings }) {
                 customer,
                 invoiceNumber,
                 pdfBuffer: pdfResult.buffer,
-                autoExport
+                autoExport,
+                quarter: selectedQuarter,
+                year: selectedYear
               });
               console.log('EML-Generierung erfolgreich:', emailResult);
             } catch (emailError) {
