@@ -137,11 +137,12 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@electron/notarize": "^3.0.1",
+    "@electron/notarize": "^2.5.0",
     "concurrently": "^8.0.0",
     "electron": "^25.0.0",
     "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
+    "glob": "^11.0.3",
     "wait-on": "^7.0.0"
   },
   "browserslist": {

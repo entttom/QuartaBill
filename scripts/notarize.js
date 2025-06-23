@@ -2,11 +2,13 @@ const { notarize } = require('@electron/notarize');
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const glob = require('glob');
 
 exports.default = async function afterSign(context) {
   const { electronPlatformName, appOutDir } = context;
   
   if (electronPlatformName !== 'darwin') {
+    console.log('⏭️  Skipping code signing (not macOS)');
     return;
   }
 
@@ -15,41 +17,45 @@ exports.default = async function afterSign(context) {
   
   console.log('🔐 Starting deep code signing...');
   
-  // Find all binaries and frameworks that need signing
+  const identity = process.env.CSC_NAME || 'Developer ID Application: Thomas Entner (RG7FE682S2)';
+  const entitlements = path.join(__dirname, '..', 'electron', 'entitlements.mac.plist');
+
+  // Define paths to sign in correct order (most nested first)
   const pathsToSign = [
-    // Helper apps
-    `${appPath}/Contents/Frameworks/*.app`,
+    // Helper app executables
     `${appPath}/Contents/Frameworks/*.app/Contents/MacOS/*`,
-    
-    // Electron Framework
-    `${appPath}/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework`,
+    // Helper apps themselves  
+    `${appPath}/Contents/Frameworks/*.app`,
+    // Framework libraries
     `${appPath}/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/*.dylib`,
     `${appPath}/Contents/Frameworks/Electron Framework.framework/Versions/A/Helpers/*`,
-    
-    // Other frameworks
-    `${appPath}/Contents/Frameworks/*.framework/Versions/A/*`,
+    // Other framework binaries
     `${appPath}/Contents/Frameworks/*.framework/Versions/A/Resources/*`,
-    
+    `${appPath}/Contents/Frameworks/*.framework/Versions/A/*`,
+    // Main framework
+    `${appPath}/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework`,
     // Main executable (last)
     `${appPath}/Contents/MacOS/${appName}`
   ];
 
-  const identity = process.env.CSC_NAME || 'Developer ID Application: Thomas Entner (RG7FE682S2)';
-  const entitlements = path.join(__dirname, '..', 'electron', 'entitlements.mac.plist');
-
   for (const pattern of pathsToSign) {
     try {
-      console.log(`Signing: ${pattern}`);
-      
-      // Use shell expansion for patterns
-      const command = `codesign --force --verify --verbose --sign "${identity}" --entitlements "${entitlements}" --options runtime ${pattern}`;
-      
-      execSync(command, { 
-        stdio: 'inherit',
-        shell: '/bin/bash'
-      });
+      const files = glob.sync(pattern);
+      for (const file of files) {
+        // Check if file is executable
+        const stats = fs.statSync(file);
+        if (stats.isFile() && (stats.mode & parseInt('111', 8))) {
+          console.log(`Signing: ${file}`);
+          
+          const command = `codesign --force --verify --verbose --sign "${identity}" --entitlements "${entitlements}" --options runtime "${file}"`;
+          
+          execSync(command, { 
+            stdio: 'inherit'
+          });
+        }
+      }
     } catch (error) {
-      console.log(`Skipping ${pattern} (not found or already signed)`);
+      console.log(`Skipping pattern ${pattern}: ${error.message}`);
     }
   }
 
