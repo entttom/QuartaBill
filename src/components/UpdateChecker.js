@@ -48,7 +48,7 @@ const UpdateChecker = () => {
   const [lastChecked, setLastChecked] = useState(null);
 
   // Aktuelle Version aus package.json
-  const currentVersion = '1.3.0';
+  const currentVersion = '1.3.1';
   const repositoryUrl = 'https://api.github.com/repos/entttom/QuartaBill/releases/latest';
 
   // Beim Component Mount prüfen

@@ -139,7 +139,7 @@ Dies löst automatisch einen Build, Code Signing und Release aus.
 
 Die neuesten Releases finden Sie unter [**GitHub Releases**](https://github.com/entttom/QuartaBill/releases).
 
-### 🎯 **Aktuelle Version: v1.3.0**
+### 🎯 **Aktuelle Version: v1.3.1**
 
 ### 🆕 **Neue Features in v1.3.0:**
 - **🔄 Auto-Update System**: Automatische Benachrichtigungen über neue Versionen
@@ -151,15 +151,15 @@ Die neuesten Releases finden Sie unter [**GitHub Releases**](https://github.com/
 
 ### Verfügbare Formate:
 - **Windows**: 
-  - `QuartaBill Setup 1.3.0.exe` (Installer)
-  - `QuartaBill 1.3.0.exe` (Portable)
+  - `QuartaBill Setup 1.3.1.exe` (Installer)
+  - `QuartaBill 1.3.1.exe` (Portable)
 - **macOS**: 
-  - `QuartaBill-1.3.0.dmg` (Intel Macs) ✅ **Notarisiert**
-  - `QuartaBill-1.3.0-arm64.dmg` (Apple Silicon) ✅ **Notarisiert**
+  - `QuartaBill-1.3.1.dmg` (Intel Macs) ✅ **Notarisiert & Gatekeeper-kompatibel**
+  - `QuartaBill-1.3.1-arm64.dmg` (Apple Silicon) ✅ **Notarisiert & Gatekeeper-kompatibel**
 - **Linux**: 
-  - `QuartaBill-1.3.0.AppImage` (Universal)
-  - `quartabill_1.3.0_amd64.deb` (Debian/Ubuntu)
-  - `quartabill-1.3.0.x86_64.rpm` (Red Hat/Fedora)
+  - `QuartaBill-1.3.1.AppImage` (Universal)
+  - `quartabill_1.3.1_amd64.deb` (Debian/Ubuntu)
+  - `quartabill-1.3.1.x86_64.rpm` (Red Hat/Fedora)
 
 ### 🔒 **Sicherheit**
 - ✅ **macOS**: Vollständig signiert und von Apple notarisiert
@@ -227,7 +227,7 @@ Die neuesten Releases finden Sie unter [**GitHub Releases**](https://github.com/
 - **Logo wird nicht angezeigt**: Überprüfen Sie den Dateipfad in den Einstellungen
 - **EML-Generierung fehlgeschlagen**: Stellen Sie sicher, dass EML-Pfade konfiguriert sind
 - **PDF nicht gespeichert**: Überprüfen Sie Schreibrechte für den Ausgabeordner
-- **macOS Sicherheitswarnung**: Bei älteren Versionen ohne Notarisierung - aktualisieren Sie auf v1.3.0+
+- **macOS Sicherheitswarnung**: Bei älteren Versionen vor v1.3.1 - aktualisieren Sie für problemlose Installation
 - **Backup-Probleme**: Prüfen Sie Schreibrechte im Backup-Verzeichnis
 - **CSV-Export Encoding**: Bei Problemen mit Umlauten verwenden Sie UTF-8 kompatible Programme
 

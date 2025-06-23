@@ -5,6 +5,15 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.3.1] - 2024-12-23
+
+### 🐛 Behoben
+- **macOS Code Signing**: Korrektur der Zertifikat-Konfiguration für Gatekeeper-Kompatibilität
+- **Sicherheitswarnungen**: Entfernung von macOS-Warnungen bei App-Installation
+- **Distribution**: Verwendung des korrekten "Developer ID Application" Zertifikats
+
+---
+
 ## [1.3.0] - 2024-12-23
 
 ### ✨ Neu hinzugefügt
