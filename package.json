@@ -89,7 +89,9 @@
       "gatekeeperAssess": false,
       "entitlements": "electron/entitlements.mac.plist",
       "entitlementsInherit": "electron/entitlements.mac.plist",
-      "notarize": false
+      "notarize": {
+        "teamId": "RG7FE682S2"
+      }
     },
     "linux": {
       "icon": "icon.iconset/icon_256x256.png",
