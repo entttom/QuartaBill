@@ -52,6 +52,7 @@
     "compression": "maximum",
     "npmRebuild": false,
     "buildDependenciesFromSource": false,
+    "afterSign": "scripts/notarize.js",
     "win": {
       "target": [
         {
@@ -89,9 +90,7 @@
       "gatekeeperAssess": false,
       "entitlements": "electron/entitlements.mac.plist",
       "entitlementsInherit": "electron/entitlements.mac.plist",
-      "notarize": {
-        "teamId": "RG7FE682S2"
-      }
+      "notarize": false
     },
     "linux": {
       "icon": "icon.iconset/icon_256x256.png",
@@ -138,6 +137,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@electron/notarize": "^3.0.1",
     "concurrently": "^8.0.0",
     "electron": "^25.0.0",
     "electron-builder": "^24.13.3",
