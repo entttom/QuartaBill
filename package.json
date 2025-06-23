@@ -89,9 +89,7 @@
       "gatekeeperAssess": false,
       "entitlements": "electron/entitlements.mac.plist",
       "entitlementsInherit": "electron/entitlements.mac.plist",
-      "notarize": {
-        "teamId": "$(APPLE_TEAM_ID)"
-      }
+      "notarize": false
     },
     "linux": {
       "icon": "icon.iconset/icon_256x256.png",
