@@ -7,6 +7,7 @@ import {
 import { Folder, Save, Image, ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import DataService from '../services/DataService';
+import { getVersion } from '../utils/version';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -547,7 +548,7 @@ function SettingsPanel({ settings, onUpdateSettings, configPath, onConfigPathCha
             </Grid>
             
             <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
-              {t('settings.about.version')}
+              {t('settings.about.version', { version: getVersion() })}
             </Typography>
           </CardContent>
         </Card>

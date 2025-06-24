@@ -175,7 +175,7 @@ const de = {
           dataSync: 'Sichere Datensynchronisation',
           taxCalculation: 'Deutsche Steuerberechnung'
         },
-        version: 'Version 1.0.0 - Für eine effiziente und professionelle Praxisverwaltung'
+        version: 'Version {{version}} - Für eine effiziente und professionelle Praxisverwaltung'
       },
       
       buttons: {
@@ -559,7 +559,7 @@ const en = {
           dataSync: 'Secure data synchronization',
           taxCalculation: 'German tax calculation'
         },
-        version: 'Version 1.0.0 - For efficient and professional practice management'
+        version: 'Version {{version}} - For efficient and professional practice management'
       },
       
       buttons: {
