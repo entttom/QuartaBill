@@ -47,7 +47,7 @@ const de = {
         placeholders: {
           address: 'Straße\\nPLZ Ort',
           activity: 'Arbeitsmedizinische Leistungen [Quartal]',
-          emailSubject: 'Verfügbare Variablen: {invoiceNumber}, {customer}, {quarter}, {year}',
+          emailSubject: 'Verfügbare Variablen: [Rechnungsnummer], [Kunde], [Quartal], [Jahr]',
           emailTemplate: 'Verfügbare Variablen: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]',
           savePathWindows: 'C:\\Pfad\\zu\\Kundenordner',
           savePathMac: '/Pfad/zu/Kundenordner',
@@ -262,7 +262,7 @@ const de = {
     // Email-Templates
     email: {
       subject: 'Rechnung {{invoiceNumber}}',
-      defaultSubject: 'Rechnung {invoiceNumber} - {customer}',
+      defaultSubject: 'Rechnung [Rechnungsnummer] - [Kunde]',
       defaultTemplate: 'Sehr geehrte Damen und Herren,\\n\\nanbei erhalten Sie die Rechnung für das vergangene Quartal.\\n\\nBei Fragen stehen wir Ihnen gerne zur Verfügung.\\n\\nMit freundlichen Grüßen',
       generationFailed: 'Email-Generierung fehlgeschlagen: {{message}}'
     },
@@ -368,8 +368,8 @@ const en = {
         placeholders: {
           address: 'Street\\nZIP City',
           activity: 'Occupational Health Services [Quarter]',
-          emailSubject: 'Available variables: {invoiceNumber}, {customer}, {quarter}, {year}',
-          emailTemplate: 'Available variables: [Quarter], [Year], [Invoice Number], [Customer]',
+          emailSubject: 'Available variables: [Rechnungsnummer], [Kunde], [Quartal], [Jahr]',
+          emailTemplate: 'Available variables: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]',
           savePathWindows: 'C:\\Path\\to\\Customer-Folder',
           savePathMac: '/Path/to/Customer-Folder',
           emlPathWindows: 'C:\\Path\\to\\Email-Folder',
@@ -583,7 +583,7 @@ const en = {
     // Email Templates
     email: {
       subject: 'Invoice {{invoiceNumber}}',
-      defaultSubject: 'Invoice {invoiceNumber} - {customer}',
+      defaultSubject: 'Invoice [Rechnungsnummer] - [Kunde]',
       defaultTemplate: 'Dear Sir or Madam,\\n\\nPlease find attached the invoice for the past quarter.\\n\\nIf you have any questions, please feel free to contact us.\\n\\nBest regards',
       generationFailed: 'Email generation failed: {{message}}'
     },

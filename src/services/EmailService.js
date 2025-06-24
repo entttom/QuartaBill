@@ -6,10 +6,10 @@ class EmailService {
     try {
       const subject = customer.emailSubject || i18n.t('email.defaultSubject');
       const processedSubject = subject
-        .replace(/\{invoiceNumber\}/g, invoiceNumber)
-        .replace(/\{customer\}/g, customer.name)
-        .replace(/\{quarter\}/g, quarter || 'Q1')
-        .replace(/\{year\}/g, year || new Date().getFullYear());
+        .replace(/\[Rechnungsnummer\]/g, invoiceNumber)
+        .replace(/\[Kunde\]/g, customer.name)
+        .replace(/\[Quartal\]/g, quarter || 'Q1')
+        .replace(/\[Jahr\]/g, year || new Date().getFullYear());
         
       const emlContent = this.createEMLContent({
         to: customer.email,

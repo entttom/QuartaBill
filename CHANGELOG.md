@@ -5,6 +5,16 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.3.2] - 2024-12-23
+
+### 🔧 Verbessert
+- **E-Mail-Variablen**: Vereinheitlichung der Variable-Syntax - alle E-Mail- und Leistungsfelder verwenden jetzt einheitlich eckige Klammern `[Variable]`
+- **Benutzerfreundlichkeit**: Neue aufklappbare Hilfe für E-Mail-Variablen in der Kundenverwaltung
+- **Konsistenz**: Einheitliche Verwendung von `[Quartal]`, `[Jahr]`, `[Kunde]`, `[Rechnungsnummer]` in allen Bereichen
+- **Dokumentation**: Verbesserte In-App-Hilfe mit Beispielen für Variable-Nutzung
+
+---
+
 ## [1.3.1] - 2024-12-23
 
 ### 🐛 Behoben

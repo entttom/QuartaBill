@@ -488,6 +488,49 @@ function CustomerManager({ customers, onUpdateCustomers }) {
                   onChange={(e) => handleInputChange('emailTemplate', e.target.value)}
                   placeholder={t('customers.form.placeholders.emailTemplate')}
                 />
+
+                {/* Hilfe für E-Mail-Variablen */}
+                <Accordion sx={{ mt: 3 }}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                      💡 Verfügbare Variablen in E-Mails
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 1 }}>
+                      <Box sx={{ minWidth: '200px' }}>
+                        <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                          📧 E-Mail-Betreff & Text:
+                        </Typography>
+                        <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+                          [Quartal] → Q1, Q2, Q3, Q4<br/>
+                          [Jahr] → 2024<br/>
+                          [Kunde] → {formData.name || 'Kundenname'}<br/>
+                          [Rechnungsnummer] → 0124MA
+                        </Typography>
+                      </Box>
+                      <Box sx={{ minWidth: '300px' }}>
+                        <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                          💌 Beispiel E-Mail-Betreff:
+                        </Typography>
+                        <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary', mb: 1 }}>
+                          "Rechnung [Rechnungsnummer] - [Kunde]"<br/>
+                          wird zu: "Rechnung 0124MA - {formData.name || 'Max Muster'}"
+                        </Typography>
+                        <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                          💬 Beispiel E-Mail-Text:
+                        </Typography>
+                        <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+                          "Rechnung für [Kunde] im [Quartal]/[Jahr]"<br/>
+                          wird zu: "Rechnung für {formData.name || 'Max Muster'} im Q1/2024"
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Typography variant="caption" sx={{ mt: 2, display: 'block', color: 'text.secondary', fontStyle: 'italic' }}>
+                      ✅ Alle Variablen verwenden jetzt einheitlich eckige Klammern [Variable]
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
 
               <Grid item xs={12}>
