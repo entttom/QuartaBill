@@ -2,6 +2,13 @@ import i18n from '../i18n';
 
 class DataService {
   static defaultDataPath = 'rechnung-data.json';
+  static configFileName = 'quartabill-config.json'; // Nur der Pfad zur Einstellungsdatei
+  static isWatching = false;
+  static fileWatcher = null;
+  static onDataChangeCallback = null;
+  static isInternalSave = false; // Flag um eigene Speichervorgänge zu ignorieren
+  static lastSaveTimestamp = 0;
+  static fileChangeDebounceTimer = null;
   
   static defaultData = {
     customers: [],
@@ -28,12 +35,45 @@ class DataService {
     }
   };
 
+  // Lädt den Pfad zur Einstellungsdatei aus der lokalen Config
+  static async getConfigPath() {
+    try {
+      if (window.electronAPI) {
+        return await window.electronAPI.getConfigPath();
+      } else {
+        return localStorage.getItem('quartabill-config-path');
+      }
+    } catch (error) {
+      console.error('Fehler beim Laden des Config-Pfads:', error);
+      return null;
+    }
+  }
+
+  // Speichert den Pfad zur Einstellungsdatei in der lokalen Config
+  static async setConfigPath(configPath) {
+    try {
+      if (window.electronAPI) {
+        return await window.electronAPI.setConfigPath(configPath);
+      } else {
+        localStorage.setItem('quartabill-config-path', configPath);
+        return true;
+      }
+    } catch (error) {
+      console.error('Fehler beim Speichern des Config-Pfads:', error);
+      return false;
+    }
+  }
+
+  // Lädt Daten von einem spezifischen Pfad (für die externe Einstellungsdatei)
   static async loadData(filePath = null) {
     try {
-      // Lade aus localStorage für Browser oder über Electron IPC
       if (window.electronAPI) {
         // Electron Umgebung
-        return await window.electronAPI.loadData(filePath);
+        const configPath = filePath || await this.getConfigPath();
+        if (!configPath) {
+          return this.defaultData;
+        }
+        return await window.electronAPI.loadData(configPath);
       } else {
         // Browser Umgebung - verwende localStorage
         const data = localStorage.getItem('rechnung-data');
@@ -45,11 +85,28 @@ class DataService {
     }
   }
 
+  // Speichert Daten in die externe Einstellungsdatei
   static async saveData(data, filePath = null) {
     try {
       if (window.electronAPI) {
         // Electron Umgebung
-        return await window.electronAPI.saveData(data, filePath);
+        const configPath = filePath || await this.getConfigPath();
+        if (!configPath) {
+          throw new Error('Kein Config-Pfad definiert');
+        }
+        
+        // Markiere als internen Speichervorgang um File-Watching zu pausieren
+        this.isInternalSave = true;
+        this.lastSaveTimestamp = Date.now();
+        
+        const result = await window.electronAPI.saveData(data, configPath);
+        
+        // Nach kurzer Zeit Flag zurücksetzen
+        setTimeout(() => {
+          this.isInternalSave = false;
+        }, 1000);
+        
+        return result;
       } else {
         // Browser Umgebung - verwende localStorage
         localStorage.setItem('rechnung-data', JSON.stringify(data));
@@ -57,7 +114,180 @@ class DataService {
       }
     } catch (error) {
       console.error('Fehler beim Speichern der Daten:', error);
+      this.isInternalSave = false;
       return false;
+    }
+  }
+
+  // Startet die Überwachung der Einstellungsdatei
+  static async startFileWatching(onChange) {
+    if (this.isWatching || !window.electronAPI) {
+      return;
+    }
+
+    try {
+      const configPath = await this.getConfigPath();
+      if (!configPath) {
+        console.warn('Kein Config-Pfad für File-Watching verfügbar');
+        return;
+      }
+
+      this.onDataChangeCallback = onChange;
+      this.isWatching = true;
+      
+      await window.electronAPI.startFileWatching(configPath);
+      
+      // Event-Listener für Dateiänderungen mit Debouncing und Filter
+      window.electronAPI.onFileChanged((event, filePath, hasChanged) => {
+        if (!hasChanged || !this.onDataChangeCallback) {
+          return;
+        }
+        
+        // Ignoriere Änderungen die von eigenen Speichervorgängen stammen
+        if (this.isInternalSave) {
+          console.log('Ignoriere eigene Dateiänderung:', filePath);
+          return;
+        }
+        
+        // Ignoriere Änderungen die kurz nach einem eigenen Speichervorgang auftreten
+        const timeSinceLastSave = Date.now() - this.lastSaveTimestamp;
+        if (timeSinceLastSave < 2000) { // 2 Sekunden Puffer
+          console.log('Ignoriere Dateiänderung kurz nach eigenem Speichern:', timeSinceLastSave + 'ms');
+          return;
+        }
+        
+        // Debouncing: Sammle mehrere schnelle Änderungen
+        if (this.fileChangeDebounceTimer) {
+          clearTimeout(this.fileChangeDebounceTimer);
+        }
+        
+        this.fileChangeDebounceTimer = setTimeout(() => {
+          console.log('Externe Dateiänderung erkannt:', filePath);
+          this.onDataChangeCallback(filePath);
+          this.fileChangeDebounceTimer = null;
+        }, 500); // 500ms Debounce
+      });
+
+      console.log('File-Watching gestartet für:', configPath);
+    } catch (error) {
+      console.error('Fehler beim Starten des File-Watchings:', error);
+      this.isWatching = false;
+    }
+  }
+
+  // Stoppt die Überwachung der Einstellungsdatei
+  static async stopFileWatching() {
+    if (!this.isWatching || !window.electronAPI) {
+      return;
+    }
+
+    try {
+      await window.electronAPI.stopFileWatching();
+      this.isWatching = false;
+      this.onDataChangeCallback = null;
+      this.isInternalSave = false;
+      this.lastSaveTimestamp = 0;
+      
+      // Cleanup Debounce Timer
+      if (this.fileChangeDebounceTimer) {
+        clearTimeout(this.fileChangeDebounceTimer);
+        this.fileChangeDebounceTimer = null;
+      }
+      
+      console.log('File-Watching gestoppt');
+    } catch (error) {
+      console.error('Fehler beim Stoppen des File-Watchings:', error);
+    }
+  }
+
+  // Prüft ob Setup erforderlich ist (keine Config-Datei vorhanden oder Datei existiert nicht mehr)
+  static async isSetupRequired() {
+    try {
+      const existingPath = await this.getConfigPath();
+      if (existingPath && window.electronAPI) {
+        // Prüfe ob Datei noch existiert
+        const exists = await window.electronAPI.fileExists(existingPath);
+        return !exists;
+      }
+      return true; // Kein Pfad vorhanden = Setup erforderlich
+    } catch (error) {
+      console.error('Fehler beim Prüfen des Setup-Status:', error);
+      return true;
+    }
+  }
+
+  // Führt den Setup-Schritt durch (wählt Datei aus und erstellt sie)
+  static async performConfigSetup() {
+    try {
+      if (window.electronAPI) {
+        const newPath = await window.electronAPI.selectConfigPath();
+        if (newPath) {
+          await this.setConfigPath(newPath);
+          
+          // Prüfe ob Datei bereits existiert
+          const exists = await window.electronAPI.fileExists(newPath);
+          if (!exists) {
+            // Neue Datei: Erstelle Standard-Daten
+            await this.saveData(this.defaultData, newPath);
+            return { path: newPath, isNewFile: true };
+          } else {
+            // Bestehende Datei: Lade und validiere Inhalt
+            try {
+              const existingData = await window.electronAPI.loadData(newPath);
+              if (existingData && existingData.customers !== undefined) {
+                // Gültige QuartaBill-Datei gefunden
+                return { path: newPath, isNewFile: false, hasValidData: true, data: existingData };
+              } else {
+                // Datei existiert, aber kein gültiges QuartaBill-Format
+                return { path: newPath, isNewFile: false, hasValidData: false };
+              }
+            } catch (error) {
+              // Fehler beim Lesen der Datei (z.B. ungültiges JSON)
+              return { path: newPath, isNewFile: false, hasValidData: false, error: error.message };
+            }
+          }
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Fehler beim Config-Setup:', error);
+      return null;
+    }
+  }
+
+  // Überschreibt eine bestehende Datei mit Standard-Daten
+  static async createNewConfigFile(filePath) {
+    try {
+      // Markiere als internen Vorgang
+      this.isInternalSave = true;
+      this.lastSaveTimestamp = Date.now();
+      
+      const result = await this.saveData(this.defaultData, filePath);
+      
+      // Flag wird bereits in saveData zurückgesetzt
+      return result;
+    } catch (error) {
+      console.error('Fehler beim Erstellen der neuen Config-Datei:', error);
+      this.isInternalSave = false;
+      return false;
+    }
+  }
+
+  // Lädt bestehende Config (falls Setup bereits durchgeführt wurde)
+  static async loadExistingConfig() {
+    try {
+      const existingPath = await this.getConfigPath();
+      if (existingPath && window.electronAPI) {
+        const exists = await window.electronAPI.fileExists(existingPath);
+        if (exists) {
+          return existingPath;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error('Fehler beim Laden der bestehenden Config:', error);
+      return null;
     }
   }
 

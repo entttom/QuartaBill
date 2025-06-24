@@ -8,6 +8,7 @@ import InvoiceGenerator from './components/InvoiceGenerator';
 import SettingsPanel from './components/SettingsPanel';
 import OnboardingScreen from './components/OnboardingScreen';
 import UpdateNotification from './components/UpdateNotification';
+import ConfigSetupDialog from './components/ConfigSetupDialog';
 import DataService from './services/DataService';
 import './i18n';
 
@@ -92,10 +93,12 @@ function App() {
   });
   const [isLoaded, setIsLoaded] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showConfigSetup, setShowConfigSetup] = useState(false);
+  const [configPath, setConfigPath] = useState(null);
 
-  // Lade Daten beim Start
+  // Lade Daten beim Start und initiiere Setup falls nötig
   useEffect(() => {
-    loadData();
+    performSetupAndLoadData();
   }, []);
 
   // Automatisches Speichern bei Datenänderungen (nur nach dem ersten Laden)
@@ -104,6 +107,35 @@ function App() {
       saveData();
     }
   }, [data, isLoaded]);
+
+  const performSetupAndLoadData = async () => {
+    try {
+      // Prüfe ob Setup erforderlich ist
+      const setupRequired = await DataService.isSetupRequired();
+      
+      if (setupRequired) {
+        // Zeige Setup-Dialog
+        setShowConfigSetup(true);
+        return;
+      }
+      
+      // Lade bestehende Config
+      const existingPath = await DataService.loadExistingConfig();
+      if (existingPath) {
+        setConfigPath(existingPath);
+        await loadData();
+        
+        // Starte File-Watching
+        await DataService.startFileWatching(handleFileChanged);
+      } else {
+        // Fallback: Setup anzeigen
+        setShowConfigSetup(true);
+      }
+    } catch (error) {
+      console.error('Fehler beim Setup:', error);
+      setShowConfigSetup(true);
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -130,6 +162,62 @@ function App() {
       setIsLoaded(true);
       // Bei Fehler trotzdem Onboarding zeigen
       setShowOnboarding(true);
+    }
+  };
+
+  const handleFileChanged = async (filePath) => {
+    // Warnung anzeigen und nach Bestätigung neu laden
+    if (window.confirm(
+              t('fileChanged.message', { filePath })
+    )) {
+      await loadData();
+    }
+  };
+
+  const handleConfigSetup = async () => {
+    try {
+      const result = await DataService.performConfigSetup();
+      if (result && result.path) {
+        setConfigPath(result.path);
+        
+        // Setup-Dialog bleibt offen für weitere Benutzerinteraktion
+        // wird erst nach erfolgreicher Verarbeitung geschlossen
+        
+        if (result.isNewFile) {
+          // Neue Datei wurde erstellt, Setup ist abgeschlossen
+          setShowConfigSetup(false);
+          await loadData();
+          await DataService.startFileWatching(handleFileChanged);
+        }
+        
+        // Bei bestehenden Dateien wird der Dialog weitere Optionen anzeigen
+        // Der Dialog wird sich selbst schließen wenn der Benutzer eine Wahl getroffen hat
+        
+        return result;
+      }
+      return null;
+    } catch (error) {
+      console.error('Fehler beim Config-Setup:', error);
+      return null;
+    }
+  };
+
+  const handleConfigPathChange = async (newPath) => {
+    try {
+      // Stoppe File-Watching
+      await DataService.stopFileWatching();
+      
+      // Setze neuen Pfad
+      await DataService.setConfigPath(newPath);
+      setConfigPath(newPath);
+      
+      // Lade Daten vom neuen Pfad
+      await loadData();
+      
+      // Starte File-Watching für neuen Pfad
+      await DataService.startFileWatching(handleFileChanged);
+    } catch (error) {
+      console.error('Fehler beim Ändern des Config-Pfads:', error);
     }
   };
 
@@ -223,6 +311,8 @@ function App() {
             <SettingsPanel 
               settings={data.settings}
               onUpdateSettings={updateSettings}
+              configPath={configPath}
+              onConfigPathChange={handleConfigPathChange}
             />
           </TabPanel>
         </Container>
@@ -232,6 +322,12 @@ function App() {
       <OnboardingScreen 
         open={showOnboarding} 
         onClose={handleCloseOnboarding} 
+      />
+      
+      {/* Config Setup Dialog */}
+      <ConfigSetupDialog 
+        open={showConfigSetup}
+        onSetup={handleConfigSetup}
       />
     </ThemeProvider>
   );

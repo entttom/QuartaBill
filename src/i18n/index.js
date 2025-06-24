@@ -307,6 +307,67 @@ const de = {
         searchingMessage: 'Die Anwendung prüft automatisch nach verfügbaren Updates. Sie werden benachrichtigt, wenn ein Update verfügbar ist.'
       }
     },
+
+    // Config Setup Dialog
+    configSetup: {
+      title: 'Einstellungsdatei-Setup',
+      description: 'QuartaBill benötigt eine Einstellungsdatei für Ihre Daten. Diese kann an einem beliebigen Ort gespeichert werden (z.B. in einem Cloud-Ordner für Synchronisation zwischen Geräten).',
+      chooseLocation: 'Speicherort wählen',
+      choiceDescription: 'Sie können entweder eine neue Einstellungsdatei erstellen oder eine bereits vorhandene QuartaBill-Datei auswählen.',
+      newFile: {
+        title: '📁 Neue Datei erstellen:',
+        description: '• Für ersten QuartaBill-Start\n• Beginnt mit leeren Kundendaten\n• Ideal für Cloud-Ordner (Dropbox, OneDrive, etc.)'
+      },
+      existingFile: {
+        title: '📂 Bestehende Datei öffnen:',
+        description: '• Wenn Sie bereits QuartaBill-Daten haben\n• Lädt vorhandene Kunden und Einstellungen\n• Für Wechsel zwischen verschiedenen Datenständen'
+      },
+      recommendation: 'Empfehlung: Speichern Sie Ihre Einstellungsdatei in einem Cloud-Ordner für automatische Synchronisation zwischen Geräten.',
+      important: 'Wichtig: Merken Sie sich den gewählten Speicherort. Sie können diesen später in den Einstellungen ändern, falls nötig.',
+      analyzing: 'Datei wird analysiert...',
+      existingFound: {
+        title: 'Bestehende QuartaBill-Datei gefunden!',
+        description: 'Die ausgewählte Datei enthält bereits QuartaBill-Daten:',
+        foundData: 'Gefundene Daten:',
+        customers: '{{count}} Kunden',
+        settingsAvailable: 'Einstellungen vorhanden: {{available}}',
+        question: 'Möchten Sie diese bestehende Datei verwenden oder eine neue erstellen?'
+      },
+      invalidFile: {
+        title: 'Ungültiges Dateiformat',
+        description: 'Die ausgewählte Datei existiert bereits, enthält aber keine gültigen QuartaBill-Daten:',
+        error: 'Fehler: {{error}}',
+        options: 'Sie können die Datei überschreiben oder eine andere Datei auswählen.'
+      },
+      completed: {
+        title: 'Setup erfolgreich abgeschlossen!',
+        description: 'Ihre Einstellungsdatei wurde eingerichtet:',
+        info: 'QuartaBill wird nun gestartet und die Datei automatisch überwachen.'
+      },
+      buttons: {
+        chooseLocation: 'Speicherort wählen',
+        useExisting: 'Bestehende Datei verwenden',
+        createNew: 'Neue Datei erstellen',
+        overwrite: 'Datei überschreiben',
+        chooseDifferent: 'Andere Datei wählen',
+        startApp: 'QuartaBill starten'
+      }
+    },
+    
+    // Settings for Config File
+    configFile: {
+      title: 'Einstellungsdatei',
+      pathLabel: 'Pfad zur Einstellungsdatei',
+      noFileSelected: 'Keine Einstellungsdatei ausgewählt',
+      description: 'Diese Datei enthält alle Ihre Kundendaten und Einstellungen. Sie wird automatisch auf Änderungen überwacht. Bei Änderungen von außen werden Sie benachrichtigt.',
+      activeFile: 'Aktive Einstellungsdatei:',
+      changeWarning: 'Möchten Sie wirklich zu einer anderen Einstellungsdatei wechseln?\n\nDie Anwendung wird automatisch die Daten aus der neuen Datei laden. Nicht gespeicherte Änderungen gehen verloren.'
+    },
+
+    // File Changed Notification
+    fileChanged: {
+      message: 'Die Einstellungsdatei wurde extern geändert:\n{{filePath}}\n\nMöchten Sie die Änderungen laden? Nicht gespeicherte Änderungen gehen verloren.'
+    },
     
     // Allgemeine Begriffe
     common: {
@@ -317,7 +378,9 @@ const de = {
       info: 'Information',
       language: 'Sprache',
       general: 'Allgemein',
-      appearance: 'Darstellung'
+      appearance: 'Darstellung',
+      yes: 'Ja',
+      no: 'Nein'
     }
   }
 };
@@ -629,6 +692,67 @@ const en = {
       }
     },
     
+    // Config Setup Dialog
+    configSetup: {
+      title: 'Settings File Setup',
+      description: 'QuartaBill requires a settings file for your data. This can be stored anywhere (e.g. in a cloud folder for synchronization between devices).',
+      chooseLocation: 'Choose Location',
+      choiceDescription: 'You can either create a new settings file or select an existing QuartaBill file.',
+      newFile: {
+        title: '📁 Create New File:',
+        description: '• For first QuartaBill start\n• Begins with empty customer data\n• Ideal for cloud folders (Dropbox, OneDrive, etc.)'
+      },
+      existingFile: {
+        title: '📂 Open Existing File:',
+        description: '• When you already have QuartaBill data\n• Loads existing customers and settings\n• For switching between different data sets'
+      },
+      recommendation: 'Recommendation: Save your settings file in a cloud folder for automatic synchronization between devices.',
+      important: 'Important: Remember the chosen location. You can change this later in the settings if necessary.',
+      analyzing: 'Analyzing file...',
+      existingFound: {
+        title: 'Existing QuartaBill file found!',
+        description: 'The selected file already contains QuartaBill data:',
+        foundData: 'Found data:',
+        customers: '{{count}} customers',
+        settingsAvailable: 'Settings available: {{available}}',
+        question: 'Do you want to use this existing file or create a new one?'
+      },
+      invalidFile: {
+        title: 'Invalid file format',
+        description: 'The selected file exists but does not contain valid QuartaBill data:',
+        error: 'Error: {{error}}',
+        options: 'You can overwrite the file or select a different file.'
+      },
+      completed: {
+        title: 'Setup completed successfully!',
+        description: 'Your settings file has been configured:',
+        info: 'QuartaBill will now start and automatically monitor the file.'
+      },
+      buttons: {
+        chooseLocation: 'Choose Location',
+        useExisting: 'Use Existing File',
+        createNew: 'Create New File',
+        overwrite: 'Overwrite File',
+        chooseDifferent: 'Choose Different File',
+        startApp: 'Start QuartaBill'
+      }
+    },
+    
+    // Settings for Config File
+    configFile: {
+      title: 'Settings File',
+      pathLabel: 'Path to settings file',
+      noFileSelected: 'No settings file selected',
+      description: 'This file contains all your customer data and settings. It is automatically monitored for changes. You will be notified of external changes.',
+      activeFile: 'Active settings file:',
+      changeWarning: 'Do you really want to switch to another settings file?\n\nThe application will automatically load the data from the new file. Unsaved changes will be lost.'
+    },
+
+    // File Changed Notification
+    fileChanged: {
+      message: 'The settings file was changed externally:\n{{filePath}}\n\nWould you like to load the changes? Unsaved changes will be lost.'
+    },
+
     // General Terms
     common: {
       loading: 'Loading...',
@@ -638,7 +762,9 @@ const en = {
       info: 'Information',
       language: 'Language',
       general: 'General',
-      appearance: 'Appearance'
+      appearance: 'Appearance',
+      yes: 'Yes',
+      no: 'No'
     }
   }
 };

@@ -26,7 +26,7 @@ function TabPanel({ children, value, index, ...other }) {
   );
 }
 
-function SettingsPanel({ settings, onUpdateSettings }) {
+function SettingsPanel({ settings, onUpdateSettings, configPath, onConfigPathChange }) {
   const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState(settings);
   const [activeTab, setActiveTab] = useState(0);
@@ -74,12 +74,21 @@ function SettingsPanel({ settings, onUpdateSettings }) {
     }
   };
 
-  const handleSelectDataFile = async () => {
-    const file = await DataService.selectFile([
-      { name: 'JSON Dateien', extensions: ['json'] }
-    ]);
-    if (file) {
-      handleInputChange(null, 'dataFilePath', file);
+
+
+  const handleSelectConfigFile = async () => {
+    // Warnung anzeigen vor der Dateiauswahl
+    const confirmed = window.confirm(
+      t('configFile.changeWarning')
+    );
+    
+    if (confirmed) {
+      const file = await DataService.selectFile([
+        { name: 'JSON Dateien', extensions: ['json'] }
+      ]);
+      if (file && onConfigPathChange) {
+        onConfigPathChange(file);
+      }
     }
   };
 
@@ -391,33 +400,46 @@ function SettingsPanel({ settings, onUpdateSettings }) {
             </Card>
           </Grid>
 
-          {/* Datei-Pfade */}
+          {/* Einstellungsdatei-Pfad */}
           <Grid item xs={12}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  {t('settings.paths.dataTitle')}
+                  {t('configFile.title')}
                 </Typography>
                 
                 <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mb: 2 }}>
                   <TextField
-                    label={t('settings.paths.dataPath')}
+                    label={t('configFile.pathLabel')}
                     fullWidth
-                    value={formData.dataFilePath || ''}
-                    onChange={(e) => handleInputChange(null, 'dataFilePath', e.target.value)}
-                    placeholder={i18n.language === 'de' ? 'Pfad zur JSON-Datei für Cloud-Sync' : 'Path to JSON file for cloud sync'}
+                    value={configPath || ''}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    placeholder={t('configFile.noFileSelected')}
                   />
-                  <IconButton onClick={handleSelectDataFile}>
+                  <IconButton onClick={handleSelectConfigFile}>
                     <Folder />
                   </IconButton>
                 </Box>
                 
                 <Alert severity="info">
-                  {t('settings.paths.dataInfo')}
+                  {t('configFile.description')}
                 </Alert>
+                
+                {configPath && (
+                  <Alert severity="success" sx={{ mt: 2 }}>
+                    <Typography variant="body2">
+                      <strong>{t('configFile.activeFile')}</strong><br />
+                      {configPath}
+                    </Typography>
+                  </Alert>
+                )}
               </CardContent>
             </Card>
           </Grid>
+
+
         </Grid>
       </TabPanel>
 

@@ -3,8 +3,11 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const chokidar = require('chokidar');
 
 let mainWindow;
+let fileWatcher = null;
+const configFileName = 'quartabill-config.json';
 
 // Auto-Updater Konfiguration
 autoUpdater.checkForUpdatesAndNotify();
@@ -362,6 +365,180 @@ ipcMain.handle('save-data', async (event, data, filePath) => {
     return true;
   } catch (error) {
     console.error('Fehler beim Speichern der Daten:', error);
+    return false;
+  }
+});
+
+// Config-Pfad Management
+ipcMain.handle('get-config-path', async () => {
+  try {
+    const configPath = path.join(os.homedir(), configFileName);
+    if (fs.existsSync(configPath)) {
+      const content = fs.readFileSync(configPath, 'utf8');
+      const config = JSON.parse(content);
+      return config.dataFilePath || null;
+    }
+    return null;
+  } catch (error) {
+    console.error('Fehler beim Laden des Config-Pfads:', error);
+    return null;
+  }
+});
+
+ipcMain.handle('set-config-path', async (event, dataFilePath) => {
+  try {
+    const configPath = path.join(os.homedir(), configFileName);
+    const config = { dataFilePath };
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf8');
+    return true;
+  } catch (error) {
+    console.error('Fehler beim Speichern des Config-Pfads:', error);
+    return false;
+  }
+});
+
+ipcMain.handle('select-config-path', async () => {
+  // Zuerst fragen was der Benutzer möchte
+  const choice = await dialog.showMessageBox(mainWindow, {
+    type: 'question',
+    title: 'Einstellungsdatei auswählen',
+    message: 'Möchten Sie eine neue Einstellungsdatei erstellen oder eine bestehende öffnen?',
+    detail: 'Sie können entweder eine neue Datei erstellen oder eine bereits vorhandene QuartaBill-Datei auswählen.',
+    buttons: ['Bestehende Datei öffnen', 'Neue Datei erstellen', 'Abbrechen'],
+    defaultId: 0,
+    cancelId: 2
+  });
+
+  if (choice.response === 2) {
+    // Abbrechen
+    return null;
+  }
+
+  if (choice.response === 0) {
+    // Bestehende Datei öffnen
+    const result = await dialog.showOpenDialog(mainWindow, {
+      title: 'Bestehende Einstellungsdatei auswählen',
+      filters: [
+        { name: 'JSON Dateien', extensions: ['json'] },
+        { name: 'Alle Dateien', extensions: ['*'] }
+      ],
+      properties: ['openFile']
+    });
+    return result.canceled ? null : result.filePaths[0];
+  } else {
+    // Neue Datei erstellen
+    const result = await dialog.showSaveDialog(mainWindow, {
+      title: 'Neue Einstellungsdatei erstellen',
+      defaultPath: 'quartabill-einstellungen.json',
+      filters: [
+        { name: 'JSON Dateien', extensions: ['json'] }
+      ]
+    });
+    return result.canceled ? null : result.filePath;
+  }
+});
+
+ipcMain.handle('file-exists', async (event, filePath) => {
+  try {
+    return fs.existsSync(filePath);
+  } catch (error) {
+    return false;
+  }
+});
+
+// File-Watching
+ipcMain.handle('start-file-watching', async (event, filePath) => {
+  try {
+    // Stoppe vorheriges Watching falls aktiv
+    if (fileWatcher) {
+      fileWatcher.close();
+    }
+
+    fileWatcher = chokidar.watch(filePath, {
+      persistent: true,
+      usePolling: false,
+      ignoreInitial: true,
+      stabilityThreshold: 1000, // Warte 1 Sekunde nach der letzten Änderung
+      pollInterval: 1000 // Poll nur alle Sekunde (falls Polling nötig)
+    });
+
+    let changeTimeout = null;
+    
+    fileWatcher.on('change', () => {
+      // Debouncing auf Backend-Seite
+      if (changeTimeout) {
+        clearTimeout(changeTimeout);
+      }
+      
+      changeTimeout = setTimeout(() => {
+        console.log('Datei wurde geändert:', filePath);
+        if (mainWindow) {
+          mainWindow.webContents.send('file-changed', filePath, true);
+        }
+        changeTimeout = null;
+      }, 500); // 500ms Debounce
+    });
+
+    fileWatcher.on('error', (error) => {
+      console.error('File-Watcher Fehler:', error);
+    });
+
+    console.log('File-Watching gestartet für:', filePath);
+    return true;
+  } catch (error) {
+    console.error('Fehler beim Starten des File-Watchings:', error);
+    return false;
+  }
+});
+
+ipcMain.handle('stop-file-watching', async () => {
+  try {
+    if (fileWatcher) {
+      fileWatcher.close();
+      fileWatcher = null;
+      console.log('File-Watching gestoppt');
+    }
+    return true;
+  } catch (error) {
+    console.error('Fehler beim Stoppen des File-Watchings:', error);
+    return false;
+  }
+});
+
+// Erstellt eine neue Config-Datei mit Standard-Daten
+ipcMain.handle('create-new-config-file', async (event, filePath) => {
+  try {
+    const defaultData = {
+      customers: [],
+      settings: {
+        issuer: {
+          name: 'Max Mustermann',
+          title: 'Freiberuflicher Berater',
+          address: 'Musterstraße 123\n12345 Musterstadt',
+          phone: 'Tel.: +49 123 456789',
+          website: 'www.beispiel-firma.de',
+          email: 'info@beispiel-firma.de',
+          iban: 'DE89370400440532013000',
+          uid: 'DE123456789',
+          bank: 'Musterbank',
+          paymentTerms: 14
+        },
+        logoPathWindows: '',
+        logoPathMac: '',
+        dataFilePath: filePath,
+        hasSeenOnboarding: false,
+        invoiceNumberFormat: '{QQ}{YY}{KK}',
+        language: 'de',
+        darkMode: false
+      }
+    };
+    
+    const jsonData = JSON.stringify(defaultData, null, 2);
+    fs.writeFileSync(filePath, jsonData, 'utf8');
+    console.log('Neue Config-Datei erstellt:', filePath);
+    return true;
+  } catch (error) {
+    console.error('Fehler beim Erstellen der neuen Config-Datei:', error);
     return false;
   }
 });

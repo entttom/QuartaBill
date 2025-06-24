@@ -20,9 +20,23 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Event Listener
   onImportData: (callback) => ipcRenderer.on('import-data', callback),
   onExportData: (callback) => ipcRenderer.on('export-data', callback),
+  onFileChanged: (callback) => ipcRenderer.on('file-changed', callback),
   
   // Event Listener entfernen
   removeAllListeners: (channel) => ipcRenderer.removeAllListeners(channel),
+  
+  // Config-Pfad Management
+  getConfigPath: () => ipcRenderer.invoke('get-config-path'),
+  setConfigPath: (configPath) => ipcRenderer.invoke('set-config-path', configPath),
+  selectConfigPath: () => ipcRenderer.invoke('select-config-path'),
+  fileExists: (filePath) => ipcRenderer.invoke('file-exists', filePath),
+  
+  // File-Watching
+  startFileWatching: (filePath) => ipcRenderer.invoke('start-file-watching', filePath),
+  stopFileWatching: () => ipcRenderer.invoke('stop-file-watching'),
+  
+  // Config-Datei Management
+  createNewConfigFile: (filePath) => ipcRenderer.invoke('create-new-config-file', filePath),
   
   // Auto-Updater Funktionen
   checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
