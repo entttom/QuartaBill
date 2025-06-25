@@ -38,6 +38,8 @@ class EmailService {
           emlPath = customer.emlPathWindows;
         } else if (platform === 'darwin') {
           emlPath = customer.emlPathMac;
+        } else if (platform === 'linux') {
+          emlPath = customer.emlPathLinux;
         } else {
           // Browser oder unbekanntes System - verwende Fallback
           emlPath = null;
@@ -69,6 +71,8 @@ class EmailService {
           emlPath = customer.emlPathWindows;
         } else if (platform === 'darwin') {
           emlPath = customer.emlPathMac;
+        } else if (platform === 'linux') {
+          emlPath = customer.emlPathLinux;
         } else {
           // Browser oder unbekanntes System - verwende Fallback
           emlPath = null;

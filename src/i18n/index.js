@@ -42,8 +42,10 @@ const de = {
         emailTemplate: 'Email-Vorlage',
         savePathWindows: 'PDF-Pfad (Windows)',
         savePathMac: 'PDF-Pfad (Mac)',
+        savePathLinux: 'PDF-Pfad (Linux)',
         emlPathWindows: 'EML-Pfad (Windows)',
         emlPathMac: 'EML-Pfad (Mac)',
+        emlPathLinux: 'EML-Pfad (Linux)',
         placeholders: {
           address: 'Straße\\nPLZ Ort',
           activity: 'Arbeitsmedizinische Leistungen [Quartal]',
@@ -51,13 +53,16 @@ const de = {
           emailTemplate: 'Verfügbare Variablen: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]',
           savePathWindows: 'C:\\Pfad\\zu\\Kundenordner',
           savePathMac: '/Pfad/zu/Kundenordner',
+          savePathLinux: '/pfad/zu/kundenordner',
           emlPathWindows: 'C:\\Pfad\\zu\\Email-Ordner',
-          emlPathMac: '/Pfad/zu/Email-Ordner'
+          emlPathMac: '/Pfad/zu/Email-Ordner',
+          emlPathLinux: '/pfad/zu/email-ordner'
         },
-        paths: 'Pfade',
-        storagePaths: 'Speicherpfade',
-        pdfPaths: 'PDF-Speicherpfade',
-        emlPaths: 'EML-Speicherpfade',
+                  paths: 'Pfade',
+          storagePaths: 'Speicherpfade',
+          pdfPaths: 'PDF-Speicherpfade',
+          emlPaths: 'EML-Speicherpfade',
+          platformPaths: 'Plattform-Pfade',
         emailTemplatePlaceholder: 'Text der Email die mit der Rechnung versendet wird...'
       },
       
@@ -153,7 +158,9 @@ const de = {
         logoTitle: 'Logo-Pfade',
         logoWindows: 'Windows Logo-Pfad',
         logoMac: 'Mac Logo-Pfad',
+        logoLinux: 'Linux Logo-Pfad',
         logoInfo: 'Das Logo wird in der oberen linken Ecke der Rechnung angezeigt. Empfohlene Größe: 200x120 Pixel.',
+        platformInfo: 'Nur die Pfade für Ihr aktuelles Betriebssystem sind relevant. Die anderen Pfade werden für die plattformübergreifende Kompatibilität gespeichert.',
         
         dataTitle: 'Daten-Synchronisation',
         dataPath: 'Pfad zur Daten-Datei',
@@ -380,7 +387,9 @@ const de = {
       general: 'Allgemein',
       appearance: 'Darstellung',
       yes: 'Ja',
-      no: 'Nein'
+      no: 'Nein',
+      currentPlatform: 'Aktuelle Plattform',
+      otherPlatforms: 'Weitere Plattformen'
     }
   }
 };
@@ -426,8 +435,10 @@ const en = {
         emailTemplate: 'Email Template',
         savePathWindows: 'PDF Path (Windows)',
         savePathMac: 'PDF Path (Mac)',
+        savePathLinux: 'PDF Path (Linux)',
         emlPathWindows: 'EML Path (Windows)',
         emlPathMac: 'EML Path (Mac)',
+        emlPathLinux: 'EML Path (Linux)',
         placeholders: {
           address: 'Street\\nZIP City',
           activity: 'Occupational Health Services [Quarter]',
@@ -435,13 +446,16 @@ const en = {
           emailTemplate: 'Available variables: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]',
           savePathWindows: 'C:\\Path\\to\\Customer-Folder',
           savePathMac: '/Path/to/Customer-Folder',
+          savePathLinux: '/path/to/customer-folder',
           emlPathWindows: 'C:\\Path\\to\\Email-Folder',
-          emlPathMac: '/Path/to/Email-Folder'
+          emlPathMac: '/Path/to/Email-Folder',
+          emlPathLinux: '/path/to/email-folder'
         },
-        paths: 'Paths',
-        storagePaths: 'Storage Paths',
-        pdfPaths: 'PDF Storage Paths',
-        emlPaths: 'EML Storage Paths',
+                  paths: 'Paths',
+          storagePaths: 'Storage Paths',
+          pdfPaths: 'PDF Storage Paths',
+          emlPaths: 'EML Storage Paths',
+          platformPaths: 'Platform Paths',
         emailTemplatePlaceholder: 'Email text that will be sent with the invoice...'
       },
       
@@ -537,7 +551,9 @@ const en = {
         logoTitle: 'Logo Paths',
         logoWindows: 'Windows Logo Path',
         logoMac: 'Mac Logo Path',
+        logoLinux: 'Linux Logo Path',
         logoInfo: 'The logo is displayed in the upper left corner of the invoice. Recommended size: 200x120 pixels.',
+        platformInfo: 'Only the paths for your current operating system are relevant. The other paths are stored for cross-platform compatibility.',
         
         dataTitle: 'Data Synchronization',
         dataPath: 'Data File Path',
@@ -764,7 +780,9 @@ const en = {
       general: 'General',
       appearance: 'Appearance',
       yes: 'Yes',
-      no: 'No'
+      no: 'No',
+      currentPlatform: 'Current Platform',
+      otherPlatforms: 'Other Platforms'
     }
   }
 };

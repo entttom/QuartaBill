@@ -8,6 +8,7 @@ import { Folder, Save, Image, ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import DataService from '../services/DataService';
 import { getVersion } from '../utils/version';
+import PlatformPathFields from './PlatformPathFields';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -72,6 +73,19 @@ function SettingsPanel({ settings, onUpdateSettings, configPath, onConfigPathCha
     const file = await DataService.selectFile(filters);
     if (file) {
       handleInputChange(null, field, file);
+    }
+  };
+
+  const handlePathChange = (fieldName, value) => {
+    handleInputChange(null, fieldName, value);
+  };
+
+  const handleSelectLogo = async (platform, fieldName) => {
+    const file = await DataService.selectFile([
+      { name: i18n.language === 'de' ? 'Bilddateien' : 'Image files', extensions: ['png', 'jpg', 'jpeg'] }
+    ]);
+    if (file) {
+      handlePathChange(fieldName, file);
     }
   };
 
@@ -346,7 +360,7 @@ function SettingsPanel({ settings, onUpdateSettings, configPath, onConfigPathCha
 
       <TabPanel value={activeTab} index={1}>
         <Grid container spacing={3}>
-          {/* Logo-Pfade */}
+          {/* Logo-Pfade - Intelligent Platform Display */}
           <Grid item xs={12}>
             <Card>
               <CardContent>
@@ -354,45 +368,13 @@ function SettingsPanel({ settings, onUpdateSettings, configPath, onConfigPathCha
                   {t('settings.paths.logoTitle')}
                 </Typography>
                 
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                      <TextField
-                        label={t('settings.paths.logoWindows')}
-                        fullWidth
-                        value={formData.logoPathWindows || ''}
-                        onChange={(e) => handleInputChange(null, 'logoPathWindows', e.target.value)}
-                        placeholder={i18n.language === 'de' ? 'C:\\Pfad\\zum\\logo.png' : 'C:\\Path\\to\\logo.png'}
-                      />
-                      <IconButton 
-                        onClick={() => handleSelectFile('logoPathWindows', [
-                          { name: i18n.language === 'de' ? 'Bilddateien' : 'Image files', extensions: ['png', 'jpg', 'jpeg'] }
-                        ])}
-                      >
-                        <Image />
-                      </IconButton>
-                    </Box>
-                  </Grid>
-                  
-                  <Grid item xs={12} sm={6}>
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                      <TextField
-                        label={t('settings.paths.logoMac')}
-                        fullWidth
-                        value={formData.logoPathMac || ''}
-                        onChange={(e) => handleInputChange(null, 'logoPathMac', e.target.value)}
-                        placeholder={i18n.language === 'de' ? '/Pfad/zum/logo.png' : '/path/to/logo.png'}
-                      />
-                      <IconButton 
-                        onClick={() => handleSelectFile('logoPathMac', [
-                          { name: i18n.language === 'de' ? 'Bilddateien' : 'Image files', extensions: ['png', 'jpg', 'jpeg'] }
-                        ])}
-                      >
-                        <Image />
-                      </IconButton>
-                    </Box>
-                  </Grid>
-                </Grid>
+                <PlatformPathFields
+                  values={formData}
+                  onChange={handlePathChange}
+                  onSelectFolder={handleSelectLogo}
+                  fieldType="logo"
+                  label={t('settings.paths.logoTitle')}
+                />
                 
                 <Alert severity="info" sx={{ mt: 2 }}>
                   {t('settings.paths.logoInfo')}

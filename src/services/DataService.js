@@ -27,6 +27,7 @@ class DataService {
       },
       logoPathWindows: '',
       logoPathMac: '',
+      logoPathLinux: '',
       dataFilePath: this.defaultDataPath,
       hasSeenOnboarding: false,
       invoiceNumberFormat: '{QQ}{YY}{KK}',
@@ -315,8 +316,10 @@ class DataService {
       emailTemplate: i18n.t('email.defaultTemplate').replace(/\\n/g, '\n'),
       savePathWindows: '',
       savePathMac: '',
+      savePathLinux: '',
       emlPathWindows: '',
       emlPathMac: '',
+      emlPathLinux: '',
       lineItems: [
         {
           id: Date.now().toString() + '_1',

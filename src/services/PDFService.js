@@ -51,6 +51,8 @@ class PDFService {
         savePath = customer.savePathWindows;
       } else if (platform === 'darwin') {
         savePath = customer.savePathMac;
+      } else if (platform === 'linux') {
+        savePath = customer.savePathLinux;
       } else {
         // Browser oder unbekanntes System - verwende Fallback
         savePath = null;
@@ -79,6 +81,8 @@ class PDFService {
         savePath = customer.savePathWindows;
       } else if (platform === 'darwin') {
         savePath = customer.savePathMac;
+      } else if (platform === 'linux') {
+        savePath = customer.savePathLinux;
       } else {
         // Browser oder unbekanntes System - verwende Fallback
         savePath = null;
@@ -145,6 +149,8 @@ class PDFService {
         logoPath = settings.logoPathWindows;
       } else if (platform === 'darwin') {
         logoPath = settings.logoPathMac;
+      } else if (platform === 'linux') {
+        logoPath = settings.logoPathLinux;
       } else {
         // Browser oder unbekanntes System - kein Logo verfügbar
         logoPath = null;

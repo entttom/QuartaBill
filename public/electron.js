@@ -342,6 +342,7 @@ ipcMain.handle('load-data', async (event, filePath) => {
           },
           logoPathWindows: '',
           logoPathMac: '',
+          logoPathLinux: '',
           dataFilePath: dataPath
         }
       };
@@ -525,6 +526,7 @@ ipcMain.handle('create-new-config-file', async (event, filePath) => {
         },
         logoPathWindows: '',
         logoPathMac: '',
+        logoPathLinux: '',
         dataFilePath: filePath,
         hasSeenOnboarding: false,
         invoiceNumberFormat: '{QQ}{YY}{KK}',

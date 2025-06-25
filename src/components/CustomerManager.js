@@ -9,6 +9,7 @@ import {
 import { Add, Edit, Delete, Email, Folder, DragHandle, ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import DataService from '../services/DataService';
+import PlatformPathFields from './PlatformPathFields';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -82,19 +83,10 @@ function CustomerManager({ customers, onUpdateCustomers }) {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSelectFolder = async (type) => {
+  const handleSelectFolder = async (platform, fieldName) => {
     const folder = await DataService.selectFolder();
     if (folder) {
-      const fieldMap = {
-        'pdfWindows': 'savePathWindows',
-        'pdfMac': 'savePathMac',
-        'emlWindows': 'emlPathWindows',
-        'emlMac': 'emlPathMac'
-      };
-      const field = fieldMap[type];
-      if (field) {
-        handleInputChange(field, folder);
-      }
+      handleInputChange(fieldName, folder);
     }
   };
 
@@ -540,66 +532,32 @@ function CustomerManager({ customers, onUpdateCustomers }) {
                 </Typography>
               </Grid>
 
-              {/* PDF Speicherpfade */}
-              <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <TextField
-                    label={t('customers.form.savePathWindows')}
-                    fullWidth
-                    value={formData.savePathWindows}
-                    onChange={(e) => handleInputChange('savePathWindows', e.target.value)}
-                    placeholder={t('customers.form.placeholders.savePathWindows')}
-                  />
-                  <IconButton onClick={() => handleSelectFolder('pdfWindows')}>
-                    <Folder />
-                  </IconButton>
-                </Box>
-              </Grid>
-              
-              <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <TextField
-                    label={t('customers.form.savePathMac')}
-                    fullWidth
-                    value={formData.savePathMac}
-                    onChange={(e) => handleInputChange('savePathMac', e.target.value)}
-                    placeholder={t('customers.form.placeholders.savePathMac')}
-                  />
-                  <IconButton onClick={() => handleSelectFolder('pdfMac')}>
-                    <Folder />
-                  </IconButton>
-                </Box>
+              {/* PDF Speicherpfade - Intelligent Platform Display */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  {t('customers.form.storagePaths')} - PDF
+                </Typography>
+                <PlatformPathFields
+                  values={formData}
+                  onChange={handleInputChange}
+                  onSelectFolder={handleSelectFolder}
+                  fieldType="save"
+                  label={t('customers.form.pdfPaths')}
+                />
               </Grid>
 
-              {/* EML Speicherpfade */}
-              <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <TextField
-                    label={t('customers.form.emlPathWindows')}
-                    fullWidth
-                    value={formData.emlPathWindows}
-                    onChange={(e) => handleInputChange('emlPathWindows', e.target.value)}
-                    placeholder={t('customers.form.placeholders.emlPathWindows')}
-                  />
-                  <IconButton onClick={() => handleSelectFolder('emlWindows')}>
-                    <Folder />
-                  </IconButton>
-                </Box>
-              </Grid>
-              
-              <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <TextField
-                    label={t('customers.form.emlPathMac')}
-                    fullWidth
-                    value={formData.emlPathMac}
-                    onChange={(e) => handleInputChange('emlPathMac', e.target.value)}
-                    placeholder={t('customers.form.placeholders.emlPathMac')}
-                  />
-                  <IconButton onClick={() => handleSelectFolder('emlMac')}>
-                    <Folder />
-                  </IconButton>
-                </Box>
+              {/* EML Speicherpfade - Intelligent Platform Display */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  {t('customers.form.storagePaths')} - EML
+                </Typography>
+                <PlatformPathFields
+                  values={formData}
+                  onChange={handleInputChange}
+                  onSelectFolder={handleSelectFolder}
+                  fieldType="eml"
+                  label={t('customers.form.emlPaths')}
+                />
               </Grid>
 
               {/* Hilfe für Pfade-Einstellungen */}
