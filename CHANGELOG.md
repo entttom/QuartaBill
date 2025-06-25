@@ -5,6 +5,30 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.4.0] - 2024-12-23
+
+### ✨ Neu hinzugefügt
+- **🐧 Linux-Support**: Vollständige Unterstützung für Linux-Pfade (Logo, PDF, EML)
+- **🎯 Intelligente Platform-UI**: Neue PlatformPathFields-Komponente zeigt nur relevante Plattform prominent an
+- **📱 Smart Platform Detection**: Automatische Erkennung des aktuellen Betriebssystems
+- **🔄 Cross-Platform Compatibility**: Alle Pfad-Einstellungen jetzt für Windows, macOS und Linux
+- **🌍 Erweiterte Mehrsprachigkeit**: Vollständig bilinguale Unterstützung für alle neuen Features
+
+### 🔧 Verbessert
+- **UI/UX**: Aufklappbare Akkordions reduzieren Interface-Komplexität
+- **CustomerManager**: Neue intelligente Pfad-Verwaltung für PDF/EML-Speicherorte
+- **SettingsPanel**: Verbesserte Logo-Pfad-Konfiguration mit Platform-Chips
+- **Benutzerfreundlichkeit**: Plattform-Icons (Windows, macOS, Linux) für bessere Orientierung
+- **Code-Architektur**: Wiederverwendbare PlatformPathFields-Komponente
+
+### 🛠️ Technische Verbesserungen
+- **Backend-Services**: PDFService, EmailService und DataService unterstützen Linux
+- **Electron-Integration**: Erweiterte Plattform-Erkennung und Pfad-Handling
+- **Konsistente API**: Einheitliche Pfad-Verwaltung across alle Plattformen
+- **Future-Proof**: Einfach erweiterbar für weitere Plattformen
+
+---
+
 ## [1.3.2] - 2024-12-23
 
 ### 🔧 Verbessert
