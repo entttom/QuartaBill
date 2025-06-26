@@ -62,19 +62,26 @@ exports.default = async function afterSign(context) {
   console.log('✅ Deep code signing completed');
 
   // Only notarize if we have the required environment variables
-  if (process.env.APPLE_ID && process.env.APPLE_ID_PASSWORD && process.env.APPLE_TEAM_ID) {
+  const applePassword = process.env.APPLE_APP_SPECIFIC_PASSWORD || process.env.APPLE_ID_PASSWORD;
+  
+  if (process.env.APPLE_ID && applePassword && process.env.APPLE_TEAM_ID) {
     console.log('🍎 Starting notarization...');
+    console.log(`Using Apple ID: ${process.env.APPLE_ID}`);
+    console.log(`Using Team ID: ${process.env.APPLE_TEAM_ID}`);
     
     await notarize({
       appBundleId: 'com.quartabill.app',
       appPath: appPath,
       appleId: process.env.APPLE_ID,
-      appleIdPassword: process.env.APPLE_ID_PASSWORD,
+      appleIdPassword: applePassword,
       teamId: process.env.APPLE_TEAM_ID,
     });
     
     console.log('✅ Notarization completed successfully');
   } else {
     console.log('⚠️  Skipping notarization (missing environment variables)');
+    console.log(`APPLE_ID: ${process.env.APPLE_ID ? 'Set' : 'Missing'}`);
+    console.log(`APPLE_APP_SPECIFIC_PASSWORD: ${process.env.APPLE_APP_SPECIFIC_PASSWORD ? 'Set' : 'Missing'}`);
+    console.log(`APPLE_TEAM_ID: ${process.env.APPLE_TEAM_ID ? 'Set' : 'Missing'}`);
   }
 }; 
