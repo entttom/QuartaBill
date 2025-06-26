@@ -111,68 +111,36 @@ jobs:
       run: |
         echo "NEW_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
 
-    - name: Download all artifacts
+    - name: Download Windows artifacts
       uses: actions/download-artifact@v4
       with:
-        path: dist/
+        name: win-artifacts
+        path: ./artifacts/windows
 
-    - name: Prepare artifacts for release
-      run: |
-        mkdir -p release_files
-        find dist/ -type f \( -name "*.exe" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" \) -exec cp {} release_files/ \;
-        ls -la release_files/
+    - name: Download macOS artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: mac-artifacts
+        path: ./artifacts/macos
 
-    - name: Create Release Notes
-      id: release_notes
-      run: |
-        echo "Creating release notes for version $NEW_VERSION"
-        cat > release_notes.md << EOF
-        ## QuartaBill v$NEW_VERSION
-        
-        ### 🚀 Neue Features
-        - Automatische Versionsaktualisierung
-        - Zentrale Versionsverwaltung
-        - **macOS Notarisierung aktiviert** 🔐
-        
-        ### 🔧 Verbesserungen
-        - Version wird nun automatisch aus package.json gelesen
-        - Bilinguale Unterstützung für alle UI-Elemente
-        - Cross-Platform-Builds mit separaten Runnern
-        
-        ### 📦 Downloads
-        
-        **Windows:**
-        - QuartaBill-Setup-$NEW_VERSION.exe (Installer)
-        - QuartaBill-$NEW_VERSION.exe (Portable)
-        
-        **macOS:**
-        - QuartaBill-$NEW_VERSION.dmg (Universal Binary, Notarisiert)
-        
-        **Linux:**
-        - QuartaBill-$NEW_VERSION.AppImage
-        - quartabill_$NEW_VERSION_amd64.deb
-        - quartabill-$NEW_VERSION.x86_64.rpm
-        
-        ### 🔗 Installation
-        
-        1. Laden Sie die entsprechende Datei für Ihr Betriebssystem herunter
-        2. Führen Sie die Installation aus
-        3. Starten Sie QuartaBill
-        
-        ---
-        
-        **Vollständiges Changelog:** https://github.com/entttom/QuartaBill/compare/v${{ github.event.before }}...v$NEW_VERSION
-        EOF
+    - name: Download Linux artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: linux-artifacts
+        path: ./artifacts/linux
+
+
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: v${{ env.NEW_VERSION }}
-        name: QuartaBill v${{ env.NEW_VERSION }}
-        body_path: release_notes.md
+        files: |
+          ./artifacts/windows/*
+          ./artifacts/macos/*
+          ./artifacts/linux/*
         draft: false
         prerelease: false
-        files: release_files/*
+        generate_release_notes: true
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Commit version update
