@@ -78,6 +78,7 @@
       "icon": "icon.iconset",
       "category": "public.app-category.business",
       "identity": "Thomas Entner (RG7FE682S2)",
+      "teamId": "RG7FE682S2",
       "target": [
         {
           "target": "dmg",
