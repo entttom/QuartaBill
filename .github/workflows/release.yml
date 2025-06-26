@@ -42,7 +42,14 @@ jobs:
       run: |
         VERSION=${GITHUB_REF#refs/tags/v}
         echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
-        npm version $VERSION --no-git-tag-version
+        
+        # Überprüfe ob Version bereits korrekt ist
+        CURRENT_VERSION=$(node -p "require('./package.json').version")
+        if [ "$CURRENT_VERSION" != "$VERSION" ]; then
+          npm version $VERSION --no-git-tag-version
+        else
+          echo "Version ist bereits korrekt: $VERSION"
+        fi
 
     - name: Build application
       run: npm run build
