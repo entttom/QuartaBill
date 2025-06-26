@@ -78,7 +78,6 @@
       "icon": "icon.iconset",
       "category": "public.app-category.business",
       "identity": "Thomas Entner (RG7FE682S2)",
-      "teamId": "RG7FE682S2",
       "target": [
         {
           "target": "dmg",
@@ -92,7 +91,9 @@
       "gatekeeperAssess": false,
       "entitlements": "electron/entitlements.mac.plist",
       "entitlementsInherit": "electron/entitlements.mac.plist",
-      "notarize": true
+      "notarize": {
+        "teamId": "RG7FE682S2"
+      }
     },
     "linux": {
       "icon": "icon.iconset/icon_256x256.png",
