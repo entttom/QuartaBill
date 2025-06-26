@@ -23,7 +23,7 @@
     "directories": {
       "output": "dist"
     },
-    "publish": "never",
+
     "files": [
       "build/**/*",
       "public/electron.js",
