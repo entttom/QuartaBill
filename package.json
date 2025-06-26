@@ -23,13 +23,7 @@
     "directories": {
       "output": "dist"
     },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "entttom",
-        "repo": "QuartaBill"
-      }
-    ],
+    "publish": "never",
     "files": [
       "build/**/*",
       "public/electron.js",
