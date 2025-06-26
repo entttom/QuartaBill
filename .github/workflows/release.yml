@@ -12,8 +12,24 @@ on:
         type: string
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+            script: dist:win
+            artifact_pattern: "dist/*.exe"
+          - os: macos-latest
+            platform: mac
+            script: dist:mac
+            artifact_pattern: "dist/*.dmg"
+          - os: ubuntu-latest
+            platform: linux
+            script: dist:linux
+            artifact_pattern: "dist/*.{AppImage,deb,rpm}"
+    
+    runs-on: ${{ matrix.os }}
     
     steps:
     - name: Checkout repository
@@ -50,18 +66,57 @@ jobs:
         else
           echo "Version ist bereits korrekt: $VERSION"
         fi
+      shell: bash
 
     - name: Build application
       run: npm run build
 
-    - name: Create Release Assets (Windows)
-      run: npm run dist:win
+    - name: Create Release Assets
+      env:
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+        APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        CSC_LINK: ${{ secrets.CSC_LINK }}
+        CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      run: npm run ${{ matrix.script }}
 
-    - name: Create Release Assets (macOS)
-      run: npm run dist:mac
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.platform }}-artifacts
+        path: ${{ matrix.artifact_pattern }}
+        retention-days: 30
 
-    - name: Create Release Assets (Linux)
-      run: npm run dist:linux
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: always() && contains(needs.build.result, 'success')
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Extract version from tag
+      if: github.event_name == 'push'
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Set version from input
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        echo "NEW_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dist/
+
+    - name: Prepare artifacts for release
+      run: |
+        mkdir -p release_files
+        find dist/ -type f \( -name "*.exe" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" \) -exec cp {} release_files/ \;
+        ls -la release_files/
 
     - name: Create Release Notes
       id: release_notes
@@ -73,10 +128,12 @@ jobs:
         ### 🚀 Neue Features
         - Automatische Versionsaktualisierung
         - Zentrale Versionsverwaltung
+        - **macOS Notarisierung aktiviert** 🔐
         
         ### 🔧 Verbesserungen
         - Version wird nun automatisch aus package.json gelesen
         - Bilinguale Unterstützung für alle UI-Elemente
+        - Cross-Platform-Builds mit separaten Runnern
         
         ### 📦 Downloads
         
@@ -85,7 +142,7 @@ jobs:
         - QuartaBill-$NEW_VERSION.exe (Portable)
         
         **macOS:**
-        - QuartaBill-$NEW_VERSION.dmg (Universal Binary)
+        - QuartaBill-$NEW_VERSION.dmg (Universal Binary, Notarisiert)
         
         **Linux:**
         - QuartaBill-$NEW_VERSION.AppImage
@@ -111,12 +168,7 @@ jobs:
         body_path: release_notes.md
         draft: false
         prerelease: false
-        files: |
-          dist/*.exe
-          dist/*.dmg
-          dist/*.AppImage
-          dist/*.deb
-          dist/*.rpm
+        files: release_files/*
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Commit version update
