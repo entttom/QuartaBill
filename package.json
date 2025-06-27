@@ -1,6 +1,6 @@
 {
   "name": "quartabill",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner",
   "main": "public/electron.js",
   "homepage": "./",
