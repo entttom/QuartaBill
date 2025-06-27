@@ -190,13 +190,7 @@ function InvoiceHistory({ data, onUpdateData, customers }) {
   };
 
   const getQuarterDateRange = (quarter, year) => {
-    const quarterMap = {
-      'Q1': 'Jan - Mär',
-      'Q2': 'Apr - Jun',
-      'Q3': 'Jul - Sep',
-      'Q4': 'Okt - Dez'
-    };
-    return `${quarterMap[quarter]} ${year}`;
+    return `${quarter} ${year}`;
   };
 
   const years = [...new Set((data.invoiceHistory || []).map(inv => inv.year))].sort((a, b) => b - a);
