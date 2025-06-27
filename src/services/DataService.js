@@ -31,7 +31,7 @@ class DataService {
       logoPathLinux: '',
       dataFilePath: this.defaultDataPath,
       hasSeenOnboarding: false,
-      invoiceNumberFormat: '{QQ}{YY}{KK}',
+      invoiceNumberFormat: '[QQ][YY][KK]',
       language: 'de',
       darkMode: false
     }
@@ -370,7 +370,7 @@ class DataService {
     return 'unknown';
   }
 
-  static generateInvoiceNumber(customer, quarter, year, format = '{QQ}{YY}{KK}') {
+  static generateInvoiceNumber(customer, quarter, year, format = '[QQ][YY][KK]') {
     // Verfügbare Variablen für Rechnungsnummer
     const quarterNum = quarter.replace('Q', '0'); // Q1 -> 01
     const yearShort = year.toString().slice(-2); // 2024 -> 24
@@ -382,18 +382,18 @@ class DataService {
     const currentDate = new Date();
     const invoiceCount = currentDate.getMonth() * 100 + currentDate.getDate(); // Einfache Sequenz
     
-    // Variable-Ersetzung
+    // Variable-Ersetzung mit eckigen Klammern
     let invoiceNumber = format
-      .replace(/{QQ}/g, quarterNum)           // Quartal zweistellig (01, 02, 03, 04)
-      .replace(/{Q}/g, quarter.replace('Q', ''))  // Quartal einstellig (1, 2, 3, 4)
-      .replace(/{YYYY}/g, yearFull)           // Jahr vierstellig (2024)
-      .replace(/{YY}/g, yearShort)            // Jahr zweistellig (24)
-      .replace(/{KKK}/g, customerPrefix3)     // Kunde dreistellig (MAX)
-      .replace(/{KK}/g, customerPrefix)       // Kunde zweistellig (MA)
-      .replace(/{K}/g, customer.name.substring(0, 1).toUpperCase()) // Kunde einstellig (M)
-      .replace(/{NNN}/g, invoiceCount.toString().padStart(3, '0')) // Fortlaufende Nummer dreistellig
-      .replace(/{NN}/g, invoiceCount.toString().padStart(2, '0'))  // Fortlaufende Nummer zweistellig
-      .replace(/{N}/g, invoiceCount.toString()); // Fortlaufende Nummer
+      .replace(/\[QQ\]/g, quarterNum)           // Quartal zweistellig (01, 02, 03, 04)
+      .replace(/\[Q\]/g, quarter.replace('Q', ''))  // Quartal einstellig (1, 2, 3, 4)
+      .replace(/\[YYYY\]/g, yearFull)           // Jahr vierstellig (2024)
+      .replace(/\[YY\]/g, yearShort)            // Jahr zweistellig (24)
+      .replace(/\[KKK\]/g, customerPrefix3)     // Kunde dreistellig (MAX)
+      .replace(/\[KK\]/g, customerPrefix)       // Kunde zweistellig (MA)
+      .replace(/\[K\]/g, customer.name.substring(0, 1).toUpperCase()) // Kunde einstellig (M)
+      .replace(/\[NNN\]/g, invoiceCount.toString().padStart(3, '0')) // Fortlaufende Nummer dreistellig
+      .replace(/\[NN\]/g, invoiceCount.toString().padStart(2, '0'))  // Fortlaufende Nummer zweistellig
+      .replace(/\[N\]/g, invoiceCount.toString()); // Fortlaufende Nummer
     
     return invoiceNumber;
   }

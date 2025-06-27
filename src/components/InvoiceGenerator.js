@@ -65,7 +65,7 @@ function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
   };
 
   const generateInvoiceNumber = (customer, quarter, year) => {
-    const format = settings?.invoiceNumberFormat || '{QQ}{YY}{KK}';
+    const format = settings?.invoiceNumberFormat || '[QQ][YY][KK]';
     return DataService.generateInvoiceNumber(customer, quarter, year, format);
   };
 

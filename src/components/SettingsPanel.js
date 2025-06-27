@@ -332,14 +332,14 @@ function SettingsPanel({ settings, onUpdateSettings, configPath, onConfigPathCha
               </Grid>
               
               <Grid item xs={12}>
-                <TextField
-                  label={t('settings.issuer.invoiceNumber.format')}
-                  fullWidth
-                  value={formData.invoiceNumberFormat || '{QQ}{YY}{KK}'}
-                  onChange={(e) => handleInputChange(null, 'invoiceNumberFormat', e.target.value)}
-                  placeholder="{QQ}{YY}{KK}"
-                  helperText={t('settings.issuer.invoiceNumber.help')}
-                />
+                                  <TextField
+                    label={t('settings.issuer.invoiceNumber.format')}
+                    fullWidth
+                    value={formData.invoiceNumberFormat || '[QQ][YY][KK]'}
+                    onChange={(e) => handleInputChange(null, 'invoiceNumberFormat', e.target.value)}
+                    placeholder="[QQ][YY][KK]"
+                    helperText={t('settings.issuer.invoiceNumber.help')}
+                  />
               </Grid>
               
               <Grid item xs={12}>
@@ -355,12 +355,12 @@ function SettingsPanel({ settings, onUpdateSettings, configPath, onConfigPathCha
                   </AccordionSummary>
                   <AccordionDetails>
                     <Box sx={{ p: 1 }}>
-                      <Typography variant="body2" component="div">
-                        • <code>{'{QQ}{YY}{KK}'}</code> → 0124MA {t('settings.issuer.invoiceNumber.examples.standard')}<br/>
-                        • <code>{'{YYYY}-Q{Q}-{KKK}'}</code> → 2024-Q1-MAX {t('settings.issuer.invoiceNumber.examples.verbose')}<br/>
-                        • <code>R{'{YY}{QQ}{NNN}'}</code> → R24011234 {t('settings.issuer.invoiceNumber.examples.prefix')}<br/>
-                        • <code>{'{K}{YY}{QQ}{NN}'}</code> → M240112 {t('settings.issuer.invoiceNumber.examples.compact')}
-                      </Typography>
+                                             <Typography variant="body2" component="div">
+                         • <code>{'[QQ][YY][KK]'}</code> → 0124MA {t('settings.issuer.invoiceNumber.examples.standard')}<br/>
+                         • <code>{'[YYYY]-Q[Q]-[KKK]'}</code> → 2024-Q1-MAX {t('settings.issuer.invoiceNumber.examples.verbose')}<br/>
+                         • <code>R{'[YY][QQ][NNN]'}</code> → R24011234 {t('settings.issuer.invoiceNumber.examples.prefix')}<br/>
+                         • <code>{'[K][YY][QQ][NN]'}</code> → M240112 {t('settings.issuer.invoiceNumber.examples.compact')}
+                       </Typography>
                     </Box>
                   </AccordionDetails>
                 </Accordion>

@@ -157,7 +157,7 @@ const de = {
         invoiceNumber: {
           title: 'Rechnungsnummer-Format',
           format: 'Format für Rechnungsnummern',
-          help: 'Verfügbare Variablen: {Q}/{QQ} (Quartal), {YY}/{YYYY} (Jahr), {K}/{KK}/{KKK} (Kunde), {N}/{NN}/{NNN} (Nummer)',
+          help: 'Verfügbare Variablen: [Q]/[QQ] (Quartal), [YY]/[YYYY] (Jahr), [K]/[KK]/[KKK] (Kunde), [N]/[NN]/[NNN] (Nummer)',
           examples: {
             title: 'Beispiele:',
             standard: '(Standard)',
@@ -650,7 +650,7 @@ const en = {
         invoiceNumber: {
           title: 'Invoice Number Format',
           format: 'Format for Invoice Numbers',
-          help: 'Available variables: {Q}/{QQ} (Quarter), {YY}/{YYYY} (Year), {K}/{KK}/{KKK} (Customer), {N}/{NN}/{NNN} (Number)',
+          help: 'Available variables: [Q]/[QQ] (Quarter), [YY]/[YYYY] (Year), [K]/[KK]/[KKK] (Customer), [N]/[NN]/[NNN] (Number)',
           examples: {
             title: 'Examples:',
             standard: '(Default)',
