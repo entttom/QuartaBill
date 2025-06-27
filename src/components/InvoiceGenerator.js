@@ -13,7 +13,7 @@ import PDFService from '../services/PDFService';
 import EmailService from '../services/EmailService';
 import DataService from '../services/DataService';
 
-function InvoiceGenerator({ customers, settings }) {
+function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
   const { t } = useTranslation();
   const [selectedQuarter, setSelectedQuarter] = useState('Q1');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -23,6 +23,9 @@ function InvoiceGenerator({ customers, settings }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [results, setResults] = useState([]);
   const [resultDialogOpen, setResultDialogOpen] = useState(false);
+  const [missingPaths, setMissingPaths] = useState([]);
+  const [validationWarnings, setValidationWarnings] = useState([]);
+  const [pathValidationDialogOpen, setPathValidationDialogOpen] = useState(false);
 
   const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
   const currentYear = new Date().getFullYear();
@@ -72,14 +75,133 @@ function InvoiceGenerator({ customers, settings }) {
     );
   };
 
+  const validatePaths = async () => {
+    const platform = await DataService.getPlatform();
+    const missingPaths = [];
+    const warnings = [];
+
+    // Prüfe Einstellungen (Logo)
+    let logoPath = null;
+    if (platform === 'win32') {
+      logoPath = settings.logoPathWindows;
+    } else if (platform === 'darwin') {
+      logoPath = settings.logoPathMac;
+    } else if (platform === 'linux') {
+      logoPath = settings.logoPathLinux;
+    }
+
+    if (!logoPath || logoPath.trim() === '') {
+      missingPaths.push({
+        type: 'logo',
+        description: `Logo-Pfad für ${platform === 'win32' ? 'Windows' : platform === 'darwin' ? 'macOS' : 'Linux'}`,
+        location: 'Einstellungen → Allgemein'
+      });
+    }
+
+    // Prüfe jeden ausgewählten Kunden
+    for (const customerId of selectedCustomers) {
+      const customer = customers.find(c => c.id === customerId);
+      if (!customer) continue;
+
+      let pdfPath = null;
+      let emlPath = null;
+
+      if (platform === 'win32') {
+        pdfPath = customer.savePathWindows;
+        emlPath = customer.emlPathWindows;
+      } else if (platform === 'darwin') {
+        pdfPath = customer.savePathMac;
+        emlPath = customer.emlPathMac;
+      } else if (platform === 'linux') {
+        pdfPath = customer.savePathLinux;
+        emlPath = customer.emlPathLinux;
+      }
+
+      if (!pdfPath || pdfPath.trim() === '') {
+        missingPaths.push({
+          type: 'pdf',
+          customer: customer.name,
+          description: `PDF-Speicherpfad für ${platform === 'win32' ? 'Windows' : platform === 'darwin' ? 'macOS' : 'Linux'}`,
+          location: 'Kunden → Bearbeiten'
+        });
+      }
+
+      // E-Mail-Validierung
+      if (generateEmail) {
+        if (!customer.email || customer.email.trim() === '') {
+          // Warnung: EML-Generierung aktiviert aber keine E-Mail-Adresse
+          warnings.push({
+            type: 'no-email',
+            customer: customer.name,
+            description: 'Keine E-Mail-Adresse hinterlegt - EML wird übersprungen',
+            location: 'Kunden → Bearbeiten'
+          });
+        } else if (!emlPath || emlPath.trim() === '') {
+          // Fehler: E-Mail-Adresse vorhanden aber kein EML-Pfad
+          missingPaths.push({
+            type: 'eml',
+            customer: customer.name,
+            description: `EML-Speicherpfad für ${platform === 'win32' ? 'Windows' : platform === 'darwin' ? 'macOS' : 'Linux'}`,
+            location: 'Kunden → Bearbeiten'
+          });
+        }
+      }
+    }
+
+    return { missingPaths, warnings };
+  };
+
   const handleGenerateInvoices = async () => {
     if (selectedCustomers.length === 0) {
       alert(t('invoices.warnings.selectCustomers'));
       return;
     }
 
+    // Pfad-Validierung vor Generierung
+    const { missingPaths, warnings } = await validatePaths();
+    if (missingPaths.length > 0 || warnings.length > 0) {
+      setMissingPaths(missingPaths);
+      setValidationWarnings(warnings);
+      setPathValidationDialogOpen(true);
+      return;
+    }
+
+    // Generierung starten
+    startGeneration();
+  };
+
+  const continueGenerationWithWarnings = () => {
+    // Generierung trotz Warnungen fortsetzen
+    startGeneration();
+  };
+
+  const startGeneration = async () => {
+    // Prüfe auf bereits existierende Rechnungen
+    const existingInvoices = selectedCustomers.filter(customerId => 
+      DataService.checkInvoiceExists(data, customerId, selectedQuarter, selectedYear)
+    );
+
+    if (existingInvoices.length > 0) {
+      const customerNames = existingInvoices.map(id => 
+        customers.find(c => c.id === id)?.name
+      ).join(', ');
+      
+      const confirmed = window.confirm(
+        t('invoices.warnings.existingInvoices', { 
+          customers: customerNames, 
+          quarter: selectedQuarter, 
+          year: selectedYear 
+        })
+      );
+      
+      if (!confirmed) {
+        return;
+      }
+    }
+
     setIsGenerating(true);
     const generationResults = [];
+    const allHistoryEntries = [];
 
     try {
       const { invoiceDate } = getQuarterDates(selectedQuarter, selectedYear);
@@ -130,6 +252,23 @@ function InvoiceGenerator({ customers, settings }) {
             }
           }
 
+          // Historie-Eintrag sammeln (noch nicht speichern)
+          const invoiceBreakdown = DataService.calculateInvoiceBreakdown(customer);
+          const historyEntry = {
+            customerId: customer.id,
+            customerName: customer.name,
+            invoiceNumber,
+            quarter: selectedQuarter,
+            year: selectedYear,
+            amount: invoiceBreakdown.total,
+            vat: invoiceBreakdown.vat,
+            subtotal: invoiceBreakdown.subtotal,
+            pdfPath: pdfResult.path,
+            emailPath: emailResult?.path || null
+          };
+
+          allHistoryEntries.push(historyEntry);
+
           generationResults.push({
             customer: customer.name,
             invoiceNumber,
@@ -148,6 +287,17 @@ function InvoiceGenerator({ customers, settings }) {
             error: error.message
           });
         }
+      }
+
+      // Alle erfolgreichen Rechnungen auf einmal zur Historie hinzufügen
+      if (allHistoryEntries.length > 0) {
+        let currentData = data;
+        for (const historyEntry of allHistoryEntries) {
+          const { updatedData } = DataService.addInvoiceToHistory(currentData, historyEntry);
+          currentData = updatedData;
+        }
+        // Nur einmal die Daten aktualisieren
+        onUpdateData(currentData);
       }
     } catch (error) {
       console.error('Fehler bei der Rechnungsgenerierung:', error);
@@ -351,6 +501,106 @@ function InvoiceGenerator({ customers, settings }) {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Pfad-Validierung Dialog */}
+      <Dialog open={pathValidationDialogOpen} onClose={() => setPathValidationDialogOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Error color="warning" />
+            {t('invoices.pathValidation.title')}
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          {missingPaths.length > 0 && (
+            <>
+              <Typography variant="body1" gutterBottom>
+                {t('invoices.pathValidation.description')}
+              </Typography>
+              
+              <List sx={{ mt: 2 }}>
+                {missingPaths.map((missing, index) => (
+                  <ListItem key={index} sx={{ flexDirection: 'column', alignItems: 'flex-start', py: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                      <Box sx={{ 
+                        width: 8, 
+                        height: 8, 
+                        borderRadius: '50%', 
+                        bgcolor: missing.type === 'logo' ? 'orange.main' : missing.type === 'pdf' ? 'error.main' : 'warning.main'
+                      }} />
+                      <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                        {missing.customer ? `${missing.customer}: ` : ''}{missing.description}
+                      </Typography>
+                    </Box>
+                    <Typography variant="caption" color="textSecondary" sx={{ ml: 2 }}>
+                      {t('invoices.pathValidation.location')}: {missing.location}
+                    </Typography>
+                  </ListItem>
+                ))}
+              </List>
+
+              <Alert severity="error" sx={{ mt: 3 }}>
+                <Typography variant="body2">
+                  {t('invoices.pathValidation.instructions')}
+                </Typography>
+              </Alert>
+            </>
+          )}
+
+          {validationWarnings.length > 0 && (
+            <>
+              {missingPaths.length > 0 && <Divider sx={{ my: 3 }} />}
+              
+              <Typography variant="body1" gutterBottom>
+                {t('invoices.pathValidation.warningsTitle')}
+              </Typography>
+              
+              <List sx={{ mt: 2 }}>
+                {validationWarnings.map((warning, index) => (
+                  <ListItem key={index} sx={{ flexDirection: 'column', alignItems: 'flex-start', py: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                      <Box sx={{ 
+                        width: 8, 
+                        height: 8, 
+                        borderRadius: '50%', 
+                        bgcolor: 'info.main'
+                      }} />
+                      <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                        {warning.customer ? `${warning.customer}: ` : ''}{warning.description}
+                      </Typography>
+                    </Box>
+                    <Typography variant="caption" color="textSecondary" sx={{ ml: 2 }}>
+                      {t('invoices.pathValidation.location')}: {warning.location}
+                    </Typography>
+                  </ListItem>
+                ))}
+              </List>
+
+              <Alert severity="info" sx={{ mt: 3 }}>
+                <Typography variant="body2">
+                  {t('invoices.pathValidation.warningsInfo')}
+                </Typography>
+              </Alert>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPathValidationDialogOpen(false)}>
+            {missingPaths.length > 0 ? t('invoices.pathValidation.close') : t('invoices.pathValidation.cancel')}
+          </Button>
+          {missingPaths.length === 0 && validationWarnings.length > 0 && (
+            <Button 
+              variant="contained" 
+              onClick={() => {
+                setPathValidationDialogOpen(false);
+                // Generierung mit Warnungen fortsetzen
+                continueGenerationWithWarnings();
+              }}
+            >
+              {t('invoices.pathValidation.continueAnyway')}
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
 
       {/* Ergebnis Dialog */}
       <Dialog open={resultDialogOpen} onClose={() => setResultDialogOpen(false)} maxWidth="md" fullWidth>

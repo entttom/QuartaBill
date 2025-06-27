@@ -1,253 +1,237 @@
 # QuartaBill
 
-QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner
+**Professionelle Quartalsabrechnungen für Arbeitsmediziner**
 
-![Build Status](https://github.com/entttom/QuartaBill/workflows/Build%20and%20Release/badge.svg)
-![Version](https://img.shields.io/github/v/release/entttom/QuartaBill)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
+[![GitHub Release](https://img.shields.io/github/v/release/entttom/QuartaBill)](https://github.com/entttom/QuartaBill/releases)
+[![Build Status](https://github.com/entttom/QuartaBill/workflows/Build%20and%20Release/badge.svg)](https://github.com/entttom/QuartaBill/actions)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)](#-downloads)
+[![License](https://img.shields.io/github/license/entttom/QuartaBill)](LICENSE)
 
-## 🚀 Entwickelt von Dr. Thomas Entner
+<p align="center">
+  <img src="icon.iconset/icon_256x256.png" alt="QuartaBill Logo" width="128">
+</p>
 
-Diese Anwendung wurde speziell für Arbeitsmediziner entwickelt, um die quartalsweise Abrechnung ihrer Leistungen zu vereinfachen und zu automatisieren.
+> 🏥 **Entwickelt von Dr. Thomas Entner** für Arbeitsmediziner zur einfachen und effizienten Quartalsabrechnung
 
-## ✨ Features
+---
+
+## 🚀 Überblick
+
+QuartaBill ist eine Desktop-Anwendung, die speziell für Arbeitsmediziner entwickelt wurde, um die quartalsweise Abrechnung ihrer Leistungen zu vereinfachen und zu automatisieren. Die App bietet eine intuitive Benutzeroberfläche für die Verwaltung von Kunden, die Erstellung professioneller PDF-Rechnungen und die automatische E-Mail-Generierung.
+
+### 🎯 Kernfunktionen
+
+- **🏢 Kundenverwaltung**: Umfassende Verwaltung von Kundendaten mit flexiblen Leistungspositionen
+- **📊 Rechnungserstellung**: Batch-Generierung aller Kunden eines Quartals mit einem Klick
+- **🎨 PDF-Ausgabe**: Professionelle Rechnungen mit Logo-Integration und deutschem Steuerrecht
+- **📧 E-Mail Integration**: Automatische EML-Generierung mit PDF-Anhang
+- **💾 Cloud-Sync**: Vollständige Unterstützung für Nextcloud, iCloud, Dropbox etc.
+- **🔄 Auto-Updates**: Automatische Benachrichtigungen über neue Versionen
+
+---
+
+## ✨ Features im Detail
 
 ### 🏢 **Kundenverwaltung**
-- **Umfassende Kundendaten**: Name, Adresse, Kontaktdaten, E-Mail
-- **Mehrere Leistungspositionen**: Individuelle Services pro Kunde mit verschiedenen Stundensätzen
-- **Drag-and-Drop Sortierung**: Einfache Neuanordnung der Leistungspositionen
-- **Verschiedene Steuersätze**: 0%, 7%, 19%, 20% pro Position konfigurierbar
-- **E-Mail-Templates**: Personalisierte Nachrichten pro Kunde
-- **Speicherpfade**: Separate PDF- und EML-Pfade für Windows und Mac
+- **Vollständige Kundendaten**: Name, Adresse, Kontaktdaten, E-Mail
+- **Flexible Leistungspositionen**: Verschiedene Services mit individuellen Stundensätzen
+- **Drag-and-Drop Sortierung**: Einfache Neuanordnung der Leistungen
+- **Deutsche Steuersätze**: 0%, 7%, 19%, 20% oder 90%@20% + 10%@0%
+- **E-Mail-Templates**: Personalisierte Nachrichten mit Variablen wie `[Kunde]`, `[Quartal]`, `[Rechnungsnummer]`
+- **Multi-Platform Pfade**: Separate Speicherorte für Windows, macOS und Linux
 
 ### 📊 **Rechnungserstellung**
-- **Batch-Generierung**: Alle Kunden eines Quartals mit einem Klick
-- **Anpassbare Rechnungsnummern**: Flexibles Format (z.B. `{QQ}{YY}{KK}` → `0124EC`)
-- **Deutsche Steuerberechnung**: Automatischer 90%/10%-Split (20%/0% USt.) oder individuelle Sätze
+- **Batch-Generierung**: Alle Kunden eines Quartals automatisch
+- **Anpassbare Rechnungsnummern**: Format `{QQ}{YY}{KK}` → `0124EC`
+- **Deutsche Steuerberechnung**: Automatisch korrekter 90%/10%-Split
 - **Quartalsweise Datierung**: Automatisch korrekte Rechnungsdaten
-- **Logo-Integration**: Firmenbild in Rechnungen (PNG/JPG)
+- **Logo-Integration**: Unterstützung für PNG/JPG-Firmenlogos
 
-### 🎨 **Professionelle PDF-Ausgabe**
+### 🎨 **PDF-Ausgabe**
 - **Modernes Design**: Sauberes, professionelles Layout
-- **Logo-Unterstützung**: Automatisches Laden und Skalieren
-- **Responsive Tabellen**: Automatische Anpassung an Inhalt
+- **Responsive Tabellen**: Automatische Anpassung bei vielen Leistungspositionen
 - **Deutsche Formatierung**: Währung, Datum, Steuersätze
-- **Druckoptimiert**: A4-Format, professionelle Schriftarten
+- **A4-Format**: Druckoptimiert mit professionellen Schriftarten
+- **Mehrseitige Rechnungen**: Automatisches Seitenwechsel bei großen Tabellen
 
 ### 📧 **E-Mail Integration**
-- **Automatische EML-Generierung**: .eml-Dateien mit PDF-Anhang
-- **MIME-konforme E-Mails**: RFC-compliant E-Mail-Format
-- **Base64-Anhänge**: Sichere PDF-Übertragung
-- **Personalisierte Betreffzeilen**: Mit Rechnungsnummer
-- **Plattform-übergreifend**: Windows und Mac kompatibel
+- **Automatische EML-Generierung**: RFC-konforme E-Mail-Dateien
+- **PDF-Anhang**: Sichere Base64-kodierte Übertragung
+- **Personalisierte Betreffzeilen**: Mit Rechnungsnummer und Quartal
+- **Platform-übergreifend**: Funktioniert mit jedem E-Mail-Programm
 
-### ⚙️ **Einstellungen & Konfiguration**
-- **Rechnungsersteller-Daten**: Vollständige Firmeninformationen
-- **Mehrsprachigkeit**: Deutsch/Englisch (i18next)
-- **Dark/Light Mode**: Benutzerfreundliche Themes
-- **Datenpfad-Konfiguration**: Flexible Speicherorte
-- **Logo-Pfade**: Separate Pfade für verschiedene Systeme
-- **Zahlungsbedingungen**: Anpassbare Fristen
+### ⚙️ **Konfiguration & Einstellungen**
+- **Vollständige Firmendaten**: Rechnungsersteller-Informationen
+- **Mehrsprachigkeit**: Deutsch/Englisch mit i18next
+- **Dark/Light Mode**: Moderne Themes
+- **Flexible Datenpfade**: Cloud-Sync kompatibel
+- **Logo-Management**: Separate Pfade für verschiedene Betriebssysteme
 
 ### 💾 **Datenverwaltung**
 - **Lokale Speicherung**: Alle Daten bleiben auf Ihrem Gerät
-- **JSON-basiert**: Einfache, lesbare Datenstruktur
-- **Cloud-Sync möglich**: Via Nextcloud, iCloud, Dropbox etc.
-- **Backup-freundlich**: Einfache Datensicherung
-- **Import/Export**: Datenübertragung zwischen Geräten
+- **JSON-Format**: Einfache, lesbare Datenstruktur
+- **Cloud-Sync ready**: Nahtlose Integration mit Cloud-Diensten
+- **Backup & Restore**: Automatische Backups mit Wiederherstellungsfunktion
+- **CSV-Export**: Excel-kompatible Datenexporte
 
-### 🎯 **Benutzerfreundlichkeit**
-- **Onboarding-System**: Geführte Ersteinrichtung
-- **Intuitive Navigation**: Tab-basierte Oberfläche
-- **Keyboard-Shortcuts**: Effiziente Bedienung
-- **Responsive Design**: Funktioniert auf verschiedenen Bildschirmgrößen
-- **Fehlerbehandlung**: Robuste Fehlermeldungen und Fallbacks
+---
 
-### 🔧 **Technische Features**
-- **Multi-Platform**: Windows, macOS, Linux
-- **Electron-basiert**: Native Desktop-Performance
-- **React Frontend**: Moderne, reaktive Benutzeroberfläche
-- **Material-UI**: Professionelles Design-System
-- **Automatische Updates**: Via GitHub Actions und Releases
-- **🍎 macOS Notarisierung**: Vollständig signiert und notarisiert für macOS Gatekeeper
-- **🔒 Code Signing**: Signierte Binaries für alle Plattformen
-- **Deep Signing**: Alle Electron Framework-Komponenten signiert
+## 🔧 Installation & Setup
 
-## 🔧 Entwicklung
+### 📦 Downloads
+
+**Aktuelle Version: v1.4.13**
+
+Die neuesten Releases finden Sie unter [**GitHub Releases**](https://github.com/entttom/QuartaBill/releases).
+
+#### Windows
+- `QuartaBill Setup 1.4.13.exe` - Installer
+- `QuartaBill 1.4.13.exe` - Portable Version
+
+#### macOS ✅ **Vollständig signiert & notarisiert**
+- `QuartaBill-1.4.13.dmg` - Intel Macs
+- `QuartaBill-1.4.13-arm64.dmg` - Apple Silicon (M1/M2/M3)
+
+#### Linux
+- `QuartaBill-1.4.13.AppImage` - Universal
+- `quartabill_1.4.13_amd64.deb` - Debian/Ubuntu
+- `quartabill-1.4.13.x86_64.rpm` - Red Hat/Fedora
+
+### 🚀 Erste Schritte
+
+1. **Installation:**
+   - **macOS**: `.dmg` mounten und App in Programme-Ordner ziehen
+   - **Windows**: `.exe` Installer ausführen
+   - **Linux**: `.AppImage` ausführbar machen oder Paket installieren
+
+2. **Erster Start:**
+   - Beim ersten Start startet das Onboarding automatisch
+   - Folgen Sie den Schritten zur Grundkonfiguration
+
+3. **Konfiguration:**
+   - **Einstellungen** → **Rechnungsersteller**: Firmendaten eingeben
+   - **Einstellungen** → **Pfade & Dateien**: Logo- und Speicherpfade konfigurieren
+   - **Kundenverwaltung**: Erste Kunden anlegen
+
+---
+
+## 🛠️ Für Entwickler
 
 ### Voraussetzungen
 - Node.js 18 oder höher
 - npm
 
-### Installation
+### Development Setup
 ```bash
 git clone https://github.com/entttom/QuartaBill.git
 cd QuartaBill
 npm install
 ```
 
-### Development Server starten
+### Development Server
 ```bash
-npm start
-```
-
-### Electron App starten
-```bash
-npm run electron
+npm start          # React Development Server
+npm run electron   # Electron App starten
 ```
 
 ### Builds erstellen
 ```bash
-# Alle Plattformen
-npm run dist
-
-# Spezifische Plattformen
-npm run dist:win    # Windows
-npm run dist:mac    # macOS
-npm run dist:linux  # Linux
+npm run dist       # Alle Plattformen
+npm run dist:win   # Windows
+npm run dist:mac   # macOS
+npm run dist:linux # Linux
 ```
 
-## 🏗️ Automatische Builds & Releases
+### 🏗️ CI/CD Pipeline
 
-Das Projekt nutzt GitHub Actions für vollständig automatisierte CI/CD:
+Das Projekt nutzt GitHub Actions für vollständig automatisierte Builds:
 
-### 🚀 **Build Pipeline**
-- **Push/PR auf main/develop**: Automatische Builds für alle Plattformen
+- **Push/PR**: Automatische Builds für alle Plattformen
 - **Git Tags (v\*)**: Automatische Releases mit signierten Builds
-- **Parallel Builds**: Windows, macOS und Linux gleichzeitig
-- **Artifacts**: Builds werden 30 Tage lang gespeichert
+- **macOS**: Vollständige Apple Developer ID Signierung und Notarisierung
+- **Windows**: Code Signing geplant
 
-### 🍎 **macOS Code Signing & Notarisierung**
-- **Developer ID Application**: Vollständig signierte .app Bundles
-- **Deep Code Signing**: Alle Electron Framework-Binaries signiert
-- **Apple Notarisierung**: Automatische Notarisierung über Apple Developer Portal
-- **Gatekeeper-kompatibel**: Keine Sicherheitswarnungen bei Installation
-
-### 🔒 **Windows Code Signing** (geplant)
-- **Authenticode**: Signierte .exe Dateien
-- **SmartScreen-kompatibel**: Vertrauenswürdige Downloads
-
-### Release erstellen
+**Release erstellen:**
 ```bash
-git tag v1.3.0
-git push origin v1.3.0
+git tag v1.4.14
+git push origin v1.4.14
 ```
 
-Dies löst automatisch einen Build, Code Signing und Release aus.
-
-## 📦 Downloads
-
-Die neuesten Releases finden Sie unter [**GitHub Releases**](https://github.com/entttom/QuartaBill/releases).
-
-### 🎯 **Aktuelle Version: v1.3.1**
-
-### 🆕 **Neue Features in v1.3.0:**
-- **🔄 Auto-Update System**: Automatische Benachrichtigungen über neue Versionen
-- **💾 Backup & Restore**: Vollständiges Backup-Management mit automatischen Backups
-- **📊 CSV Export**: Export aller Kundendaten in Excel-kompatible CSV-Dateien
-- **🎨 Performance-Optimierungen**: Verbesserte PDF-Generierung und App-Performance
-- **⌨️ Keyboard-Shortcuts**: Neue Tastenkürzel für effiziente Bedienung
-- **🔍 Erweiterte Validierung**: Robustere Eingabevalidierung und Fehlerbehandlung
-
-### Verfügbare Formate:
-- **Windows**: 
-  - `QuartaBill Setup 1.3.1.exe` (Installer)
-  - `QuartaBill 1.3.1.exe` (Portable)
-- **macOS**: 
-  - `QuartaBill-1.3.1.dmg` (Intel Macs) ✅ **Notarisiert & Gatekeeper-kompatibel**
-  - `QuartaBill-1.3.1-arm64.dmg` (Apple Silicon) ✅ **Notarisiert & Gatekeeper-kompatibel**
-- **Linux**: 
-  - `QuartaBill-1.3.1.AppImage` (Universal)
-  - `quartabill_1.3.1_amd64.deb` (Debian/Ubuntu)
-  - `quartabill-1.3.1.x86_64.rpm` (Red Hat/Fedora)
-
-### 🔒 **Sicherheit**
-- ✅ **macOS**: Vollständig signiert und von Apple notarisiert
-- ⏳ **Windows**: Code Signing geplant
-- ✅ **Linux**: Checksums verfügbar
+---
 
 ## 🛠️ Technischer Stack
 
-- **Frontend**: React 18, Material-UI
+- **Frontend**: React 18, Material-UI 5
 - **Desktop**: Electron 25
-- **PDF-Generierung**: jsPDF
+- **PDF-Generierung**: jsPDF 2.5
 - **Internationalisierung**: i18next
-- **Build**: electron-builder mit afterSign hooks
+- **Auto-Updates**: electron-updater
+- **Build-System**: electron-builder
 - **CI/CD**: GitHub Actions
-- **Code Signing**: 
-  - macOS: Apple Developer ID Application
-  - Deep Signing aller Electron Framework-Komponenten
-- **Notarisierung**: @electron/notarize v2.5.0
+- **Code Signing**: Apple Developer ID (macOS)
+
+---
 
 ## 📋 Systemanforderungen
 
-- **Windows**: Windows 10 oder höher (x64)
-- **macOS**: macOS 10.14 oder höher (Intel & Apple Silicon)
-- **Linux**: Ubuntu 18.04 oder höher (oder äquivalent, x64)
+| Betriebssystem | Mindestversion | Architektur |
+|----------------|----------------|-------------|
+| **Windows** | Windows 10 | x64 |
+| **macOS** | macOS 10.14 (Mojave) | Intel & Apple Silicon |
+| **Linux** | Ubuntu 18.04 (oder äquivalent) | x64 |
 
-## 🚀 Erste Schritte
+---
 
-### 1. Installation und Start
-1. **QuartaBill herunterladen** von [GitHub Releases](https://github.com/entttom/QuartaBill/releases)
-2. **Installation:**
-   - **macOS**: `.dmg` mounten und App in Programme-Ordner ziehen
-   - **Windows**: `.exe` Installer ausführen oder portable Version entpacken
-   - **Linux**: `.AppImage` ausführbar machen oder `.deb`/`.rpm` installieren
-3. Beim ersten Start wird das Onboarding gestartet
+## 🔒 Sicherheit & Vertrauen
 
-### 2. Grundkonfiguration
-1. **Einstellungen** → **Rechnungsersteller**: Ihre Firmendaten eingeben
-2. **Einstellungen** → **Pfade & Dateien**: Logo- und Speicherpfade konfigurieren
-3. **Einstellungen** → **Rechnungsnummern**: Format anpassen
+### macOS
+- ✅ **Vollständig signiert**: Apple Developer ID Application
+- ✅ **Notarisiert**: Von Apple verifiziert
+- ✅ **Gatekeeper-kompatibel**: Keine Sicherheitswarnungen
+- ✅ **Deep Code Signing**: Alle Electron Framework-Komponenten signiert
 
-### 3. Kunden einrichten
-1. **Kunden** → **Neuer Kunde**
-2. Grunddaten eingeben (Name, Adresse, E-Mail)
-3. **Leistungen-Tab**: Services mit Stundensätzen definieren
-4. **Pfade-Tab**: Speicherorte für PDFs und E-Mails festlegen
+### Windows
+- ⏳ **Code Signing geplant**: Authenticode-Signierung in Entwicklung
 
-### 4. Erste Rechnungen erstellen
-1. **Rechnungen generieren** → Quartal und Jahr wählen
-2. Kunden auswählen (alle oder einzelne)
-3. **PDF generieren** und optional **E-Mail erstellen** aktivieren
-4. **Rechnungen generieren** klicken
+### Datenschutz
+- 🔐 **Lokale Daten**: Alle Daten bleiben auf Ihrem Gerät
+- 🚫 **Keine Telemetrie**: Keine Datenerfassung oder -übertragung
+- 💾 **Ihre Kontrolle**: Vollständige Kontrolle über Speicherorte
 
-## 🔒 Datenschutz & Sicherheit
+---
 
-- **✅ Lokale Speicherung**: Alle Daten bleiben auf Ihrem Gerät
-- **✅ Keine Cloud-Übertragung**: QuartaBill sendet keine Daten an externe Server
-- **✅ Optionale Synchronisation**: Sie können selbst entscheiden, ob Sie Daten über Cloud-Dienste synchronisieren
-- **✅ DSGVO-konform**: Designed für deutsche Datenschutzanforderungen
-- **✅ Code Signing**: Signierte Anwendung für Sicherheit und Vertrauen
-- **✅ macOS Notarisierung**: Von Apple überprüft und freigegeben
+## 📝 Changelog
 
-## 🆘 Support & Hilfe
+Alle wichtigen Änderungen werden in der [CHANGELOG.md](CHANGELOG.md) dokumentiert.
 
-### Häufige Probleme
-- **Logo wird nicht angezeigt**: Überprüfen Sie den Dateipfad in den Einstellungen
-- **EML-Generierung fehlgeschlagen**: Stellen Sie sicher, dass EML-Pfade konfiguriert sind
-- **PDF nicht gespeichert**: Überprüfen Sie Schreibrechte für den Ausgabeordner
-- **macOS Sicherheitswarnung**: Bei älteren Versionen vor v1.3.1 - aktualisieren Sie für problemlose Installation
-- **Backup-Probleme**: Prüfen Sie Schreibrechte im Backup-Verzeichnis
-- **CSV-Export Encoding**: Bei Problemen mit Umlauten verwenden Sie UTF-8 kompatible Programme
+### 🆕 Highlights der aktuellen Version (1.4.13)
 
-### Support erhalten
-Bei Fragen oder Problemen erstellen Sie bitte ein [**Issue**](https://github.com/entttom/QuartaBill/issues).
+- **🐧 Vollständiger Linux-Support**: Native Unterstützung für alle Linux-Distributionen
+- **🎯 Smart Platform Detection**: Automatische Erkennung des Betriebssystems
+- **📱 Intelligente UI**: Platform-spezifische Benutzeroberfläche
+- **🔄 Cross-Platform Paths**: Einheitliche Pfad-Verwaltung für alle Plattformen
+- **🍎 macOS Notarisierung**: Vollständig funktionsfähig und getestet
 
-### 📈 **Roadmap**
-- [ ] Windows Code Signing
-- [x] ~~Automatische Update-Benachrichtigungen~~ ✅ **v1.3.0**
-- [x] ~~Export/Import-Funktionen~~ ✅ **v1.3.0**
-- [x] ~~Backup & Restore System~~ ✅ **v1.3.0**
-- [ ] Erweiterte Berichterstellung & Dashboard
-- [ ] Plugin-System für Erweiterungen
-- [ ] Cloud-Synchronisation (optional)
-- [ ] Mobile Companion App
+---
+
+## 🤝 Support & Community
+
+- **Issues**: [GitHub Issues](https://github.com/entttom/QuartaBill/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/entttom/QuartaBill/discussions)
+- **E-Mail**: tom@entner.org
+
+---
 
 ## 📄 Lizenz
 
-Copyright (c) 2024 Dr. Thomas Entner. Alle Rechte vorbehalten.
+Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE) für Details.
 
-## 🙏 Danksagungen
+---
 
-Entwickelt mit modernen Web-Technologien für eine effiziente und professionelle Praxisverwaltung. 
+<p align="center">
+  Entwickelt mit ❤️ für die Arbeitsmedizin
+</p>
+
+<p align="center">
+  <strong>QuartaBill</strong> - Einfach. Professionell. Zuverlässig.
+</p> 

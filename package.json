@@ -1,6 +1,6 @@
 {
   "name": "quartabill",
-  "version": "1.4.13",
+  "version": "1.5.0",
   "description": "QuartaBill - Professionelle Quartalsabrechnungen für Arbeitsmediziner",
   "main": "public/electron.js",
   "homepage": "./",
@@ -127,11 +127,13 @@
     "electron-updater": "^6.6.2",
     "i18next": "^23.15.1",
     "jspdf": "^2.5.1",
+    "papaparse": "^5.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.5.0",
     "react-scripts": "5.0.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@electron/notarize": "^2.5.0",

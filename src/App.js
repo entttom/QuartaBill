@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Box, Tabs, Tab, Container, AppBar, Toolbar, Typography } from '@mui/material';
-import { Receipt, People, Settings } from '@mui/icons-material';
+import { Receipt, People, Settings, History } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import CustomerManager from './components/CustomerManager';
 import InvoiceGenerator from './components/InvoiceGenerator';
+import InvoiceHistory from './components/InvoiceHistory';
 import SettingsPanel from './components/SettingsPanel';
 import OnboardingScreen from './components/OnboardingScreen';
 import UpdateNotification from './components/UpdateNotification';
@@ -243,6 +244,11 @@ function App() {
     // saveData() wird automatisch durch useEffect aufgerufen
   };
 
+  const updateData = (newData) => {
+    setData(newData);
+    // saveData() wird automatisch durch useEffect aufgerufen
+  };
+
   const handleCloseOnboarding = () => {
     setShowOnboarding(false);
     // Markiere Onboarding als gesehen
@@ -285,10 +291,16 @@ function App() {
                 aria-controls="tabpanel-1"
               />
               <Tab 
-                icon={<Settings />} 
-                label={t('nav.settings')} 
+                icon={<History />} 
+                label={t('nav.invoiceHistory')} 
                 id="tab-2"
                 aria-controls="tabpanel-2"
+              />
+              <Tab 
+                icon={<Settings />} 
+                label={t('nav.settings')} 
+                id="tab-3"
+                aria-controls="tabpanel-3"
               />
             </Tabs>
           </Box>
@@ -304,10 +316,20 @@ function App() {
             <InvoiceGenerator 
               customers={data.customers}
               settings={data.settings}
+              data={data}
+              onUpdateData={updateData}
             />
           </TabPanel>
 
           <TabPanel value={tabValue} index={2}>
+            <InvoiceHistory 
+              data={data}
+              onUpdateData={updateData}
+              customers={data.customers}
+            />
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={3}>
             <SettingsPanel 
               settings={data.settings}
               onUpdateSettings={updateSettings}

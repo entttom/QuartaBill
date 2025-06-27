@@ -8,6 +8,7 @@ const de = {
     nav: {
       customers: 'Kunden',
       invoices: 'Rechnungen erstellen',
+      invoiceHistory: 'Rechnungshistorie',
       settings: 'Einstellungen'
     },
     
@@ -107,7 +108,21 @@ const de = {
       // Warnungen
       warnings: {
         noCustomers: 'Keine Kunden vorhanden. Bitte legen Sie zuerst Kunden an.',
-        selectCustomers: 'Bitte wählen Sie mindestens einen Kunden aus.'
+        selectCustomers: 'Bitte wählen Sie mindestens einen Kunden aus.',
+        existingInvoices: 'Für folgende Kunden existieren bereits Rechnungen für {{quarter}} {{year}}: {{customers}}\\n\\nMöchten Sie trotzdem fortfahren?'
+      },
+      
+      // Pfad-Validierung
+      pathValidation: {
+        title: 'Fehlende Pfade konfigurieren',
+        description: 'Bevor Rechnungen generiert werden können, müssen folgende Pfade konfiguriert werden:',
+        warningsTitle: 'Hinweise zur E-Mail-Generierung:',
+        location: 'Konfiguration unter',
+        instructions: 'Bitte konfigurieren Sie die fehlenden Pfade in den entsprechenden Einstellungen und versuchen Sie anschließend erneut.',
+        warningsInfo: 'Diese Kunden werden übersprungen - die PDF-Generierung kann trotzdem fortgesetzt werden.',
+        close: 'Verstanden',
+        cancel: 'Abbrechen',
+        continueAnyway: 'Trotzdem fortfahren'
       }
     },
     
@@ -376,6 +391,88 @@ const de = {
       message: 'Die Einstellungsdatei wurde extern geändert:\n{{filePath}}\n\nMöchten Sie die Änderungen laden? Nicht gespeicherte Änderungen gehen verloren.'
     },
     
+    // Rechnungshistorie
+    invoiceHistory: {
+      title: 'Rechnungshistorie',
+      noInvoices: 'Keine Rechnungen vorhanden',
+      noFilterResults: 'Keine Rechnungen gefunden, die den Filterkriterien entsprechen.',
+      generateFirst: 'Erstellen Sie zuerst einige Rechnungen über den Tab "Rechnungen erstellen".',
+      
+      // Statistiken
+      stats: {
+        totalInvoices: 'Rechnungen gesamt',
+        selectYear: 'Jahr wählen',
+        yearInvoices: 'Rechnungen {{year}}',
+        yearAmount: 'Umsatz {{year}}',
+        yearVAT: 'USt. {{year}}'
+      },
+      
+      // Filter
+      filters: {
+        title: 'Filter & Suche',
+        search: 'Suchen...',
+        customer: 'Kunde',
+        quarter: 'Quartal',
+        year: 'Jahr',
+        status: 'Status',
+        all: 'Alle',
+        clear: 'Zurücksetzen'
+      },
+      
+      // Tabelle
+      table: {
+        invoiceNumber: 'Rechnungsnummer',
+        customer: 'Kunde',
+        period: 'Zeitraum',
+        amount: 'Betrag',
+        vat: 'USt.',
+        created: 'Erstellt',
+        status: 'Status',
+        actions: 'Aktionen'
+      },
+      
+      // Status
+      status: {
+        generated: 'Erstellt',
+        readyToSend: 'Versandbereit',
+        sent: 'Versendet',
+        paid: 'Bezahlt'
+      },
+      
+      // Aktionen
+      actions: {
+        viewDetails: 'Details anzeigen',
+        openPdf: 'PDF öffnen',
+        openEmail: 'E-Mail öffnen',
+        delete: 'Löschen'
+      },
+      
+      // Details Dialog
+      details: {
+        title: 'Rechnungsdetails',
+        customer: 'Kunde',
+        period: 'Zeitraum',
+        amount: 'Betrag',
+        subtotal: 'Zwischensumme',
+        vat: 'Umsatzsteuer',
+        created: 'Erstellt am',
+        pdfPath: 'PDF-Pfad',
+        emailPath: 'E-Mail-Pfad'
+      },
+      
+      // Export
+      export: {
+        csvTooltip: 'Als CSV-Datei exportieren',
+        excelTooltip: 'Als Excel-Datei exportieren'
+      },
+
+      // Löschen Dialog
+      delete: {
+        title: 'Rechnung löschen',
+        message: 'Möchten Sie die Rechnung {{invoiceNumber}} für {{customer}} wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.'
+      }
+    },
+
     // Allgemeine Begriffe
     common: {
       loading: 'Lädt...',
@@ -388,6 +485,9 @@ const de = {
       appearance: 'Darstellung',
       yes: 'Ja',
       no: 'Nein',
+      delete: 'Löschen',
+      cancel: 'Abbrechen',
+      close: 'Schließen',
       currentPlatform: 'Aktuelle Plattform',
       otherPlatforms: 'Weitere Plattformen'
     }
@@ -401,6 +501,7 @@ const en = {
     nav: {
       customers: 'Customers',
       invoices: 'Generate Invoices',
+      invoiceHistory: 'Invoice History',
       settings: 'Settings'
     },
     
@@ -500,7 +601,21 @@ const en = {
       // Warnings
       warnings: {
         noCustomers: 'No customers available. Please create customers first.',
-        selectCustomers: 'Please select at least one customer.'
+        selectCustomers: 'Please select at least one customer.',
+        existingInvoices: 'Invoices already exist for the following customers for {{quarter}} {{year}}: {{customers}}\\n\\nDo you want to continue anyway?'
+      },
+      
+      // Path Validation
+      pathValidation: {
+        title: 'Configure Missing Paths',
+        description: 'Before invoices can be generated, the following paths must be configured:',
+        warningsTitle: 'Email generation notices:',
+        location: 'Configure under',
+        instructions: 'Please configure the missing paths in the corresponding settings and then try again.',
+        warningsInfo: 'These customers will be skipped - PDF generation can still continue.',
+        close: 'Understood',
+        cancel: 'Cancel',
+        continueAnyway: 'Continue anyway'
       }
     },
     
@@ -769,6 +884,88 @@ const en = {
       message: 'The settings file was changed externally:\n{{filePath}}\n\nWould you like to load the changes? Unsaved changes will be lost.'
     },
 
+    // Invoice History
+    invoiceHistory: {
+      title: 'Invoice History',
+      noInvoices: 'No invoices available',
+      noFilterResults: 'No invoices found matching the filter criteria.',
+      generateFirst: 'Create some invoices first via the "Generate Invoices" tab.',
+      
+      // Statistics
+      stats: {
+        totalInvoices: 'Total Invoices',
+        selectYear: 'Select Year',
+        yearInvoices: 'Invoices {{year}}',
+        yearAmount: 'Revenue {{year}}',
+        yearVAT: 'VAT {{year}}'
+      },
+      
+      // Filters
+      filters: {
+        title: 'Filter & Search',
+        search: 'Search...',
+        customer: 'Customer',
+        quarter: 'Quarter',
+        year: 'Year',
+        status: 'Status',
+        all: 'All',
+        clear: 'Clear'
+      },
+      
+      // Table
+      table: {
+        invoiceNumber: 'Invoice Number',
+        customer: 'Customer',
+        period: 'Period',
+        amount: 'Amount',
+        vat: 'VAT',
+        created: 'Created',
+        status: 'Status',
+        actions: 'Actions'
+      },
+      
+      // Status
+      status: {
+        generated: 'Generated',
+        readyToSend: 'Ready to Send',
+        sent: 'Sent',
+        paid: 'Paid'
+      },
+      
+      // Actions
+      actions: {
+        viewDetails: 'View Details',
+        openPdf: 'Open PDF',
+        openEmail: 'Open Email',
+        delete: 'Delete'
+      },
+      
+      // Details Dialog
+      details: {
+        title: 'Invoice Details',
+        customer: 'Customer',
+        period: 'Period',
+        amount: 'Amount',
+        subtotal: 'Subtotal',
+        vat: 'VAT',
+        created: 'Created at',
+        pdfPath: 'PDF Path',
+        emailPath: 'Email Path'
+      },
+      
+      // Export
+      export: {
+        csvTooltip: 'Export as CSV file',
+        excelTooltip: 'Export as Excel file'
+      },
+
+      // Delete Dialog
+      delete: {
+        title: 'Delete Invoice',
+        message: 'Do you really want to delete invoice {{invoiceNumber}} for {{customer}}? This action cannot be undone.'
+      }
+    },
+
     // General Terms
     common: {
       loading: 'Loading...',
@@ -781,6 +978,9 @@ const en = {
       appearance: 'Appearance',
       yes: 'Yes',
       no: 'No',
+      delete: 'Delete',
+      cancel: 'Cancel',
+      close: 'Close',
       currentPlatform: 'Current Platform',
       otherPlatforms: 'Other Platforms'
     }

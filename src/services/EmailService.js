@@ -1,5 +1,6 @@
 import i18n from '../i18n';
 import DataService from './DataService';
+import PDFService from './PDFService';
 
 class EmailService {
   static async generateEmail({ customer, invoiceNumber, pdfBuffer, autoExport = false, quarter = null, year = null }) {
@@ -11,15 +12,20 @@ class EmailService {
         .replace(/\[Quartal\]/g, quarter || 'Q1')
         .replace(/\[Jahr\]/g, year || new Date().getFullYear());
         
+      // Generiere PDF-Dateinamen für Anhang
+      const pdfAttachmentName = PDFService.generatePDFFileName(customer, invoiceNumber, quarter, year, new Date());
+      
       const emlContent = this.createEMLContent({
         to: customer.email,
         subject: processedSubject,
         body: customer.emailTemplate || this.getDefaultEmailTemplate(),
-        attachmentName: `${invoiceNumber}_${customer.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
+        attachmentName: pdfAttachmentName,
         attachmentBuffer: pdfBuffer
       });
 
-      const fileName = `${invoiceNumber}_${customer.name.replace(/[^a-zA-Z0-9]/g, '_')}.eml`;
+      // Verwende das gleiche Format wie PDF aber mit .eml Extension
+      const pdfFileName = PDFService.generatePDFFileName(customer, invoiceNumber, quarter, year, new Date());
+      const fileName = pdfFileName.replace(/\.pdf$/i, '.eml');
       
       console.log('EML-Generierung Debug:', {
         customer: customer.name,
@@ -41,7 +47,7 @@ class EmailService {
         } else if (platform === 'linux') {
           emlPath = customer.emlPathLinux;
         } else {
-          // Browser oder unbekanntes System - verwende Fallback
+          // Browser oder unbekanntes System
           emlPath = null;
         }
         
@@ -59,8 +65,18 @@ class EmailService {
             return this.fallbackBrowserDownload(fileName, emlContent, 'EML Export fehlgeschlagen');
           }
         } else {
-          // Fallback: Browser-Download wenn kein EML-Pfad hinterlegt
-          return this.fallbackBrowserDownload(fileName, emlContent, i18n.t('settings.noEmlPathMessage'));
+          // Zeige spezifische Fehlermeldung basierend auf Plattform
+          let platformMessage;
+          if (platform === 'darwin') {
+            platformMessage = 'Kein macOS-EML-Pfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "EML-Pfad (macOS)" setzen.';
+          } else if (platform === 'win32') {
+            platformMessage = 'Kein Windows-EML-Pfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "EML-Pfad (Windows)" setzen.';
+          } else if (platform === 'linux') {
+            platformMessage = 'Kein Linux-EML-Pfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "EML-Pfad (Linux)" setzen.';
+          } else {
+            platformMessage = 'Kein EML-Pfad für aktuelle Plattform konfiguriert.';
+          }
+          return this.fallbackBrowserDownload(fileName, emlContent, platformMessage);
         }
       } else {
         // Normale Speicherung mit Dialog
@@ -74,7 +90,7 @@ class EmailService {
         } else if (platform === 'linux') {
           emlPath = customer.emlPathLinux;
         } else {
-          // Browser oder unbekanntes System - verwende Fallback
+          // Browser oder unbekanntes System
           emlPath = null;
         }
         
@@ -89,8 +105,18 @@ class EmailService {
             return this.fallbackBrowserDownload(fileName, emlContent, 'EML Speicherung fehlgeschlagen');
           }
         } else {
-          // Fallback: Browser-Download wenn kein Pfad konfiguriert
-          return this.fallbackBrowserDownload(fileName, emlContent, 'Kein EML-Speicherpfad konfiguriert');
+          // Zeige spezifische Fehlermeldung basierend auf Plattform
+          let platformMessage;
+          if (platform === 'darwin') {
+            platformMessage = 'Kein macOS-EML-Pfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "EML-Pfad (macOS)" setzen.';
+          } else if (platform === 'win32') {
+            platformMessage = 'Kein Windows-EML-Pfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "EML-Pfad (Windows)" setzen.';
+          } else if (platform === 'linux') {
+            platformMessage = 'Kein Linux-EML-Pfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "EML-Pfad (Linux)" setzen.';
+          } else {
+            platformMessage = 'Kein EML-Pfad für aktuelle Plattform konfiguriert.';
+          }
+          return this.fallbackBrowserDownload(fileName, emlContent, platformMessage);
         }
       }
     } catch (error) {

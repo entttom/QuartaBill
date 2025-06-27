@@ -528,6 +528,64 @@ function CustomerManager({ customers, onUpdateCustomers }) {
               <Grid item xs={12}>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6" gutterBottom>
+                  PDF-Dateinamen
+                </Typography>
+                <TextField
+                  label="PDF-Dateinamen-Format"
+                  fullWidth
+                  value={formData.pdfFileNameFormat || '[invoiceNumber]_[customerName]'}
+                  onChange={(e) => handleInputChange('pdfFileNameFormat', e.target.value)}
+                  placeholder="[invoiceNumber]_[customerName]"
+                  sx={{ mb: 2 }}
+                />
+
+                {/* Hilfe für PDF-Dateinamen */}
+                <Accordion sx={{ mt: 1, mb: 3 }}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                      💡 Verfügbare Variablen für PDF-Dateinamen
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mt: 1 }}>
+                      <Box sx={{ minWidth: '250px' }}>
+                        <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                          📄 Verfügbare Variablen:
+                        </Typography>
+                        <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+                          [invoiceNumber] → 0124MA<br/>
+                          [customerName] → {(formData.name || 'Kundenname').replace(/[^a-zA-Z0-9]/g, '_')}<br/>
+                          [quarter] → Q1<br/>
+                          [year] → 2024<br/>
+                          [date] → 2024-04-01
+                        </Typography>
+                      </Box>
+                      <Box sx={{ minWidth: '300px' }}>
+                        <Typography variant="caption" component="div" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                          📋 Beispiel-Formate:
+                        </Typography>
+                        <Typography variant="caption" component="div" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+                          <strong>Standard:</strong> [invoiceNumber]_[customerName]<br/>
+                          → 0124MA_{(formData.name || 'Kundenname').replace(/[^a-zA-Z0-9]/g, '_')}.pdf<br/><br/>
+                          <strong>Mit Datum:</strong> [date]_[invoiceNumber]<br/>
+                          → 2024-04-01_0124MA.pdf<br/><br/>
+                          <strong>Kurz:</strong> [invoiceNumber]<br/>
+                          → 0124MA.pdf<br/><br/>
+                          <strong>Mit Quartal:</strong> [year]_[quarter]_[customerName]<br/>
+                          → 2024_Q1_{(formData.name || 'Kundenname').replace(/[^a-zA-Z0-9]/g, '_')}.pdf
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Typography variant="caption" sx={{ mt: 2, display: 'block', color: 'text.secondary', fontStyle: 'italic' }}>
+                      ⚠️ Sonderzeichen im Kundennamen werden automatisch durch Unterstriche ersetzt für gültige Dateinamen
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="h6" gutterBottom>
                   {t('customers.form.paths')}
                 </Typography>
               </Grid>

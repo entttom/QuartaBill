@@ -12,6 +12,7 @@ class DataService {
   
   static defaultData = {
     customers: [],
+    invoiceHistory: [],
     settings: {
       issuer: {
         name: 'Max Mustermann',
@@ -295,6 +296,7 @@ class DataService {
   static mergeWithDefaults(data) {
     return {
       customers: data.customers || [],
+      invoiceHistory: data.invoiceHistory || [],
       settings: {
         ...this.defaultData.settings,
         ...data.settings,
@@ -394,6 +396,174 @@ class DataService {
       .replace(/{N}/g, invoiceCount.toString()); // Fortlaufende Nummer
     
     return invoiceNumber;
+  }
+
+  // Rechnungshistorie-Funktionen
+  static addInvoiceToHistory(data, invoiceData) {
+    const newInvoice = {
+      id: `invoice_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      customerId: invoiceData.customerId,
+      customerName: invoiceData.customerName,
+      invoiceNumber: invoiceData.invoiceNumber,
+      quarter: invoiceData.quarter,
+      year: invoiceData.year,
+      amount: invoiceData.amount,
+      vat: invoiceData.vat || 0,
+      subtotal: invoiceData.subtotal || (invoiceData.amount - (invoiceData.vat || 0)),
+      createdAt: new Date().toISOString(),
+      pdfPath: invoiceData.pdfPath,
+      emailPath: invoiceData.emailPath,
+      status: invoiceData.emailPath ? 'ready_to_send' : 'generated'
+    };
+
+    const updatedData = {
+      ...data,
+      invoiceHistory: [...(data.invoiceHistory || []), newInvoice]
+    };
+
+    return { updatedData, newInvoice };
+  }
+
+  static updateInvoiceStatus(data, invoiceId, status) {
+    const updatedHistory = (data.invoiceHistory || []).map(invoice =>
+      invoice.id === invoiceId ? { ...invoice, status } : invoice
+    );
+
+    return {
+      ...data,
+      invoiceHistory: updatedHistory
+    };
+  }
+
+  static getInvoiceHistory(data, filters = {}) {
+    let history = data.invoiceHistory || [];
+    
+    if (filters.customerId) {
+      history = history.filter(invoice => invoice.customerId === filters.customerId);
+    }
+    
+    if (filters.quarter) {
+      history = history.filter(invoice => invoice.quarter === filters.quarter);
+    }
+    
+    if (filters.year) {
+      history = history.filter(invoice => invoice.year === filters.year);
+    }
+    
+    if (filters.status) {
+      history = history.filter(invoice => invoice.status === filters.status);
+    }
+
+    // Sortiere nach Erstellungsdatum (neueste zuerst)
+    return history.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  static checkInvoiceExists(data, customerId, quarter, year) {
+    return (data.invoiceHistory || []).some(invoice => 
+      invoice.customerId === customerId && 
+      invoice.quarter === quarter && 
+      invoice.year === year
+    );
+  }
+
+  static calculateInvoiceAmount(customer) {
+    if (!customer || !customer.lineItems) return 0;
+    
+    return customer.lineItems.reduce((total, item) => {
+      const subtotal = item.quantity * item.unitPrice;
+      let tax = 0;
+      
+      if (item.taxType === 'mixed') {
+        tax = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+      } else {
+        const taxRate = parseFloat(item.taxType) / 100;
+        tax = subtotal * taxRate;
+      }
+      
+      return total + subtotal + tax;
+    }, 0);
+  }
+
+  static calculateInvoiceVAT(customer) {
+    if (!customer || !customer.lineItems) return 0;
+    
+    return customer.lineItems.reduce((totalVAT, item) => {
+      const subtotal = item.quantity * item.unitPrice;
+      let vat = 0;
+      
+      if (item.taxType === 'mixed') {
+        vat = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+      } else {
+        const taxRate = parseFloat(item.taxType) / 100;
+        vat = subtotal * taxRate;
+      }
+      
+      return totalVAT + vat;
+    }, 0);
+  }
+
+  static calculateInvoiceBreakdown(customer) {
+    if (!customer || !customer.lineItems) {
+      return {
+        subtotal: 0,
+        vat: 0,
+        total: 0,
+        vatBreakdown: []
+      };
+    }
+    
+    let subtotal = 0;
+    let totalVAT = 0;
+    const vatBreakdown = [];
+
+    customer.lineItems.forEach(item => {
+      const itemSubtotal = item.quantity * item.unitPrice;
+      subtotal += itemSubtotal;
+      
+      let itemVAT = 0;
+      let vatDescription = '';
+      
+      if (item.taxType === 'mixed') {
+        itemVAT = itemSubtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+        vatDescription = '90%@20% + 10%@0%';
+      } else {
+        const taxRate = parseFloat(item.taxType) / 100;
+        itemVAT = itemSubtotal * taxRate;
+        vatDescription = `${item.taxType}%`;
+      }
+      
+      totalVAT += itemVAT;
+      
+      // Gruppiere nach Steuersatz
+      const existing = vatBreakdown.find(v => v.type === item.taxType);
+      if (existing) {
+        existing.base += itemSubtotal;
+        existing.vat += itemVAT;
+      } else {
+        vatBreakdown.push({
+          type: item.taxType,
+          description: vatDescription,
+          base: itemSubtotal,
+          vat: itemVAT
+        });
+      }
+    });
+
+    return {
+      subtotal,
+      vat: totalVAT,
+      total: subtotal + totalVAT,
+      vatBreakdown
+    };
+  }
+
+  static deleteInvoiceFromHistory(data, invoiceId) {
+    const updatedHistory = (data.invoiceHistory || []).filter(invoice => invoice.id !== invoiceId);
+    
+    return {
+      ...data,
+      invoiceHistory: updatedHistory
+    };
   }
 }
 

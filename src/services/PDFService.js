@@ -38,8 +38,8 @@ class PDFService {
       doc.setPage(totalPages);
     }
     
-    // PDF speichern
-    const fileName = `${invoiceNumber}_${customer.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+    // PDF speichern - verwende kundenspezifisches Format
+    const fileName = this.generatePDFFileName(customer, invoiceNumber, quarter, year, invoiceDate);
     const pdfBuffer = doc.output('arraybuffer');
     
     if (autoExport) {
@@ -54,7 +54,7 @@ class PDFService {
       } else if (platform === 'linux') {
         savePath = customer.savePathLinux;
       } else {
-        // Browser oder unbekanntes System - verwende Fallback
+        // Browser oder unbekanntes System
         savePath = null;
       }
       
@@ -69,8 +69,18 @@ class PDFService {
           return this.fallbackBrowserDownload(fileName, pdfBuffer, 'Export in Kundenordner fehlgeschlagen');
         }
       } else {
-        // Fallback: Browser-Download wenn kein Pfad hinterlegt
-        return this.fallbackBrowserDownload(fileName, pdfBuffer, i18n.t('settings.noSavePathMessage'));
+        // Zeige spezifische Fehlermeldung basierend auf Plattform
+        let platformMessage;
+        if (platform === 'darwin') {
+          platformMessage = 'Kein macOS-Speicherpfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "PDF-Pfad (macOS)" setzen.';
+        } else if (platform === 'win32') {
+          platformMessage = 'Kein Windows-Speicherpfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "PDF-Pfad (Windows)" setzen.';
+        } else if (platform === 'linux') {
+          platformMessage = 'Kein Linux-Speicherpfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "PDF-Pfad (Linux)" setzen.';
+        } else {
+          platformMessage = 'Kein Speicherpfad für aktuelle Plattform konfiguriert.';
+        }
+        return this.fallbackBrowserDownload(fileName, pdfBuffer, platformMessage);
       }
     } else {
       // Normale Speicherung mit Dialog
@@ -84,7 +94,7 @@ class PDFService {
       } else if (platform === 'linux') {
         savePath = customer.savePathLinux;
       } else {
-        // Browser oder unbekanntes System - verwende Fallback
+        // Browser oder unbekanntes System
         savePath = null;
       }
       
@@ -99,8 +109,18 @@ class PDFService {
           return this.fallbackBrowserDownload(fileName, pdfBuffer, 'Speicherung im Kundenordner fehlgeschlagen');
         }
       } else {
-        // Fallback: Browser-Download wenn kein Pfad konfiguriert
-        return this.fallbackBrowserDownload(fileName, pdfBuffer, 'Kein Speicherpfad konfiguriert');
+        // Zeige spezifische Fehlermeldung basierend auf Plattform
+        let platformMessage;
+        if (platform === 'darwin') {
+          platformMessage = 'Kein macOS-Speicherpfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "PDF-Pfad (macOS)" setzen.';
+        } else if (platform === 'win32') {
+          platformMessage = 'Kein Windows-Speicherpfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "PDF-Pfad (Windows)" setzen.';
+        } else if (platform === 'linux') {
+          platformMessage = 'Kein Linux-Speicherpfad für Kunde konfiguriert. Bitte in den Kunden-Einstellungen den "PDF-Pfad (Linux)" setzen.';
+        } else {
+          platformMessage = 'Kein Speicherpfad für aktuelle Plattform konfiguriert.';
+        }
+        return this.fallbackBrowserDownload(fileName, pdfBuffer, platformMessage);
       }
     }
   }
@@ -134,6 +154,37 @@ class PDFService {
       console.error('Browser-Download fehlgeschlagen:', error);
       throw new Error(`PDF-Generierung fehlgeschlagen: ${error.message}`);
     }
+  }
+
+  static generatePDFFileName(customer, invoiceNumber, quarter, year, invoiceDate) {
+    // Verwende kundenspezifisches Format oder Standard-Format
+    const format = customer.pdfFileNameFormat || '[invoiceNumber]_[customerName]';
+    
+    // Verfügbare Variablen
+    const variables = {
+      invoiceNumber: invoiceNumber,
+      customerName: customer.name.replace(/[^a-zA-Z0-9]/g, '_'),
+      quarter: quarter,
+      year: year.toString(),
+      date: invoiceDate.toISOString().split('T')[0] // YYYY-MM-DD
+    };
+
+    // Ersetze alle Variablen im Format (verwende eckige Klammern)
+    let fileName = format;
+    Object.keys(variables).forEach(key => {
+      const regex = new RegExp(`\\[${key}\\]`, 'g');
+      fileName = fileName.replace(regex, variables[key]);
+    });
+
+    // Stelle sicher, dass der Dateiname gültig ist
+    fileName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+    
+    // Füge .pdf Extension hinzu falls nicht vorhanden
+    if (!fileName.toLowerCase().endsWith('.pdf')) {
+      fileName += '.pdf';
+    }
+
+    return fileName;
   }
 
   static async addLogo(doc, settings) {
