@@ -15,7 +15,17 @@ import DataService from '../services/DataService';
 
 function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
   const { t } = useTranslation();
-  const [selectedQuarter, setSelectedQuarter] = useState('Q1');
+  
+  // Bestimme das aktuelle Quartal basierend auf dem heutigen Datum
+  const getCurrentQuarter = () => {
+    const currentMonth = new Date().getMonth(); // 0-11
+    if (currentMonth <= 2) return 'Q1'; // Jan-Mar
+    if (currentMonth <= 5) return 'Q2'; // Apr-Jun
+    if (currentMonth <= 8) return 'Q3'; // Jul-Sep
+    return 'Q4'; // Oct-Dec
+  };
+  
+  const [selectedQuarter, setSelectedQuarter] = useState(getCurrentQuarter());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [generateEmail, setGenerateEmail] = useState(true);
