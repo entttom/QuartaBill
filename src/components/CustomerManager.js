@@ -159,7 +159,7 @@ function CustomerManager({ customers, onUpdateCustomers }) {
 
   const generateInvoiceNumber = (customerName, quarter = 'Q1', year = 2024) => {
     const mockCustomer = { name: customerName };
-    const format = '{QQ}{YY}{KK}'; // Standard-Format für Beispiel
+          const format = '[QQ][YY][KK]'; // Standard-Format für Beispiel
     return DataService.generateInvoiceNumber(mockCustomer, quarter, year, format);
   };
 

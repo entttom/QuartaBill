@@ -87,7 +87,7 @@ function App() {
       logoPathMac: '',
       dataFilePath: '',
       hasSeenOnboarding: false,
-              invoiceNumberFormat: '[QQ][YY][KK]',
+                invoiceNumberFormat: '[QQ][YY][KK]',
       language: 'de',
       darkMode: false
     }

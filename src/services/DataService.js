@@ -31,7 +31,7 @@ class DataService {
       logoPathLinux: '',
       dataFilePath: this.defaultDataPath,
       hasSeenOnboarding: false,
-      invoiceNumberFormat: '[QQ][YY][KK]',
+              invoiceNumberFormat: '[QQ][YY][KK]',
       language: 'de',
       darkMode: false
     }
@@ -382,7 +382,7 @@ class DataService {
     const currentDate = new Date();
     const invoiceCount = currentDate.getMonth() * 100 + currentDate.getDate(); // Einfache Sequenz
     
-    // Variable-Ersetzung mit eckigen Klammern
+    // Variable-Ersetzung
     let invoiceNumber = format
       .replace(/\[QQ\]/g, quarterNum)           // Quartal zweistellig (01, 02, 03, 04)
       .replace(/\[Q\]/g, quarter.replace('Q', ''))  // Quartal einstellig (1, 2, 3, 4)
