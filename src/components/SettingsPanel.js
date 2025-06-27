@@ -343,15 +343,27 @@ function SettingsPanel({ settings, onUpdateSettings, configPath, onConfigPathCha
               </Grid>
               
               <Grid item xs={12}>
-                <Alert severity="info" sx={{ mt: 1 }}>
-                  <Typography variant="body2">
-                    <strong>{t('settings.issuer.invoiceNumber.examples.title')}</strong><br/>
-                    • <code>{'{QQ}{YY}{KK}'}</code> → 0124MA {t('settings.issuer.invoiceNumber.examples.standard')}<br/>
-                    • <code>{'{YYYY}-Q{Q}-{KKK}'}</code> → 2024-Q1-MAX {t('settings.issuer.invoiceNumber.examples.verbose')}<br/>
-                    • <code>R{'{YY}{QQ}{NNN}'}</code> → R24011234 {t('settings.issuer.invoiceNumber.examples.prefix')}<br/>
-                    • <code>{'{K}{YY}{QQ}{NN}'}</code> → M240112 {t('settings.issuer.invoiceNumber.examples.compact')}
-                  </Typography>
-                </Alert>
+                <Accordion sx={{ mt: 1 }}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="invoice-number-examples-content"
+                    id="invoice-number-examples-header"
+                  >
+                    <Typography variant="body2" color="primary">
+                      <strong>{t('settings.issuer.invoiceNumber.examples.title')}</strong>
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Box sx={{ p: 1 }}>
+                      <Typography variant="body2" component="div">
+                        • <code>{'{QQ}{YY}{KK}'}</code> → 0124MA {t('settings.issuer.invoiceNumber.examples.standard')}<br/>
+                        • <code>{'{YYYY}-Q{Q}-{KKK}'}</code> → 2024-Q1-MAX {t('settings.issuer.invoiceNumber.examples.verbose')}<br/>
+                        • <code>R{'{YY}{QQ}{NNN}'}</code> → R24011234 {t('settings.issuer.invoiceNumber.examples.prefix')}<br/>
+                        • <code>{'{K}{YY}{QQ}{NN}'}</code> → M240112 {t('settings.issuer.invoiceNumber.examples.compact')}
+                      </Typography>
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
             </Grid>
           </CardContent>
