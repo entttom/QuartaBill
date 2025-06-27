@@ -30,6 +30,63 @@ QuartaBill ist eine Desktop-Anwendung, die speziell für Arbeitsmediziner entwic
 
 ---
 
+## 📸 Screenshots
+
+### 🇩🇪 Deutsche Version
+
+<details>
+<summary><strong>📱 Benutzeroberfläche anzeigen</strong></summary>
+
+#### Hauptbildschirm & Navigation
+<img src="Screenshots/de/QuartaBill-Screenshot-2025-06-27-1-de.png" alt="QuartaBill Hauptbildschirm" width="800">
+
+#### Kundenverwaltung
+<img src="Screenshots/de/QuartaBill-Screenshot-2025-06-27-2-de.png" alt="Kundenverwaltung" width="800">
+
+#### Rechnungserstellung
+<img src="Screenshots/de/QuartaBill-Screenshot-2025-06-27-3-de.png" alt="Rechnungserstellung" width="800">
+
+#### Rechnungshistorie mit Pagination
+<img src="Screenshots/de/QuartaBill-Screenshot-2025-06-27-4-de.png" alt="Rechnungshistorie" width="800">
+
+#### Einstellungen & Konfiguration
+<img src="Screenshots/de/QuartaBill-Screenshot-2025-06-27-5-de.png" alt="Einstellungen" width="800">
+
+#### Backup & Datenverwaltung
+<img src="Screenshots/de/QuartaBill-Screenshot-2025-06-27-6-de.png" alt="Backup Manager" width="800">
+
+#### Beispiel-Rechnung (PDF-Ausgabe)
+<img src="Screenshots/de/Rechnung_Beispiel.png" alt="Beispiel PDF-Rechnung" width="600">
+
+</details>
+
+### 🇺🇸 English Version
+
+<details>
+<summary><strong>📱 Show User Interface</strong></summary>
+
+#### Main Screen & Navigation
+<img src="Screenshots/en/QuartaBill-Screenshot-2025-06-27-1-en.png" alt="QuartaBill Main Screen" width="800">
+
+#### Customer Management
+<img src="Screenshots/en/QuartaBill-Screenshot-2025-06-27-2-en.png" alt="Customer Management" width="800">
+
+#### Invoice Generation
+<img src="Screenshots/en/QuartaBill-Screenshot-2025-06-27-3-en.png" alt="Invoice Generation" width="800">
+
+#### Invoice History with Pagination
+<img src="Screenshots/en/QuartaBill-Screenshot-2025-06-27-4-en.png" alt="Invoice History" width="800">
+
+#### Settings & Configuration
+<img src="Screenshots/en/QuartaBill-Screenshot-2025-06-27-5-en.png" alt="Settings" width="800">
+
+#### Backup & Data Management
+<img src="Screenshots/en/QuartaBill-Screenshot-2025-06-27-6-en.png" alt="Backup Manager" width="800">
+
+</details>
+
+---
+
 ## ✨ Features im Detail
 
 ### 🏢 **Kundenverwaltung**
@@ -80,22 +137,22 @@ QuartaBill ist eine Desktop-Anwendung, die speziell für Arbeitsmediziner entwic
 
 ### 📦 Downloads
 
-**Aktuelle Version: v1.4.13**
+**Aktuelle Version: v1.6.2**
 
 Die neuesten Releases finden Sie unter [**GitHub Releases**](https://github.com/entttom/QuartaBill/releases).
 
 #### Windows
-- `QuartaBill Setup 1.4.13.exe` - Installer
-- `QuartaBill 1.4.13.exe` - Portable Version
+- `QuartaBill Setup 1.6.2.exe` - Installer
+- `QuartaBill 1.6.2.exe` - Portable Version
 
 #### macOS ✅ **Vollständig signiert & notarisiert**
-- `QuartaBill-1.4.13.dmg` - Intel Macs
-- `QuartaBill-1.4.13-arm64.dmg` - Apple Silicon (M1/M2/M3)
+- `QuartaBill-1.6.2.dmg` - Intel Macs
+- `QuartaBill-1.6.2-arm64.dmg` - Apple Silicon (M1/M2/M3)
 
 #### Linux
-- `QuartaBill-1.4.13.AppImage` - Universal
-- `quartabill_1.4.13_amd64.deb` - Debian/Ubuntu
-- `quartabill-1.4.13.x86_64.rpm` - Red Hat/Fedora
+- `QuartaBill-1.6.2.AppImage` - Universal
+- `quartabill_1.6.2_amd64.deb` - Debian/Ubuntu
+- `quartabill-1.6.2.x86_64.rpm` - Red Hat/Fedora
 
 ### 🚀 Erste Schritte
 
@@ -153,8 +210,8 @@ Das Projekt nutzt GitHub Actions für vollständig automatisierte Builds:
 
 **Release erstellen:**
 ```bash
-git tag v1.4.14
-git push origin v1.4.14
+git tag v1.6.3
+git push origin v1.6.3
 ```
 
 ---
@@ -204,13 +261,14 @@ git push origin v1.4.14
 
 Alle wichtigen Änderungen werden in der [CHANGELOG.md](CHANGELOG.md) dokumentiert.
 
-### 🆕 Highlights der aktuellen Version (1.4.13)
+### 🆕 Highlights der aktuellen Version (1.6.2)
 
-- **🐧 Vollständiger Linux-Support**: Native Unterstützung für alle Linux-Distributionen
-- **🎯 Smart Platform Detection**: Automatische Erkennung des Betriebssystems
-- **📱 Intelligente UI**: Platform-spezifische Benutzeroberfläche
-- **🔄 Cross-Platform Paths**: Einheitliche Pfad-Verwaltung für alle Plattformen
-- **🍎 macOS Notarisierung**: Vollständig funktionsfähig und getestet
+- **🎨 QuartaBill Logo Integration**: Professionelles Logo im Header für bessere Markenidentität
+- **📸 Screenshot-Funktionalität**: Erstellen Sie Screenshots der gesamten Anwendung mit Cmd+Shift+S
+- **📄 Erweiterte Pagination**: Intelligente Seitennavigation in der Rechnungshistorie (30 Rechnungen pro Seite)
+- **🔧 Konfigurierbare Seitengröße**: Wählen Sie zwischen 10, 20, 30, 50, 100 oder "Alle anzeigen"
+- **🌍 Vollständige Internationalisierung**: Perfekte englische Übersetzung aller PDF-Elemente und UI-Komponenten
+- **📊 Umfangreiche Dummy-Daten**: Realistische Testdaten für Screenshots und Entwicklung
 
 ---
 
