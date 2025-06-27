@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain, shell } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
@@ -290,6 +290,25 @@ ipcMain.handle('read-file', async (event, filePath) => {
     return fileData;
   } catch (error) {
     console.error('Electron: Fehler beim Lesen der Datei:', error);
+    throw error;
+  }
+});
+
+// Datei öffnen mit Standard-Anwendung
+ipcMain.handle('open-file', async (event, filePath) => {
+  try {
+    console.log('Electron: Öffne Datei:', filePath);
+    
+    if (!fs.existsSync(filePath)) {
+      console.warn('Electron: Datei existiert nicht:', filePath);
+      throw new Error(`Datei nicht gefunden: ${filePath}`);
+    }
+    
+    await shell.openPath(filePath);
+    console.log('Electron: Datei erfolgreich geöffnet:', filePath);
+    return true;
+  } catch (error) {
+    console.error('Electron: Fehler beim Öffnen der Datei:', error);
     throw error;
   }
 });

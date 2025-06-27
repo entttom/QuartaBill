@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveFile: (content, defaultPath) => ipcRenderer.invoke('save-file', content, defaultPath),
   saveFileDirect: (content, filePath) => ipcRenderer.invoke('save-file-direct', content, filePath),
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),
+  openFile: (filePath) => ipcRenderer.invoke('open-file', filePath),
   
   // System-Info
   getPlatform: () => ipcRenderer.invoke('get-platform'),
