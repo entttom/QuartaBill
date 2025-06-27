@@ -7,14 +7,14 @@ import {
 } from '@mui/material';
 import { Receipt, Email, CheckCircle, Error } from '@mui/icons-material';
 import { format, startOfYear, addMonths } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import PDFService from '../services/PDFService';
 import EmailService from '../services/EmailService';
 import DataService from '../services/DataService';
 
 function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   // Bestimme das aktuelle Quartal basierend auf dem heutigen Datum
   const getCurrentQuarter = () => {
@@ -410,7 +410,12 @@ function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
                 <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
                   <Typography variant="body2" color="textSecondary">
                     <strong>{t('invoices.period.serviceTime')}:</strong> {selectedQuarter}/{selectedYear}<br/>
-                    <strong>{t('invoices.period.invoiceDate')}:</strong> {format(getQuarterDates(selectedQuarter, selectedYear).invoiceDate, 'dd.MM.yyyy', { locale: de })}
+                    <strong>{t('invoices.period.invoiceDate')}:</strong> {(() => {
+                      const currentLang = i18n.language;
+                      const dateLocale = currentLang === 'en' ? enUS : de;
+                      const dateFormat = currentLang === 'en' ? 'MM/dd/yyyy' : 'dd.MM.yyyy';
+                      return format(getQuarterDates(selectedQuarter, selectedYear).invoiceDate, dateFormat, { locale: dateLocale });
+                    })()}
                   </Typography>
                 </Box>
               )}
@@ -451,7 +456,7 @@ function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
                         primary={customer.name}
                         secondary={(() => {
                           if (!customer.lineItems || customer.lineItems.length === 0) {
-                            return 'Keine Leistungspositionen definiert';
+                            return t('customers.form.noLineItems');
                           }
                           
                           const total = customer.lineItems.reduce((sum, item) => {
@@ -466,7 +471,12 @@ function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
                             return sum + subtotal + tax;
                           }, 0);
                           
-                          return `${customer.lineItems.length} Position${customer.lineItems.length !== 1 ? 'en' : ''} = ${total.toFixed(2)}€`;
+                          const positionCount = customer.lineItems.length;
+                          const positionText = positionCount === 1 ? 
+                            t('customers.form.position') : 
+                            t('customers.form.positions');
+                          
+                          return `${positionCount} ${positionText} = ${total.toFixed(2)}€`;
                         })()}
                       />
                     </ListItem>

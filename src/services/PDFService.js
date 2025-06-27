@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { de, enUS } from 'date-fns/locale';
 import i18n from '../i18n';
 import DataService from './DataService';
 
@@ -374,7 +374,12 @@ class PDFService {
     doc.text(i18n.t('pdf.invoiceDate') + ':', centerX, boxY + 20, { align: 'center' });
     doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
-    doc.text(format(invoiceDate, 'dd.MM.yyyy'), centerX, boxY + 27, { align: 'center' });
+    
+    // Verwende lokalisierte Datumsformatierung
+    const currentLang = i18n.language;
+    const dateLocale = currentLang === 'en' ? enUS : de;
+    const dateFormat = currentLang === 'en' ? 'MM/dd/yyyy' : 'dd.MM.yyyy';
+    doc.text(format(invoiceDate, dateFormat, { locale: dateLocale }), centerX, boxY + 27, { align: 'center' });
     
     // Leistungszeitraum (rechtsbündig)
     const rightX = boxX + boxWidth - 3;
@@ -447,55 +452,42 @@ class PDFService {
   }
 
   static addServiceTable(doc, customer, quarter, invoiceNumber, year, issuer = {}) {
-    const startY = 105; // 5pt höher
     const lineItems = customer.lineItems || [];
     
     if (lineItems.length === 0) {
-      // Fallback falls keine Positionen vorhanden
-      doc.setFontSize(10);
-      doc.setTextColor(100);
-      doc.text('Keine Leistungspositionen definiert', 20, startY + 15);
-      return startY + 25;
+      return 120; // Keine Tabelle ohne Positionen
     }
     
-    // Kompakte Tabellenhöhe - 40% weniger Platz pro Zeile
-    const headerHeight = 10; // von 12 auf 10
-    const rowHeight = 12;     // von 20 auf 12 (-40%)
+    // Dynamische Tabellenposition - flexible Nutzung des verfügbaren Platzes
+    const startY = 115; // Höher als zuvor (115 statt 125)
+    const tableWidth = 170; // Breite der Tabelle
+    const rowHeight = 12; // Höhe einer Zeile
+    const headerHeight = 15; // Header ist etwas höher
     const tableHeight = headerHeight + (lineItems.length * rowHeight);
     
-    // Korrekt dimensionierte Tabelle
-    const tableWidth = 170;
-    doc.setLineWidth(0.5);
-    doc.setDrawColor(220, 220, 220);
-    doc.rect(20, startY, tableWidth, tableHeight, 'S');
+    // Verfügbare Variablen für die Vorlage-Ersetzung
+    const variables = {
+      Quartal: quarter,
+      Jahr: year,
+      Rechnungsnummer: invoiceNumber,
+      Kunde: customer.name
+    };
     
-    // Kompakter Header
-    doc.setFillColor(248, 249, 250);
+    // Eleganter Header mit moderner Optik
+    doc.setFillColor(60, 90, 120); // Professionelles Blau
     doc.rect(20, startY, tableWidth, headerHeight, 'F');
     
-    // Header-Linie
-    doc.setLineWidth(0.3);
-    doc.setDrawColor(200, 200, 200);
-    doc.line(20, startY + headerHeight, 20 + tableWidth, startY + headerHeight);
-    
-    // Kompakte Header-Texte - zentriert ausgerichtet
-    doc.setTextColor(60, 60, 60);
-    doc.setFontSize(7);
+    doc.setTextColor(255);
+    doc.setFontSize(8);
     doc.setFont(undefined, 'bold');
-    doc.text('Beschreibung', 22, startY + 7);
-    doc.text('Menge', 120, startY + 7, { align: 'center' });    
-    doc.text('Einheit', 135, startY + 7, { align: 'center' });   
-    doc.text('Preis', 150, startY + 7, { align: 'center' });     
-    doc.text('USt', 165, startY + 7, { align: 'center' });       
-    doc.text('Gesamt', 180, startY + 7, { align: 'center' });
     
-    // Variable-Ersetzung für Aktivitäten
-    const variables = {
-      'Quartal': quarter,
-      'Jahr': year,
-      'Rechnungsnummer': invoiceNumber,
-      'Kunde': customer.name
-    };
+    // Header-Texte mit i18n
+    doc.text(i18n.t('pdf.serviceDescription'), 22, startY + 10);
+    doc.text(i18n.t('pdf.hours'), 120, startY + 7, { align: 'center' });
+    doc.text('', 135, startY + 7, { align: 'center' }); // Unit column
+    doc.text(i18n.t('pdf.hourlyRate'), 150, startY + 7, { align: 'center' });
+    doc.text(i18n.t('pdf.vat'), 165, startY + 7, { align: 'center' });
+    doc.text(i18n.t('pdf.total'), 180, startY + 7, { align: 'center' });
     
     // Kompakte Leistungszeilen
     lineItems.forEach((item, index) => {
@@ -655,7 +647,7 @@ class PDFService {
     doc.setTextColor(60, 60, 60);
     doc.setFontSize(7); // Kleiner
     doc.setFont(undefined, 'bold');
-    doc.text('RECHNUNGSSUMME', boxX + 2, yPos + 6);
+    doc.text(i18n.t('pdf.invoiceSum'), boxX + 2, yPos + 6);
     
     // Kompakte Berechnungszeilen
     doc.setTextColor(40, 40, 40);
@@ -665,7 +657,7 @@ class PDFService {
     let currentY = yPos + 14; // Weniger Abstand
     
     // Kompakte Zwischensumme
-    doc.text('Zwischensumme:', boxX + 2, currentY);
+    doc.text(i18n.t('pdf.subtotal') + ':', boxX + 2, currentY);
     doc.setFont(undefined, 'bold');
     doc.text(`${totalSubtotal.toFixed(2)} €`, boxX + boxWidth - 2, currentY, { align: 'right' });
     currentY += 6; // Weniger Abstand: 6 statt 8
@@ -678,9 +670,9 @@ class PDFService {
         
         let label = '';
         if (taxKey === 'mixed') {
-          label = 'USt. (90%@20% / 10%@0%):';
+          label = i18n.t('pdf.taxRate90') + ':';
         } else {
-          label = `${taxKey} USt.:`;
+          label = `${taxKey} ${i18n.t('pdf.vat')}:`;
         }
         
         doc.text(label, boxX + 2, currentY);
@@ -694,7 +686,7 @@ class PDFService {
     if (totalTax > 0) {
       doc.setFont(undefined, 'normal');
       doc.setTextColor(40, 40, 40);
-      doc.text('USt. gesamt:', boxX + 2, currentY);
+      doc.text(i18n.t('pdf.vat') + ' ' + i18n.t('pdf.total').toLowerCase() + ':', boxX + 2, currentY);
       doc.setFont(undefined, 'bold');
       doc.text(`${totalTax.toFixed(2)} €`, boxX + boxWidth - 2, currentY, { align: 'right' });
       currentY += 6;
@@ -708,7 +700,7 @@ class PDFService {
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(8); // Nur leicht größer
     doc.setFont(undefined, 'bold');
-    doc.text('Gesamt:', boxX + 2, currentY + 4);
+    doc.text(i18n.t('pdf.total') + ':', boxX + 2, currentY + 4);
     doc.setFontSize(9);
     doc.text(`${grandTotal.toFixed(2)} €`, boxX + boxWidth - 2, currentY + 4, { align: 'right' });
     

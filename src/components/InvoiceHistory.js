@@ -12,14 +12,14 @@ import {
   TableChart
 } from '@mui/icons-material';
 import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
+import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 import Papa from 'papaparse';
 import DataService from '../services/DataService';
 
 function InvoiceHistory({ data, onUpdateData, customers }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [filters, setFilters] = useState({
     customerId: '',
     quarter: '',
@@ -230,14 +230,19 @@ function InvoiceHistory({ data, onUpdateData, customers }) {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('de-DE', {
+    const currentLang = i18n.language;
+    const locale = currentLang === 'en' ? 'en-US' : 'de-DE';
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: 'EUR'
     }).format(amount || 0);
   };
 
   const formatDate = (dateString) => {
-    return format(new Date(dateString), 'dd.MM.yyyy HH:mm', { locale: de });
+    const currentLang = i18n.language;
+    const dateLocale = currentLang === 'en' ? enUS : de;
+    const dateFormat = currentLang === 'en' ? 'MM/dd/yyyy HH:mm' : 'dd.MM.yyyy HH:mm';
+    return format(new Date(dateString), dateFormat, { locale: dateLocale });
   };
 
   const getQuarterDateRange = (quarter, year) => {

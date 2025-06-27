@@ -47,6 +47,9 @@ const de = {
         emlPathWindows: 'EML-Pfad (Windows)',
         emlPathMac: 'EML-Pfad (Mac)',
         emlPathLinux: 'EML-Pfad (Linux)',
+        noLineItems: 'Keine Leistungspositionen definiert',
+        position: 'Position',
+        positions: 'Positionen',
         placeholders: {
           address: 'Straße\\nPLZ Ort',
           activity: 'Arbeitsmedizinische Leistungen [Quartal]',
@@ -549,6 +552,9 @@ const en = {
         emlPathWindows: 'EML Path (Windows)',
         emlPathMac: 'EML Path (Mac)',
         emlPathLinux: 'EML Path (Linux)',
+        noLineItems: 'No service positions defined',
+        position: 'position',
+        positions: 'positions',
         placeholders: {
           address: 'Street\\nZIP City',
           activity: 'Occupational Health Services [Quarter]',

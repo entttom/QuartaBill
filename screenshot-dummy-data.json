@@ -403,6 +403,36 @@
       "createdAt": "2023-10-02T10:30:00.000Z",
       "pdfPath": "/Users/Documents/Rechnungen/TechCorp/Q323T001_TechCorp_Q3_2023.pdf",
       "emailPath": "/Users/Documents/Email/TechCorp/Q323T001.eml"
+    },
+    {
+      "id": "invoice_1751029958677_yiukqudc0",
+      "customerId": "1",
+      "customerName": "TechCorp Solutions GmbH",
+      "invoiceNumber": "225T",
+      "quarter": "Q2",
+      "year": 2025,
+      "amount": 3504,
+      "vat": 584,
+      "subtotal": 2920,
+      "createdAt": "2025-06-27T13:12:38.677Z",
+      "pdfPath": "/Users/Documents/Rechnungen/TechCorp/225T_TechCorp_Solutions_GmbH_Q2_2025.pdf",
+      "emailPath": "225T_TechCorp_Solutions_GmbH_Q2_2025.eml",
+      "status": "ready_to_send"
+    },
+    {
+      "id": "invoice_1751030049697_0n4cvtr3b",
+      "customerId": "1",
+      "customerName": "TechCorp Solutions GmbH",
+      "invoiceNumber": "225T",
+      "quarter": "Q2",
+      "year": 2025,
+      "amount": 3504,
+      "vat": 584,
+      "subtotal": 2920,
+      "createdAt": "2025-06-27T13:14:09.697Z",
+      "pdfPath": "/Users/Documents/Rechnungen/TechCorp/225T_TechCorp_Solutions_GmbH_Q2_2025.pdf",
+      "emailPath": "225T_TechCorp_Solutions_GmbH_Q2_2025.eml",
+      "status": "ready_to_send"
     }
   ],
   "settings": {
