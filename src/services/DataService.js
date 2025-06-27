@@ -33,7 +33,8 @@ class DataService {
       hasSeenOnboarding: false,
               invoiceNumberFormat: '[QQ][YY][KK]',
       language: 'de',
-      darkMode: false
+      darkMode: false,
+      invoiceHistoryPageSize: 30
     }
   };
 

@@ -171,6 +171,50 @@ function createWindow() {
           click: () => {
             mainWindow.webContents.reload();
           }
+        },
+        { type: 'separator' },
+        {
+          label: 'Screenshot erstellen',
+          accelerator: 'CmdOrCtrl+Shift+S',
+          click: async () => {
+            try {
+              // Screenshot des gesamten Fensterinhalts erstellen
+              const screenshot = await mainWindow.webContents.capturePage();
+              
+              // Speicherdialog öffnen
+              const result = await dialog.showSaveDialog(mainWindow, {
+                title: 'Screenshot speichern',
+                defaultPath: `QuartaBill-Screenshot-${new Date().toISOString().split('T')[0]}.png`,
+                filters: [
+                  { name: 'PNG Bilder', extensions: ['png'] },
+                  { name: 'JPEG Bilder', extensions: ['jpg', 'jpeg'] },
+                  { name: 'Alle Dateien', extensions: ['*'] }
+                ]
+              });
+              
+              if (!result.canceled && result.filePath) {
+                // Screenshot als PNG speichern
+                const buffer = screenshot.toPNG();
+                fs.writeFileSync(result.filePath, buffer);
+                
+                // Bestätigung anzeigen
+                dialog.showMessageBox(mainWindow, {
+                  type: 'info',
+                  title: 'Screenshot gespeichert',
+                  message: 'Der Screenshot wurde erfolgreich gespeichert.',
+                  detail: `Gespeichert unter: ${result.filePath}`
+                });
+              }
+            } catch (error) {
+              console.error('Fehler beim Erstellen des Screenshots:', error);
+              dialog.showMessageBox(mainWindow, {
+                type: 'error',
+                title: 'Screenshot-Fehler',
+                message: 'Fehler beim Erstellen des Screenshots',
+                detail: error.message
+              });
+            }
+          }
         }
       ]
     },

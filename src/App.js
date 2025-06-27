@@ -267,7 +267,18 @@ function App() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Receipt sx={{ mr: 2 }} />
+            <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
+              <img 
+                src="./icon_32x32.png" 
+                alt="QuartaBill Logo" 
+                style={{ 
+                  height: '32px', 
+                  width: '32px',
+                  objectFit: 'contain',
+                  filter: data.settings.darkMode ? 'brightness(0.9)' : 'none'
+                }} 
+              />
+            </Box>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               {t('app.title')}
             </Typography>

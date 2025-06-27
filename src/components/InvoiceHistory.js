@@ -4,7 +4,7 @@ import {
   TableContainer, TableHead, TableRow, Paper, Chip, IconButton,
   FormControl, InputLabel, Select, MenuItem, Grid, TextField,
   Button, Dialog, DialogTitle, DialogContent, DialogActions,
-  Tooltip, Alert, AlertTitle, Stack
+  Tooltip, Alert, AlertTitle, Stack, Pagination, PaginationItem
 } from '@mui/material';
 import {
   Visibility, Delete, Email, Receipt, FilterList, Clear,
@@ -32,6 +32,18 @@ function InvoiceHistory({ data, onUpdateData, customers }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [selectedStatsYear, setSelectedStatsYear] = useState(new Date().getFullYear());
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(data.settings?.invoiceHistoryPageSize || 30);
+
+  // Update itemsPerPage when settings change
+  React.useEffect(() => {
+    if (data.settings?.invoiceHistoryPageSize !== undefined && data.settings.invoiceHistoryPageSize !== itemsPerPage) {
+      setItemsPerPage(data.settings.invoiceHistoryPageSize);
+      setPage(1); // Reset to first page when changing page size
+    }
+  }, [data.settings?.invoiceHistoryPageSize, itemsPerPage]);
 
   // Filtere und sortiere Rechnungen
   const filteredInvoices = useMemo(() => {
@@ -46,6 +58,21 @@ function InvoiceHistory({ data, onUpdateData, customers }) {
     
     return invoices;
   }, [data, filters, searchTerm]);
+
+  // Paginierte Rechnungen
+  const paginatedInvoices = useMemo(() => {
+    // Wenn "Alle" ausgewählt ist, zeige alle Rechnungen
+    if (itemsPerPage === 'all') {
+      return filteredInvoices;
+    }
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredInvoices.slice(startIndex, endIndex);
+  }, [filteredInvoices, page, itemsPerPage]);
+
+  // Gesamtanzahl Seiten
+  const totalPages = itemsPerPage === 'all' ? 1 : Math.ceil(filteredInvoices.length / itemsPerPage);
 
   // Statistiken berechnen
   const statistics = useMemo(() => {
@@ -75,6 +102,30 @@ function InvoiceHistory({ data, onUpdateData, customers }) {
       status: ''
     });
     setSearchTerm('');
+    setPage(1); // Reset to first page when clearing filters
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleItemsPerPageChange = (event) => {
+    const newItemsPerPage = event.target.value;
+    setItemsPerPage(newItemsPerPage);
+    setPage(1); // Reset to first page when changing page size
+    
+    // Save to settings
+    const updatedSettings = {
+      ...data.settings,
+      invoiceHistoryPageSize: newItemsPerPage
+    };
+    
+    const updatedData = {
+      ...data,
+      settings: updatedSettings
+    };
+    
+    onUpdateData(updatedData);
   };
 
   const handleViewDetails = (invoice) => {
@@ -395,6 +446,56 @@ function InvoiceHistory({ data, onUpdateData, customers }) {
         </CardContent>
       </Card>
 
+      {/* Pagination Controls */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body2" color="text.secondary">
+                {itemsPerPage === 'all' 
+                  ? t('invoiceHistory.pagination.totalInvoices', { count: filteredInvoices.length })
+                  : t('invoiceHistory.pagination.pageInfo', { 
+                      page: page, 
+                      total: totalPages, 
+                      count: filteredInvoices.length 
+                    })
+                }
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 2 }}>
+                <FormControl size="small" sx={{ minWidth: 120 }}>
+                  <InputLabel>{t('invoiceHistory.pagination.itemsPerPage')}</InputLabel>
+                  <Select
+                    value={itemsPerPage}
+                    label={t('invoiceHistory.pagination.itemsPerPage')}
+                    onChange={handleItemsPerPageChange}
+                  >
+                    <MenuItem value={10}>10</MenuItem>
+                    <MenuItem value={20}>20</MenuItem>
+                    <MenuItem value={30}>30</MenuItem>
+                    <MenuItem value={50}>50</MenuItem>
+                    <MenuItem value={100}>100</MenuItem>
+                    <MenuItem value="all">{t('invoiceHistory.pagination.all')}</MenuItem>
+                  </Select>
+                </FormControl>
+                {itemsPerPage !== 'all' && (
+                  <Pagination
+                    count={totalPages}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                    size="small"
+                    showFirstButton
+                    showLastButton
+                  />
+                )}
+              </Box>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
       {/* Rechnungstabelle */}
       {filteredInvoices.length === 0 ? (
         <Card>
@@ -412,22 +513,23 @@ function InvoiceHistory({ data, onUpdateData, customers }) {
           </CardContent>
         </Card>
       ) : (
-        <TableContainer component={Paper}>
-          <Table>
-                         <TableHead>
-               <TableRow>
-                 <TableCell>{t('invoiceHistory.table.invoiceNumber')}</TableCell>
-                 <TableCell>{t('invoiceHistory.table.customer')}</TableCell>
-                 <TableCell>{t('invoiceHistory.table.period')}</TableCell>
-                 <TableCell>{t('invoiceHistory.table.amount')}</TableCell>
-                 <TableCell>{t('invoiceHistory.table.vat')}</TableCell>
-                 <TableCell>{t('invoiceHistory.table.created')}</TableCell>
-                 <TableCell>{t('invoiceHistory.table.status')}</TableCell>
-                 <TableCell>{t('invoiceHistory.table.actions')}</TableCell>
-               </TableRow>
-             </TableHead>
-            <TableBody>
-              {filteredInvoices.map((invoice) => (
+        <Paper>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t('invoiceHistory.table.invoiceNumber')}</TableCell>
+                  <TableCell>{t('invoiceHistory.table.customer')}</TableCell>
+                  <TableCell>{t('invoiceHistory.table.period')}</TableCell>
+                  <TableCell>{t('invoiceHistory.table.amount')}</TableCell>
+                  <TableCell>{t('invoiceHistory.table.vat')}</TableCell>
+                  <TableCell>{t('invoiceHistory.table.created')}</TableCell>
+                  <TableCell>{t('invoiceHistory.table.status')}</TableCell>
+                  <TableCell>{t('invoiceHistory.table.actions')}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedInvoices.map((invoice) => (
                                  <TableRow key={invoice.id} hover>
                    <TableCell>
                      <Typography variant="body2" fontWeight="medium">
@@ -511,10 +613,25 @@ function InvoiceHistory({ data, onUpdateData, customers }) {
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            
+            {/* Bottom Pagination */}
+            {totalPages > 1 && itemsPerPage !== 'all' && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={handlePageChange}
+                  color="primary"
+                  showFirstButton
+                  showLastButton
+                />
+              </Box>
+            )}
+          </Paper>
+        )}
 
       {/* Detail Dialog */}
       <Dialog open={detailDialogOpen} onClose={() => setDetailDialogOpen(false)} maxWidth="md" fullWidth>

@@ -1,0 +1,431 @@
+{
+  "customers": [
+    {
+      "id": "1",
+      "name": "TechCorp Solutions GmbH",
+      "address": "Technologiestraße 15\n1020 Wien\nÖsterreich",
+      "email": "office@techcorp-solutions.at",
+      "lineItems": [
+        {
+          "id": "1-1",
+          "description": "Arbeitsmedizinische Betreuung Q1 2024",
+          "quantity": 15,
+          "unit": "Stunden",
+          "unitPrice": 120,
+          "taxType": "20"
+        },
+        {
+          "id": "1-2",
+          "description": "Gefährdungsbeurteilung Büroarbeitsplätze",
+          "quantity": 8,
+          "unit": "Stunden",
+          "unitPrice": 140,
+          "taxType": "20"
+        }
+      ],
+      "pdfFileNameFormat": "[invoiceNumber]_[customerName]_[quarter]_[year]",
+      "emailSubject": "Rechnung [Rechnungsnummer] - Arbeitsmedizinische Betreuung [Quartal] [Jahr]",
+      "emailTemplate": "Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie unsere Rechnung Nr. [Rechnungsnummer] für die arbeitsmedizinische Betreuung im [Quartal] [Jahr].\n\nDie Rechnung ist innerhalb von 14 Tagen zur Zahlung fällig.\n\nVielen Dank für Ihr Vertrauen.\n\nMit freundlichen Grüßen",
+      "savePathWindows": "C:\\Rechnungen\\TechCorp",
+      "savePathMac": "/Users/Documents/Rechnungen/TechCorp",
+      "savePathLinux": "/home/user/Rechnungen/TechCorp",
+      "emlPathWindows": "C:\\Email\\TechCorp",
+      "emlPathMac": "/Users/Documents/Email/TechCorp",
+      "emlPathLinux": "/home/user/Email/TechCorp"
+    },
+    {
+      "id": "2",
+      "name": "Wellness Hotel Bergblick",
+      "address": "Alpengasse 42\n6020 Innsbruck\nÖsterreich",
+      "email": "verwaltung@hotel-bergblick.at",
+      "lineItems": [
+        {
+          "id": "2-1",
+          "description": "Arbeitsmedizinische Vorsorgeuntersuchungen",
+          "quantity": 25,
+          "unit": "Stunden",
+          "unitPrice": 95,
+          "taxType": "20"
+        },
+        {
+          "id": "2-2",
+          "description": "Schulung Ergonomie am Arbeitsplatz",
+          "quantity": 6,
+          "unit": "Stunden",
+          "unitPrice": 110,
+          "taxType": "20"
+        },
+        {
+          "id": "2-3",
+          "description": "Erste-Hilfe Grundausstattung",
+          "quantity": 3,
+          "unit": "Stück",
+          "unitPrice": 89.5,
+          "taxType": "20"
+        }
+      ],
+      "pdfFileNameFormat": "[year]-[quarter]_Rechnung_[invoiceNumber]",
+      "emailSubject": "Arbeitsmedizinische Rechnung [Rechnungsnummer] für [Quartal]/[Jahr]",
+      "emailTemplate": "Liebe Kolleginnen und Kollegen,\n\nwir übersenden Ihnen hiermit die Rechnung für unsere arbeitsmedizinischen Leistungen im [Quartal] [Jahr].\n\nRechnungsnummer: [Rechnungsnummer]\nZahlungsziel: 30 Tage\n\nBei Fragen stehen wir gerne zur Verfügung.\n\nFreundliche Grüße",
+      "savePathWindows": "C:\\Buchhaltung\\Hotel_Bergblick",
+      "savePathMac": "/Users/Documents/Buchhaltung/Hotel_Bergblick",
+      "savePathLinux": "/home/user/Buchhaltung/Hotel_Bergblick",
+      "emlPathWindows": "C:\\Email_Archiv\\Hotel_Bergblick",
+      "emlPathMac": "/Users/Documents/Email_Archiv/Hotel_Bergblick",
+      "emlPathLinux": "/home/user/Email_Archiv/Hotel_Bergblick"
+    },
+    {
+      "id": "3",
+      "name": "Produktions AG Linz",
+      "address": "Industriepark 88\n4020 Linz\nÖsterreich",
+      "email": "buchhaltung@produktions-ag.at",
+      "lineItems": [
+        {
+          "id": "3-1",
+          "description": "Arbeitsmedizinische Betreuung Produktion [Quartal]",
+          "quantity": 40,
+          "unit": "Stunden",
+          "unitPrice": 85,
+          "taxType": "20"
+        },
+        {
+          "id": "3-2",
+          "description": "Lärmschutz-Untersuchungen",
+          "quantity": 12,
+          "unit": "Stunden",
+          "unitPrice": 125,
+          "taxType": "20"
+        },
+        {
+          "id": "3-3",
+          "description": "Arbeitsplatzbegehungen Sicherheit",
+          "quantity": 8,
+          "unit": "Stunden",
+          "unitPrice": 105,
+          "taxType": "20"
+        }
+      ],
+      "pdfFileNameFormat": "[customerName]_[invoiceNumber]_[date]",
+      "emailSubject": "Rechnung [Rechnungsnummer] - Arbeitsmedizin [Quartal] [Jahr]",
+      "emailTemplate": "Sehr geehrtes Team,\n\nin der Anlage finden Sie die Rechnung für die arbeitsmedizinischen Tätigkeiten im [Quartal] [Jahr].\n\nLeistungszeitraum: [Quartal] [Jahr]\nRechnungsnummer: [Rechnungsnummer]\n\nWir bitten um Begleichung innerhalb von 14 Tagen.\n\nBesten Dank!",
+      "savePathWindows": "C:\\Dokumente\\Rechnungen\\Produktions_AG",
+      "savePathMac": "/Users/Dokumente/Rechnungen/Produktions_AG",
+      "savePathLinux": "/home/user/Dokumente/Rechnungen/Produktions_AG",
+      "emlPathWindows": "C:\\Outlook\\Produktions_AG",
+      "emlPathMac": "/Users/Dokumente/Outlook/Produktions_AG",
+      "emlPathLinux": "/home/user/Dokumente/Outlook/Produktions_AG"
+    },
+    {
+      "id": "4",
+      "name": "StartUp Innovations e.U.",
+      "address": "Coworking Space 1\nMariahilfer Straße 101\n1060 Wien\nÖsterreich",
+      "email": "founder@startup-innovations.at",
+      "lineItems": [
+        {
+          "id": "4-1",
+          "description": "Arbeitsmedizinische Grundbetreuung",
+          "quantity": 8,
+          "unit": "Stunden",
+          "unitPrice": 90,
+          "taxType": "mixed"
+        },
+        {
+          "id": "4-2",
+          "description": "Bildschirmarbeitsplatz-Check",
+          "quantity": 4,
+          "unit": "Stunden",
+          "unitPrice": 75,
+          "taxType": "mixed"
+        }
+      ],
+      "pdfFileNameFormat": "[quarter][year]_[invoiceNumber]_[customerName]",
+      "emailSubject": "Rechnung [Rechnungsnummer] für [Kunde] - [Quartal] [Jahr]",
+      "emailTemplate": "Hallo Team,\n\nvielen Dank für die gute Zusammenarbeit!\n\nAnbei die Rechnung [Rechnungsnummer] für die arbeitsmedizinischen Leistungen im [Quartal] [Jahr].\n\nZahlungsziel: 14 Tage\n\nLiebe Grüße",
+      "savePathWindows": "C:\\StartUp\\Rechnungen",
+      "savePathMac": "/Users/Documents/StartUp/Rechnungen",
+      "savePathLinux": "/home/user/StartUp/Rechnungen",
+      "emlPathWindows": "C:\\StartUp\\Email",
+      "emlPathMac": "/Users/Documents/StartUp/Email",
+      "emlPathLinux": "/home/user/StartUp/Email"
+    },
+    {
+      "id": "5",
+      "name": "Bäckerei Goldkruste GmbH",
+      "address": "Bäckergasse 7\n5020 Salzburg\nÖsterreich",
+      "email": "office@baeckerei-goldkruste.at",
+      "lineItems": [
+        {
+          "id": "5-1",
+          "description": "Arbeitsmedizinische Betreuung Bäckerei",
+          "quantity": 18,
+          "unit": "Stunden",
+          "unitPrice": 100,
+          "taxType": "20"
+        },
+        {
+          "id": "5-2",
+          "description": "Hitzearbeitsplatz-Untersuchungen",
+          "quantity": 6,
+          "unit": "Stunden",
+          "unitPrice": 115,
+          "taxType": "20"
+        },
+        {
+          "id": "5-3",
+          "description": "Arbeitsschutz-Beratung Nachtschicht",
+          "quantity": 4,
+          "unit": "Stunden",
+          "unitPrice": 120,
+          "taxType": "20"
+        }
+      ],
+      "pdfFileNameFormat": "[invoiceNumber]_Baeckerei_[quarter]_[year]",
+      "emailSubject": "Arbeitsmedizinische Rechnung [Rechnungsnummer] - [Quartal] [Jahr]",
+      "emailTemplate": "Liebe Frau Goldkruste,\n\nwie besprochen übersende ich Ihnen die Rechnung für die arbeitsmedizinischen Tätigkeiten.\n\nZeitraum: [Quartal] [Jahr]\nRechnungsnummer: [Rechnungsnummer]\n\nVielen Dank für die vertrauensvolle Zusammenarbeit.\n\nHerzliche Grüße",
+      "savePathWindows": "C:\\Kunden\\Baeckerei_Goldkruste",
+      "savePathMac": "/Users/Documents/Kunden/Baeckerei_Goldkruste",
+      "savePathLinux": "/home/user/Kunden/Baeckerei_Goldkruste",
+      "emlPathWindows": "C:\\Email\\Baeckerei_Goldkruste",
+      "emlPathMac": "/Users/Documents/Email/Baeckerei_Goldkruste",
+      "emlPathLinux": "/home/user/Email/Baeckerei_Goldkruste"
+    },
+    {
+      "id": "6",
+      "name": "Rechtsanwaltskanzlei Dr. Müller & Partner",
+      "address": "Rechtsstraße 25\n1010 Wien\nÖsterreich",
+      "email": "kanzlei@mueller-partner.at",
+      "lineItems": [
+        {
+          "id": "6-1",
+          "description": "Arbeitsmedizinische Betreuung Kanzlei",
+          "quantity": 12,
+          "unit": "Stunden",
+          "unitPrice": 130,
+          "taxType": "20"
+        },
+        {
+          "id": "6-2",
+          "description": "Stressmanagement-Beratung",
+          "quantity": 5,
+          "unit": "Stunden",
+          "unitPrice": 150,
+          "taxType": "20"
+        }
+      ],
+      "pdfFileNameFormat": "Rechnung_[invoiceNumber]_[customerName]",
+      "emailSubject": "Honorarrechnung [Rechnungsnummer] - Arbeitsmedizin [Quartal] [Jahr]",
+      "emailTemplate": "Sehr geehrte Damen und Herren,\n\nanbei übersende ich Ihnen die Honorarrechnung für die arbeitsmedizinischen Leistungen.\n\nLeistungszeitraum: [Quartal] [Jahr]\nRechnungsnummer: [Rechnungsnummer]\nZahlungsziel: 30 Tage netto\n\nVielen Dank.\n\nMit freundlichen Grüßen",
+      "savePathWindows": "C:\\Anwaltskanzlei\\Dr_Mueller",
+      "savePathMac": "/Users/Documents/Anwaltskanzlei/Dr_Mueller",
+      "savePathLinux": "/home/user/Anwaltskanzlei/Dr_Mueller",
+      "emlPathWindows": "C:\\Anwaltskanzlei\\Email",
+      "emlPathMac": "/Users/Documents/Anwaltskanzlei/Email",
+      "emlPathLinux": "/home/user/Anwaltskanzlei/Email"
+    }
+  ],
+  "invoiceHistory": [
+    {
+      "id": "hist_011",
+      "customerId": "6",
+      "customerName": "Rechtsanwaltskanzlei Dr. Müller & Partner",
+      "invoiceNumber": "Q124R001",
+      "quarter": "Q1",
+      "year": 2024,
+      "amount": 2460,
+      "vat": 410,
+      "subtotal": 2050,
+      "status": "generated",
+      "createdAt": "2024-04-15T12:00:00.000Z",
+      "pdfPath": "/Users/Documents/Anwaltskanzlei/Dr_Mueller/Rechnung_Q124R001_Rechtsanwaltskanzlei_Dr._Müller_&_Partner.pdf",
+      "emailPath": "/Users/Documents/Anwaltskanzlei/Email/Q124R001.eml"
+    },
+    {
+      "id": "hist_010",
+      "customerId": "5",
+      "customerName": "Bäckerei Goldkruste GmbH",
+      "invoiceNumber": "Q124B001",
+      "quarter": "Q1",
+      "year": 2024,
+      "amount": 2448,
+      "vat": 408,
+      "subtotal": 2040,
+      "status": "sent",
+      "createdAt": "2024-04-12T07:15:00.000Z",
+      "pdfPath": "/Users/Documents/Kunden/Baeckerei_Goldkruste/Q124B001_Baeckerei_Q1_2024.pdf",
+      "emailPath": "/Users/Documents/Email/Baeckerei_Goldkruste/Q124B001.eml"
+    },
+    {
+      "id": "hist_005",
+      "customerId": "4",
+      "customerName": "StartUp Innovations e.U.",
+      "invoiceNumber": "Q124S001",
+      "quarter": "Q1",
+      "year": 2024,
+      "amount": 1020.6,
+      "vat": 126.6,
+      "subtotal": 894,
+      "status": "generated",
+      "createdAt": "2024-04-10T16:20:00.000Z",
+      "pdfPath": "/Users/Documents/StartUp/Rechnungen/Q12024_Q124S001_StartUp_Innovations_e.U..pdf",
+      "emailPath": "/Users/Documents/StartUp/Email/Q124S001.eml"
+    },
+    {
+      "id": "hist_004",
+      "customerId": "1",
+      "customerName": "TechCorp Solutions GmbH",
+      "invoiceNumber": "Q124T001",
+      "quarter": "Q1",
+      "year": 2024,
+      "amount": 2568,
+      "vat": 428,
+      "subtotal": 2140,
+      "status": "ready_to_send",
+      "createdAt": "2024-04-08T11:45:00.000Z",
+      "pdfPath": "/Users/Documents/Rechnungen/TechCorp/Q124T001_TechCorp_Q1_2024.pdf",
+      "emailPath": "/Users/Documents/Email/TechCorp/Q124T001.eml"
+    },
+    {
+      "id": "hist_003",
+      "customerId": "3",
+      "customerName": "Produktions AG Linz",
+      "invoiceNumber": "Q123P001",
+      "quarter": "Q1",
+      "year": 2024,
+      "amount": 5940,
+      "vat": 990,
+      "subtotal": 4950,
+      "status": "paid",
+      "createdAt": "2024-04-05T14:15:00.000Z",
+      "pdfPath": "/Users/Dokumente/Rechnungen/Produktions_AG/Produktions_AG_Linz_Q123P001_2024-04-05.pdf",
+      "emailPath": "/Users/Dokumente/Outlook/Produktions_AG/Q123P001.eml"
+    },
+    {
+      "id": "hist_002",
+      "customerId": "2",
+      "customerName": "Wellness Hotel Bergblick",
+      "invoiceNumber": "Q123W001",
+      "quarter": "Q1",
+      "year": 2024,
+      "amount": 3378.5,
+      "vat": 563.08,
+      "subtotal": 2815.42,
+      "status": "sent",
+      "createdAt": "2024-04-02T10:30:00.000Z",
+      "pdfPath": "/Users/Documents/Buchhaltung/Hotel_Bergblick/2024-Q1_Rechnung_Q123W001.pdf",
+      "emailPath": "/Users/Documents/Email_Archiv/Hotel_Bergblick/Q123W001.eml"
+    },
+    {
+      "id": "hist_007",
+      "customerId": "6",
+      "customerName": "Rechtsanwaltskanzlei Dr. Müller & Partner",
+      "invoiceNumber": "Q423R001",
+      "quarter": "Q4",
+      "year": 2023,
+      "amount": 2460,
+      "vat": 410,
+      "subtotal": 2050,
+      "status": "paid",
+      "createdAt": "2024-01-18T13:15:00.000Z",
+      "pdfPath": "/Users/Documents/Anwaltskanzlei/Dr_Mueller/Rechnung_Q423R001_Rechtsanwaltskanzlei_Dr._Müller_&_Partner.pdf",
+      "emailPath": "/Users/Documents/Anwaltskanzlei/Email/Q423R001.eml"
+    },
+    {
+      "id": "hist_001",
+      "customerId": "1",
+      "customerName": "TechCorp Solutions GmbH",
+      "invoiceNumber": "Q423T001",
+      "quarter": "Q4",
+      "year": 2023,
+      "amount": 2568,
+      "vat": 428,
+      "subtotal": 2140,
+      "status": "paid",
+      "createdAt": "2024-01-15T09:00:00.000Z",
+      "pdfPath": "/Users/Documents/Rechnungen/TechCorp/Q423T001_TechCorp_Q4_2023.pdf",
+      "emailPath": "/Users/Documents/Email/TechCorp/Q423T001.eml"
+    },
+    {
+      "id": "hist_006",
+      "customerId": "5",
+      "customerName": "Bäckerei Goldkruste GmbH",
+      "invoiceNumber": "Q423B001",
+      "quarter": "Q4",
+      "year": 2023,
+      "amount": 2448,
+      "vat": 408,
+      "subtotal": 2040,
+      "status": "paid",
+      "createdAt": "2024-01-12T08:30:00.000Z",
+      "pdfPath": "/Users/Documents/Kunden/Baeckerei_Goldkruste/Q423B001_Baeckerei_Q4_2023.pdf",
+      "emailPath": "/Users/Documents/Email/Baeckerei_Goldkruste/Q423B001.eml"
+    },
+    {
+      "id": "hist_009",
+      "customerId": "3",
+      "customerName": "Produktions AG Linz",
+      "invoiceNumber": "Q423P001",
+      "quarter": "Q4",
+      "year": 2023,
+      "amount": 5940,
+      "vat": 990,
+      "subtotal": 4950,
+      "status": "paid",
+      "createdAt": "2024-01-08T15:30:00.000Z",
+      "pdfPath": "/Users/Dokumente/Rechnungen/Produktions_AG/Produktions_AG_Linz_Q423P001_2024-01-08.pdf",
+      "emailPath": "/Users/Dokumente/Outlook/Produktions_AG/Q423P001.eml"
+    },
+    {
+      "id": "hist_008",
+      "customerId": "2",
+      "customerName": "Wellness Hotel Bergblick",
+      "invoiceNumber": "Q323W001",
+      "quarter": "Q3",
+      "year": 2023,
+      "amount": 3258.5,
+      "vat": 543.08,
+      "subtotal": 2715.42,
+      "status": "paid",
+      "createdAt": "2023-10-05T09:45:00.000Z",
+      "pdfPath": "/Users/Documents/Buchhaltung/Hotel_Bergblick/2023-Q3_Rechnung_Q323W001.pdf",
+      "emailPath": "/Users/Documents/Email_Archiv/Hotel_Bergblick/Q323W001.eml"
+    },
+    {
+      "id": "hist_012",
+      "customerId": "1",
+      "customerName": "TechCorp Solutions GmbH",
+      "invoiceNumber": "Q323T001",
+      "quarter": "Q3",
+      "year": 2023,
+      "amount": 2568,
+      "vat": 428,
+      "subtotal": 2140,
+      "status": "paid",
+      "createdAt": "2023-10-02T10:30:00.000Z",
+      "pdfPath": "/Users/Documents/Rechnungen/TechCorp/Q323T001_TechCorp_Q3_2023.pdf",
+      "emailPath": "/Users/Documents/Email/TechCorp/Q323T001.eml"
+    }
+  ],
+  "settings": {
+    "issuer": {
+      "name": "Dr. Sarah Arbeitsmedizin",
+      "title": "Fachärztin für Arbeitsmedizin",
+      "address": "Gesundheitszentrum Wien\nArbeitsplatzstraße 123\n1030 Wien\nÖsterreich",
+      "phone": "Tel.: +43 1 234 56 78",
+      "website": "www.arbeitsmedizin-wien.at",
+      "email": "praxis@arbeitsmedizin-wien.at",
+      "iban": "AT61 1904 3002 3457 3201",
+      "uid": "ATU12345678",
+      "bank": "Erste Bank Austria",
+      "paymentTerms": 14
+    },
+    "logoPathWindows": "C:\\Praxis\\Logo\\arbeitsmedizin_logo.png",
+    "logoPathMac": "/Users/Documents/Praxis/Logo/arbeitsmedizin_logo.png",
+    "logoPathLinux": "/home/user/Praxis/Logo/arbeitsmedizin_logo.png",
+    "dataFilePath": "rechnung-data-screenshots.json",
+    "hasSeenOnboarding": true,
+    "invoiceNumberFormat": "[Q][YY][K]",
+    "language": "de",
+    "darkMode": false,
+    "invoiceHistoryPageSize": "all"
+  }
+}

@@ -466,6 +466,15 @@ const de = {
         excelTooltip: 'Als Excel-Datei exportieren'
       },
 
+      // Pagination
+      pagination: {
+        itemsPerPage: 'Pro Seite',
+        pageInfo: 'Seite {{page}} von {{total}} • {{count}} Rechnungen gesamt',
+        showing: 'Zeige {{from}}-{{to}} von {{total}} Rechnungen',
+        all: 'Alle',
+        totalInvoices: '{{count}} Rechnungen gesamt'
+      },
+
       // Löschen Dialog
       delete: {
         title: 'Rechnung löschen',
@@ -957,6 +966,15 @@ const en = {
       export: {
         csvTooltip: 'Export as CSV file',
         excelTooltip: 'Export as Excel file'
+      },
+
+      // Pagination
+      pagination: {
+        itemsPerPage: 'Per page',
+        pageInfo: 'Page {{page}} of {{total}} • {{count}} invoices total',
+        showing: 'Showing {{from}}-{{to}} of {{total}} invoices',
+        all: 'All',
+        totalInvoices: '{{count}} invoices total'
       },
 
       // Delete Dialog
