@@ -478,13 +478,27 @@ ipcMain.handle('start-file-watching', async (event, filePath) => {
       persistent: true,
       usePolling: false,
       ignoreInitial: true,
-      stabilityThreshold: 1000, // Warte 1 Sekunde nach der letzten Änderung
-      pollInterval: 1000 // Poll nur alle Sekunde (falls Polling nötig)
+      stabilityThreshold: 2000, // Warte 2 Sekunden nach der letzten Änderung
+      pollInterval: 2000, // Poll nur alle 2 Sekunden (falls Polling nötig)
+      awaitWriteFinish: {
+        stabilityThreshold: 1000, // Warte bis Datei vollständig geschrieben
+        pollInterval: 100
+      }
     });
 
     let changeTimeout = null;
+    let lastChangeTime = 0;
     
     fileWatcher.on('change', () => {
+      const currentTime = Date.now();
+      
+      // Ignoriere mehrfache schnelle Änderungen (Cloud-Sync-Schutz)
+      if (currentTime - lastChangeTime < 1000) {
+        console.log('Ignoriere schnelle Mehrfach-Änderung');
+        return;
+      }
+      lastChangeTime = currentTime;
+      
       // Debouncing auf Backend-Seite
       if (changeTimeout) {
         clearTimeout(changeTimeout);
@@ -496,7 +510,7 @@ ipcMain.handle('start-file-watching', async (event, filePath) => {
           mainWindow.webContents.send('file-changed', filePath, true);
         }
         changeTimeout = null;
-      }, 500); // 500ms Debounce
+      }, 1500); // 1.5 Sekunden Debounce
     });
 
     fileWatcher.on('error', (error) => {

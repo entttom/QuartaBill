@@ -103,10 +103,10 @@ class DataService {
         
         const result = await window.electronAPI.saveData(data, configPath);
         
-        // Nach kurzer Zeit Flag zurücksetzen
+        // Nach längerer Zeit Flag zurücksetzen (für Cloud-Sync-Kompatibilität)
         setTimeout(() => {
           this.isInternalSave = false;
-        }, 1000);
+        }, 3000);
         
         return result;
       } else {
@@ -153,12 +153,12 @@ class DataService {
         
         // Ignoriere Änderungen die kurz nach einem eigenen Speichervorgang auftreten
         const timeSinceLastSave = Date.now() - this.lastSaveTimestamp;
-        if (timeSinceLastSave < 2000) { // 2 Sekunden Puffer
+        if (timeSinceLastSave < 5000) { // 5 Sekunden Puffer für Cloud-Sync
           console.log('Ignoriere Dateiänderung kurz nach eigenem Speichern:', timeSinceLastSave + 'ms');
           return;
         }
         
-        // Debouncing: Sammle mehrere schnelle Änderungen
+        // Debouncing: Sammle mehrere schnelle Änderungen (besonders für Cloud-Sync)
         if (this.fileChangeDebounceTimer) {
           clearTimeout(this.fileChangeDebounceTimer);
         }
@@ -167,7 +167,7 @@ class DataService {
           console.log('Externe Dateiänderung erkannt:', filePath);
           this.onDataChangeCallback(filePath);
           this.fileChangeDebounceTimer = null;
-        }, 500); // 500ms Debounce
+        }, 2000); // 2 Sekunden Debounce für Cloud-Synchronisation
       });
 
       console.log('File-Watching gestartet für:', configPath);
