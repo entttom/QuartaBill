@@ -1,6 +1,6 @@
 # QuartaBill
 
-**Professionelle Quartalsabrechnungen für Arbeitsmediziner**
+**Pauschale Quartalsabrechnungen automatisieren**
 
 [![GitHub Release](https://img.shields.io/github/v/release/entttom/QuartaBill)](https://github.com/entttom/QuartaBill/releases)
 [![Build Status](https://github.com/entttom/QuartaBill/workflows/Build%20and%20Release/badge.svg)](https://github.com/entttom/QuartaBill/actions)
@@ -11,13 +11,21 @@
   <img src="icon.iconset/icon_256x256.png" alt="QuartaBill Logo" width="128">
 </p>
 
-> 🏥 **Entwickelt von Dr. Thomas Entner** für Arbeitsmediziner zur einfachen und effizienten Quartalsabrechnung
+> 🏥 **Entwickelt von Dr. Thomas Entner** für Dienstleister mit quartalsweisen Pauschalabrechungen
 
 ---
 
 ## 🚀 Überblick
 
-QuartaBill ist eine Desktop-Anwendung, die speziell für Arbeitsmediziner entwickelt wurde, um die quartalsweise Abrechnung ihrer Leistungen zu vereinfachen und zu automatisieren. Die App bietet eine intuitive Benutzeroberfläche für die Verwaltung von Kunden, die Erstellung professioneller PDF-Rechnungen und die automatische E-Mail-Generierung.
+QuartaBill ist eine Desktop-Anwendung für Dienstleister, die quartalsweise Pauschalabrechungen erstellen müssen. Die App automatisiert die Rechnungserstellung für wiederkehrende Leistungen und bietet eine intuitive Benutzeroberfläche für die Verwaltung von Kunden, die Erstellung professioneller PDF-Rechnungen und die automatische E-Mail-Generierung.
+
+**Ideal für:**
+- 🏥 **Arbeitsmediziner** - Quartalsweise Betreuung von Unternehmen
+- 💼 **Berater** - Regelmäßige Pauschalberatung
+- 🔧 **Wartungsdienstleister** - Quartalswartungen und Service-Pauschalen
+- 📊 **Steuerberater** - Quartalsweise Buchführung und Beratung
+- 🏢 **IT-Dienstleister** - Wartungsverträge und Support-Pauschalen
+- 🌿 **Facility Management** - Quartalswartungen und Instandhaltung
 
 ### 🎯 Kernfunktionen
 
@@ -287,7 +295,7 @@ Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE) für Details
 ---
 
 <p align="center">
-  Entwickelt mit ❤️ für die Arbeitsmedizin
+  Entwickelt mit ❤️ für Dienstleister mit quartalsweisen Pauschalabrechungen
 </p>
 
 <p align="center">

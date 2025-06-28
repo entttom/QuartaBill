@@ -15,7 +15,7 @@ const de = {
     // App Header
     app: {
       title: 'QuartaBill',
-      subtitle: 'Professionelle Quartalsabrechnungen für Arbeitsmediziner'
+      subtitle: 'Pauschale Quartalsabrechnungen automatisieren'
     },
     
     // Kundenverwaltung
@@ -52,7 +52,7 @@ const de = {
         positions: 'Positionen',
         placeholders: {
           address: 'Straße\\nPLZ Ort',
-          activity: 'Arbeitsmedizinische Leistungen [Quartal]',
+          activity: 'Dienstleistung [Quartal] (z.B. Arbeitsmedizinische Betreuung)',
           emailSubject: 'Verfügbare Variablen: [Rechnungsnummer], [Kunde], [Quartal], [Jahr]',
           emailTemplate: 'Verfügbare Variablen: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]',
           savePathWindows: 'C:\\Pfad\\zu\\Kundenordner',
@@ -188,9 +188,9 @@ const de = {
       // Über
       about: {
         title: 'QuartaBill',
-        subtitle: 'Professionelle Quartalsabrechnungen für Arbeitsmediziner',
+        subtitle: 'Pauschale Quartalsabrechnungen automatisieren',
         developer: 'Entwickelt von Dr. Thomas Entner',
-        description: 'Diese Anwendung wurde speziell für Arbeitsmediziner entwickelt, um die quartalsweise Abrechnung ihrer Leistungen zu vereinfachen und zu automatisieren.',
+        description: 'Diese Anwendung wurde für Dienstleister mit quartalsweisen Pauschalabrechungen entwickelt, um wiederkehrende Rechnungen zu automatisieren. Ideal für Arbeitsmediziner, Berater, Wartungsdienstleister und andere Branchen mit regelmäßigen Quartalsleistungen.',
         features: {
           title: 'Features von QuartaBill:',
           customerManagement: 'Kundendaten verwalten',
@@ -520,7 +520,7 @@ const en = {
     // App Header
     app: {
       title: 'QuartaBill',
-      subtitle: 'Professional Quarterly Billing for Occupational Health Physicians'
+      subtitle: 'Automate Quarterly Fixed-Price Billing'
     },
     
     // Customer Management
@@ -557,7 +557,7 @@ const en = {
         positions: 'positions',
         placeholders: {
           address: 'Street\\nZIP City',
-          activity: 'Occupational Health Services [Quarter]',
+          activity: 'Service [Quarter] (e.g. Occupational Health Support)',
           emailSubject: 'Available variables: [Rechnungsnummer], [Kunde], [Quartal], [Jahr]',
           emailTemplate: 'Available variables: [Quartal], [Jahr], [Rechnungsnummer], [Kunde]',
           savePathWindows: 'C:\\Path\\to\\Customer-Folder',
@@ -693,9 +693,9 @@ const en = {
       // About
       about: {
         title: 'QuartaBill',
-        subtitle: 'Professional Quarterly Billing for Occupational Health Physicians',
+        subtitle: 'Automate Quarterly Fixed-Price Billing',
         developer: 'Developed by Dr. Thomas Entner',
-        description: 'This application was specifically developed for occupational health physicians to simplify and automate the quarterly billing of their services.',
+        description: 'This application was developed for service providers with quarterly fixed-price billing to automate recurring invoices. Ideal for occupational health physicians, consultants, maintenance service providers and other industries with regular quarterly services.',
         features: {
           title: 'QuartaBill Features:',
           customerManagement: 'Manage customer data',
