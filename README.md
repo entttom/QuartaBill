@@ -125,6 +125,21 @@ QuartaBill ist eine Desktop-Anwendung für Dienstleister, die quartalsweise Paus
 - **Personalisierte Betreffzeilen**: Mit Rechnungsnummer und Quartal
 - **Platform-übergreifend**: Funktioniert mit jedem E-Mail-Programm
 
+#### 📤 **EML-Dateien versenden**
+**💡 Tipp**: Die einfachste Methode zum Versenden der generierten EML-Dateien:
+
+1. **Thunderbird** (empfohlen):
+   - EML-Datei per **Drag & Drop** in die **Entwürfe** ziehen
+   - Von dort direkt versenden - alle Daten (Text, Anhang, Empfänger) sind bereits korrekt eingetragen
+
+2. **Andere E-Mail-Programme**:
+   - Die meisten E-Mail-Clients unterstützen das Öffnen von EML-Dateien per Doppelklick
+   - Alternativ: EML-Datei über "Datei → Öffnen" im E-Mail-Programm laden
+
+3. **Webmail** (Gmail, Outlook.com):
+   - EML-Inhalt kann über Drag & Drop in neue E-Mail eingefügt werden
+   - PDF-Anhang separat hinzufügen
+
 ### ⚙️ **Konfiguration & Einstellungen**
 - **Vollständige Firmendaten**: Rechnungsersteller-Informationen
 - **Mehrsprachigkeit**: Deutsch/Englisch mit i18next
@@ -145,22 +160,22 @@ QuartaBill ist eine Desktop-Anwendung für Dienstleister, die quartalsweise Paus
 
 ### 📦 Downloads
 
-**Aktuelle Version: v1.6.2**
+**Aktuelle Version: v1.7.0**
 
 Die neuesten Releases finden Sie unter [**GitHub Releases**](https://github.com/entttom/QuartaBill/releases).
 
 #### Windows
-- `QuartaBill Setup 1.6.2.exe` - Installer
-- `QuartaBill 1.6.2.exe` - Portable Version
+- `QuartaBill Setup 1.7.0.exe` - Installer
+- `QuartaBill 1.7.0.exe` - Portable Version
 
 #### macOS ✅ **Vollständig signiert & notarisiert**
-- `QuartaBill-1.6.2.dmg` - Intel Macs
-- `QuartaBill-1.6.2-arm64.dmg` - Apple Silicon (M1/M2/M3)
+- `QuartaBill-1.7.0.dmg` - Intel Macs
+- `QuartaBill-1.7.0-arm64.dmg` - Apple Silicon (M1/M2/M3)
 
 #### Linux
-- `QuartaBill-1.6.2.AppImage` - Universal
-- `quartabill_1.6.2_amd64.deb` - Debian/Ubuntu
-- `quartabill-1.6.2.x86_64.rpm` - Red Hat/Fedora
+- `QuartaBill-1.7.0.AppImage` - Universal
+- `quartabill_1.7.0_amd64.deb` - Debian/Ubuntu
+- `quartabill-1.7.0.x86_64.rpm` - Red Hat/Fedora
 
 ### 🚀 Erste Schritte
 
@@ -218,8 +233,8 @@ Das Projekt nutzt GitHub Actions für vollständig automatisierte Builds:
 
 **Release erstellen:**
 ```bash
-git tag v1.6.3
-git push origin v1.6.3
+git tag v1.7.1
+git push origin v1.7.1
 ```
 
 ---
@@ -269,14 +284,14 @@ git push origin v1.6.3
 
 Alle wichtigen Änderungen werden in der [CHANGELOG.md](CHANGELOG.md) dokumentiert.
 
-### 🆕 Highlights der aktuellen Version (1.6.2)
+### 🆕 Highlights der aktuellen Version (1.7.0)
 
-- **🎨 QuartaBill Logo Integration**: Professionelles Logo im Header für bessere Markenidentität
-- **📸 Screenshot-Funktionalität**: Erstellen Sie Screenshots der gesamten Anwendung mit Cmd+Shift+S
-- **📄 Erweiterte Pagination**: Intelligente Seitennavigation in der Rechnungshistorie (30 Rechnungen pro Seite)
-- **🔧 Konfigurierbare Seitengröße**: Wählen Sie zwischen 10, 20, 30, 50, 100 oder "Alle anzeigen"
-- **🌍 Vollständige Internationalisierung**: Perfekte englische Übersetzung aller PDF-Elemente und UI-Komponenten
-- **📊 Umfangreiche Dummy-Daten**: Realistische Testdaten für Screenshots und Entwicklung
+- **🚀 Universelle Quartalsabrechnungslösung**: Neupositionierung von arbeitsmediziner-spezifisch zu branchenübergreifend
+- **🎯 Erweiterte Zielgruppen**: IT-Service, Steuerberatung, Facility Management, Unternehmensberatung, Wartungsdienstleister
+- **📊 Diversifizierte Demo-Daten**: Realistische Beispiele aus verschiedenen Branchen
+- **🌍 Verbesserte Internationalisierung**: Allgemeinere deutsche und englische Texte
+- **💡 EML-Versand-Anleitung**: Praktische Tipps zum einfachen Versenden per Thunderbird Drag & Drop
+- **📖 Erweiterte Dokumentation**: Umfassende README mit vielfältigen Anwendungsfällen
 
 ---
 
