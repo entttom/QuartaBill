@@ -625,33 +625,36 @@ function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
       {/* Ergebnis Dialog */}
       <Dialog open={resultDialogOpen} onClose={() => setResultDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{t('invoices.results.title')}</DialogTitle>
-        <DialogContent>
-          <List>
-            {results.map((result, index) => (
-              <ListItem key={index}>
+        <DialogContent dividers>
+          {results.map((result, index) => (
+            <Box key={index} sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+              {result.success ? (
                 <ListItemIcon>
-                  {result.success ? 
-                    <CheckCircle color="success" /> : 
-                    <Error color="error" />
-                  }
+                  <CheckCircle color="success" />
                 </ListItemIcon>
-                <ListItemText
-                  primary={`${result.customer} - ${result.invoiceNumber}`}
-                  secondary={
-                    result.success 
-                      ? (() => {
-                          let message = `PDF: ${result.pdfPath}`;
-                          if (result.emailPath) message += ` | Email: ${result.emailPath}`;
-                          if (result.browserDownload) message += ' (Browser-Download)';
-                          if (result.message) message += ` | ${result.message}`;
-                          return message;
-                        })()
-                      : `${t('invoices.results.error')}: ${result.error}`
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
+              ) : (
+                <ListItemIcon>
+                  <Error color="error" />
+                </ListItemIcon>
+              )}
+              <ListItemText 
+                primary={result.customer}
+                secondary={
+                  <>
+                    <Typography component="span" variant="body2" color="text.primary">
+                      {t('invoices.results.success')}: {result.invoiceNumber}
+                    </Typography>
+                    {result.emailSuccess && <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>- Email OK</Typography>}
+                  </>
+                }
+              />
+            </Box>
+          ))}
+          {generateEmail && (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              <Typography variant="body2" dangerouslySetInnerHTML={{ __html: t('invoices.results.emlHint') }} />
+            </Alert>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setResultDialogOpen(false)}>
