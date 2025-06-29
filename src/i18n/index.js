@@ -105,7 +105,8 @@ const de = {
         title: 'Rechnungsgenerierung abgeschlossen',
         success: 'Erfolgreich',
         error: 'Fehler',
-        close: 'Schließen'
+        close: 'Schließen',
+        emlHint: '💡 **Tipp zum E-Mail-Versand:** Ziehen Sie die generierten .eml-Dateien per Drag & Drop in die "Entwürfe" Ihres E-Mail-Programms (z.B. Thunderbird), um sie von dort direkt zu versenden.'
       },
       
       // Warnungen
@@ -610,7 +611,8 @@ const en = {
         title: 'Invoice Generation Completed',
         success: 'Success',
         error: 'Error',
-        close: 'Close'
+        close: 'Close',
+        emlHint: '💡 **Tip for sending emails:** Drag and drop the generated .eml files into the "Drafts" folder of your email client (e.g., Thunderbird) to send them directly from there.'
       },
       
       // Warnings
