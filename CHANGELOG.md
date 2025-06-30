@@ -5,6 +5,11 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.7.6] - 2025-01-02
+
+### 🔧 Technische Verbesserungen
+- **CI/CD Pipeline**: Korrektur des Release-Workflows, um Auto-Update-Dateien (`latest.yml`, `latest-mac.yml`, etc.) und `.zip`-Dateien für macOS korrekt in die GitHub Releases aufzunehmen. Dies stellt die Auto-Update-Funktionalität für alle Plattformen sicher.
+
 ## [1.7.5] - 2025-01-02
 
 ### 🐛 Kritischer Bugfix
