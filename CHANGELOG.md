@@ -5,6 +5,22 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.7.5] - 2025-01-02
+
+### 🐛 Kritischer Bugfix
+- **Race Condition behoben**: Lösung des schwerwiegenden Problems beim Laden von Einstellungsdateien
+- **Datenverlust verhindert**: Automatisches Speichern wird jetzt pausiert während neue Daten geladen werden
+- **Dateisynchronisation**: Keine Überschreibung mehr von extern geladenen Einstellungsdateien
+- **Backup-Wiederherstellung**: BackupService verwendet jetzt korrekt externe Einstellungsdateien statt localStorage
+- **Cloud-Sync Kompatibilität**: Verbesserte Stabilität bei Cloud-synchronisierten Einstellungsdateien (Dropbox, OneDrive, iCloud)
+
+### 🔧 Technische Verbesserungen
+- **App-State Management**: Neues `isLoadingNewData` Flag verhindert Race Conditions
+- **File-Watching**: Robustere Überwachung von Dateiänderungen
+- **Error Handling**: Bessere Fehlerbehandlung bei Dateisynchronisation
+
+---
+
 ## [1.4.0] - 2024-12-23
 
 ### ✨ Neu hinzugefügt

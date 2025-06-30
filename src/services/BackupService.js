@@ -207,27 +207,20 @@ class BackupService {
         };
       }
       
-      // Bestehende Daten sichern
-      const currentData = {
-        customers: this.getCustomersData(),
-        settings: this.getSettingsData(),
-        invoiceSettings: this.getInvoiceSettingsData()
+      // Verwende DataService für korrekte Wiederherstellung in die externe Datei
+      const DataService = await import('./DataService.js');
+      
+      // Vollständige Backup-Daten vorbereiten
+      const restoreData = {
+        customers: backupData.data.customers || [],
+        invoiceHistory: backupData.data.invoiceHistory || [],
+        settings: backupData.data.settings || {}
       };
       
-      try {
-        // Daten wiederherstellen
-        if (backupData.data.customers) {
-          localStorage.setItem('customers', JSON.stringify(backupData.data.customers));
-        }
-        
-        if (backupData.data.settings) {
-          localStorage.setItem('settings', JSON.stringify(backupData.data.settings));
-        }
-        
-        if (backupData.data.invoiceSettings) {
-          localStorage.setItem('invoiceSettings', JSON.stringify(backupData.data.invoiceSettings));
-        }
-        
+      // Daten über DataService speichern (verwendet die externe Einstellungsdatei)
+      const success = await DataService.default.saveData(restoreData);
+      
+      if (success) {
         return {
           success: true,
           version: backupData.version,
@@ -238,14 +231,11 @@ class BackupService {
             invoiceSettings: Object.keys(backupData.data.invoiceSettings || {}).length
           }
         };
-        
-      } catch (restoreError) {
-        // Bei Fehler: Ursprüngliche Daten wiederherstellen
-        localStorage.setItem('customers', JSON.stringify(currentData.customers));
-        localStorage.setItem('settings', JSON.stringify(currentData.settings));
-        localStorage.setItem('invoiceSettings', JSON.stringify(currentData.invoiceSettings));
-        
-        throw restoreError;
+      } else {
+        return {
+          success: false,
+          error: 'Fehler beim Speichern der wiederhergestellten Daten'
+        };
       }
       
     } catch (error) {

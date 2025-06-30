@@ -96,6 +96,7 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showConfigSetup, setShowConfigSetup] = useState(false);
   const [configPath, setConfigPath] = useState(null);
+  const [isLoadingNewData, setIsLoadingNewData] = useState(false);
 
   // Lade Daten beim Start und initiiere Setup falls nötig
   useEffect(() => {
@@ -104,10 +105,10 @@ function App() {
 
   // Automatisches Speichern bei Datenänderungen (nur nach dem ersten Laden)
   useEffect(() => {
-    if (isLoaded) {
+    if (isLoaded && !isLoadingNewData) {
       saveData();
     }
-  }, [data, isLoaded]);
+  }, [data, isLoaded, isLoadingNewData]);
 
   const performSetupAndLoadData = async () => {
     try {
@@ -140,6 +141,7 @@ function App() {
 
   const loadData = async () => {
     try {
+      setIsLoadingNewData(true);
       const loadedData = await DataService.loadData();
       if (loadedData) {
         setData(loadedData);
@@ -163,6 +165,11 @@ function App() {
       setIsLoaded(true);
       // Bei Fehler trotzdem Onboarding zeigen
       setShowOnboarding(true);
+    } finally {
+      // Warte kurz bevor wir das Flag zurücksetzen um Race Conditions zu vermeiden
+      setTimeout(() => {
+        setIsLoadingNewData(false);
+      }, 500);
     }
   };
 
@@ -171,6 +178,7 @@ function App() {
     if (window.confirm(
               t('fileChanged.message', { filePath })
     )) {
+      setIsLoadingNewData(true);
       await loadData();
     }
   };
@@ -205,6 +213,9 @@ function App() {
 
   const handleConfigPathChange = async (newPath) => {
     try {
+      // Pausiere automatisches Speichern während des Dateiwechsels
+      setIsLoadingNewData(true);
+      
       // Stoppe File-Watching
       await DataService.stopFileWatching();
       
@@ -219,6 +230,11 @@ function App() {
       await DataService.startFileWatching(handleFileChanged);
     } catch (error) {
       console.error('Fehler beim Ändern des Config-Pfads:', error);
+    } finally {
+      // Zusätzliche Sicherheit: Flag nach längerem Zeitraum zurücksetzen
+      setTimeout(() => {
+        setIsLoadingNewData(false);
+      }, 1000);
     }
   };
 
