@@ -23,15 +23,15 @@ jobs:
           - os: windows-latest
             platform: win
             script: dist:win
-            artifact_pattern: "dist/*.exe"
+            artifact_pattern: "dist/*.{exe,yml}"
           - os: macos-latest
             platform: mac
             script: dist:mac
-            artifact_pattern: "dist/*.dmg"
+            artifact_pattern: "dist/*.{dmg,zip,yml}"
           - os: ubuntu-latest
             platform: linux
             script: dist:linux
-            artifact_pattern: "dist/*.{AppImage,deb,rpm}"
+            artifact_pattern: "dist/*.{AppImage,deb,rpm,yml}"
     
     runs-on: ${{ matrix.os }}
     
@@ -131,8 +131,6 @@ jobs:
         name: linux-artifacts
         path: ./artifacts/linux
       continue-on-error: true
-
-
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
