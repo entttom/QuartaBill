@@ -52,7 +52,7 @@ jobs:
       
     - name: Build Electron app (Windows)
       if: matrix.os == 'windows-latest'
-      run: npx electron-builder --win --publish onTagOrDraft
+      run: npx electron-builder --win --publish never
       timeout-minutes: 15
       
     - name: Build Electron app (macOS)
@@ -68,7 +68,7 @@ jobs:
       
     - name: Build Electron app (Linux)
       if: matrix.os == 'ubuntu-latest'
-      run: npx electron-builder --linux --publish onTagOrDraft
+      run: npx electron-builder --linux --publish never
       timeout-minutes: 15
       
     - name: Upload Windows artifacts
