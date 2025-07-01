@@ -52,12 +52,12 @@ jobs:
       
     - name: Build Electron app (Windows)
       if: matrix.os == 'windows-latest'
-      run: npx electron-builder --win --publish never
+      run: npx electron-builder --win --publish onTagOrDraft
       timeout-minutes: 15
       
     - name: Build Electron app (macOS)
       if: matrix.os == 'macos-latest'
-      run: npx electron-builder --mac --publish never
+      run: npx electron-builder --mac --publish onTagOrDraft
       timeout-minutes: 30
       env:
         APPLE_ID: ${{ secrets.APPLE_ID }}
@@ -68,7 +68,7 @@ jobs:
       
     - name: Build Electron app (Linux)
       if: matrix.os == 'ubuntu-latest'
-      run: npx electron-builder --linux --publish never
+      run: npx electron-builder --linux --publish onTagOrDraft
       timeout-minutes: 15
       
     - name: Upload Windows artifacts
@@ -90,6 +90,8 @@ jobs:
         path: |
           dist/*.dmg
           dist/*.zip
+          dist/*.yml
+          dist/*.blockmap
         retention-days: 30
         
     - name: Upload Linux artifacts
