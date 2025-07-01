@@ -137,6 +137,10 @@ jobs:
         name: linux-artifacts
         path: ./artifacts/linux
       continue-on-error: true
+      
+    - name: Remove builder-debug.yml
+      run: |
+        find ./artifacts -name "builder-debug.yml" -delete || true      
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
