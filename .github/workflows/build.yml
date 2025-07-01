@@ -57,7 +57,7 @@ jobs:
       
     - name: Build Electron app (macOS)
       if: matrix.os == 'macos-latest'
-      run: npx electron-builder --mac --publish onTagOrDraft
+      run: npx electron-builder --mac --publish never
       timeout-minutes: 30
       env:
         APPLE_ID: ${{ secrets.APPLE_ID }}

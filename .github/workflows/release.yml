@@ -31,7 +31,7 @@ jobs:
           - os: ubuntu-latest
             platform: linux
             script: dist:linux
-            artifact_pattern: "dist/*.{AppImage,deb,rpm}"
+            artifact_pattern: "dist/*.{AppImage,deb,rpm,yml,blockmap}"
     
     runs-on: ${{ matrix.os }}
     
