@@ -1,6 +1,6 @@
 {
   "name": "quartabill",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "description": "QuartaBill - Pauschale Quartalsabrechnungen automatisieren",
   "main": "public/electron.js",
   "homepage": "./",

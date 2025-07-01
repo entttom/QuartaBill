@@ -12,13 +12,21 @@ class EmailService {
         .replace(/\[Quartal\]/g, quarter || 'Q1')
         .replace(/\[Jahr\]/g, year || new Date().getFullYear());
         
+      // E-Mail-Template mit Platzhaltern verarbeiten
+      const emailTemplate = customer.emailTemplate || this.getDefaultEmailTemplate();
+      const processedBody = emailTemplate
+        .replace(/\[Rechnungsnummer\]/g, invoiceNumber)
+        .replace(/\[Kunde\]/g, customer.name)
+        .replace(/\[Quartal\]/g, quarter || 'Q1')
+        .replace(/\[Jahr\]/g, year || new Date().getFullYear());
+        
       // Generiere PDF-Dateinamen für Anhang
       const pdfAttachmentName = PDFService.generatePDFFileName(customer, invoiceNumber, quarter, year, new Date());
       
       const emlContent = this.createEMLContent({
         to: customer.email,
         subject: processedSubject,
-        body: customer.emailTemplate || this.getDefaultEmailTemplate(),
+        body: processedBody,
         attachmentName: pdfAttachmentName,
         attachmentBuffer: pdfBuffer
       });

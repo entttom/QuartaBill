@@ -5,6 +5,19 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.7.7] - 2025-01-02
+
+### 🐛 Behoben
+- **EML-Platzhalter-Fehler**: Kritischer Bugfix für nicht funktionierende Platzhalter in E-Mail-Vorlagen
+- **Variable-Ersetzung**: E-Mail-Inhalt wird jetzt korrekt mit Platzhaltern verarbeitet (`[Quartal]`, `[Jahr]`, `[Kunde]`, `[Rechnungsnummer]`)
+- **Konsistenz**: E-Mail-Betreff und E-Mail-Inhalt verwenden jetzt die gleiche Platzhalter-Verarbeitung
+
+### 🔧 Technische Verbesserungen
+- **EmailService**: Erweiterte `generateEmail()` Methode um korrekte Body-Verarbeitung
+- **Platzhalter-Engine**: Vereinheitlichte Variable-Ersetzung für alle E-Mail-Komponenten
+
+---
+
 ## [1.7.6] - 2025-01-02
 
 ### 🔧 Verbessert
