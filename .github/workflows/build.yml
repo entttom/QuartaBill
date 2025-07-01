@@ -90,8 +90,6 @@ jobs:
         path: |
           dist/*.dmg
           dist/*.zip
-          dist/*.yml
-          dist/*.blockmap
         retention-days: 30
         
     - name: Upload Linux artifacts
