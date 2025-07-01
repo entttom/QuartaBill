@@ -23,22 +23,15 @@ jobs:
           - os: windows-latest
             platform: win
             script: dist:win
-            artifact_pattern: |
-              dist/*.exe
-              dist/*.yml
-              dist/*.blockmap
+            artifact_pattern: "dist/*.exe"
           - os: macos-latest
             platform: mac
             script: dist:mac
-            artifact_pattern: |
-              dist/*.dmg
-              dist/*.yml
-              dist/*.blockmap
+            artifact_pattern: "dist/*.dmg"
           - os: ubuntu-latest
             platform: linux
             script: dist:linux
-            artifact_pattern: |
-              dist/*.{AppImage,deb,rpm,yml,blockmap}
+            artifact_pattern: "dist/*.{AppImage,deb,rpm}"
     
     runs-on: ${{ matrix.os }}
     
@@ -70,6 +63,7 @@ jobs:
         VERSION=${GITHUB_REF#refs/tags/v}
         echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
         
+        # Überprüfe ob Version bereits korrekt ist
         CURRENT_VERSION=$(node -p "require('./package.json').version")
         if [ "$CURRENT_VERSION" != "$VERSION" ]; then
           npm version $VERSION --no-git-tag-version
@@ -138,6 +132,8 @@ jobs:
         path: ./artifacts/linux
       continue-on-error: true
 
+
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
@@ -168,7 +164,11 @@ jobs:
     
     steps:
     - name: Update Homebrew Cask (macOS)
-      run: echo "Homebrew Cask update would be triggered here"
+      run: |
+        echo "Homebrew Cask update would be triggered here"
+        # Hier könnte ein automatisches Update für Homebrew Casks implementiert werden
         
     - name: Update Chocolatey (Windows)
-      run: echo "Chocolatey update would be triggered here"
+      run: |
+        echo "Chocolatey update would be triggered here"
+        # Hier könnte ein automatisches Update für Chocolatey implementiert werden 
