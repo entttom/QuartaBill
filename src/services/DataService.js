@@ -330,7 +330,7 @@ class DataService {
           quantity: 6,
           unit: 'Stunden',
           unitPrice: 0,
-          taxType: '20' // Standard 20% oder 'mixed' für (90%@20% + 10%@0%)
+          taxType: '20' // Standard 20% oder 'mixed' für separate Anzeige von 20% auf 90% der Summe und 0% auf 10% der Summe
         }
       ]
     };
@@ -493,7 +493,8 @@ class DataService {
       let vat = 0;
       
       if (item.taxType === 'mixed') {
-        vat = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+        // 90% der Summe mit 20% Steuersatz + 10% der Summe mit 0% Steuersatz
+        vat = subtotal * 0.9 * 0.2; // Nur der 20%-Anteil trägt zur Steuer bei
       } else {
         const taxRate = parseFloat(item.taxType) / 100;
         vat = subtotal * taxRate;
@@ -521,32 +522,63 @@ class DataService {
       const itemSubtotal = item.quantity * item.unitPrice;
       subtotal += itemSubtotal;
       
-      let itemVAT = 0;
-      let vatDescription = '';
-      
       if (item.taxType === 'mixed') {
-        itemVAT = itemSubtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
-        vatDescription = '90%@20% + 10%@0%';
+        // 90% der Summe mit 20% Steuersatz
+        const subtotalAt20 = itemSubtotal * 0.9;
+        const vatAt20 = subtotalAt20 * 0.2;
+        
+        // 10% der Summe mit 0% Steuersatz
+        const subtotalAt0 = itemSubtotal * 0.1;
+        const vatAt0 = 0;
+        
+        totalVAT += vatAt20 + vatAt0;
+        
+        // Separate Einträge für 20% und 0%
+        const existing20 = vatBreakdown.find(v => v.type === '20');
+        if (existing20) {
+          existing20.base += subtotalAt20;
+          existing20.vat += vatAt20;
+        } else {
+          vatBreakdown.push({
+            type: '20',
+            description: '20%',
+            base: subtotalAt20,
+            vat: vatAt20
+          });
+        }
+        
+        const existing0 = vatBreakdown.find(v => v.type === '0');
+        if (existing0) {
+          existing0.base += subtotalAt0;
+          existing0.vat += vatAt0;
+        } else {
+          vatBreakdown.push({
+            type: '0',
+            description: '0%',
+            base: subtotalAt0,
+            vat: vatAt0
+          });
+        }
       } else {
         const taxRate = parseFloat(item.taxType) / 100;
-        itemVAT = itemSubtotal * taxRate;
-        vatDescription = `${item.taxType}%`;
-      }
-      
-      totalVAT += itemVAT;
-      
-      // Gruppiere nach Steuersatz
-      const existing = vatBreakdown.find(v => v.type === item.taxType);
-      if (existing) {
-        existing.base += itemSubtotal;
-        existing.vat += itemVAT;
-      } else {
-        vatBreakdown.push({
-          type: item.taxType,
-          description: vatDescription,
-          base: itemSubtotal,
-          vat: itemVAT
-        });
+        const itemVAT = itemSubtotal * taxRate;
+        const vatDescription = `${item.taxType}%`;
+        
+        totalVAT += itemVAT;
+        
+        // Gruppiere nach Steuersatz
+        const existing = vatBreakdown.find(v => v.type === item.taxType);
+        if (existing) {
+          existing.base += itemSubtotal;
+          existing.vat += itemVAT;
+        } else {
+          vatBreakdown.push({
+            type: item.taxType,
+            description: vatDescription,
+            base: itemSubtotal,
+            vat: itemVAT
+          });
+        }
       }
     });
 

@@ -327,7 +327,8 @@ function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
       let tax = 0;
       
       if (item.taxType === 'mixed') {
-        tax = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+        // 90% der Summe mit 20% Steuersatz + 10% der Summe mit 0% Steuersatz
+        tax = subtotal * 0.9 * 0.2; // Nur der 20%-Anteil trägt zur Steuer bei
       } else {
         const taxRate = parseFloat(item.taxType) / 100;
         tax = subtotal * taxRate;
@@ -463,7 +464,8 @@ function InvoiceGenerator({ customers, settings, data, onUpdateData }) {
                             const subtotal = item.quantity * item.unitPrice;
                             let tax = 0;
                             if (item.taxType === 'mixed') {
-                              tax = subtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
+                              // 90% der Summe mit 20% Steuersatz + 10% der Summe mit 0% Steuersatz
+                              tax = subtotal * 0.9 * 0.2; // Nur der 20%-Anteil trägt zur Steuer bei
                             } else {
                               const taxRate = parseFloat(item.taxType) / 100;
                               tax = subtotal * taxRate;

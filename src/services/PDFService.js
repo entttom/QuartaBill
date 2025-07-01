@@ -580,31 +580,60 @@ class PDFService {
       totalSubtotal += itemSubtotal;
       
       let tax = 0;
-      let taxKey = '';
       
       // Bei Kleinunternehmern wird keine Steuer berechnet
       if (issuer.smallBusiness) {
         tax = 0;
-        taxKey = '0%';
+        const taxKey = '0%';
+        if (!taxGroups[taxKey]) {
+          taxGroups[taxKey] = { subtotal: 0, tax: 0 };
+        }
+        taxGroups[taxKey].subtotal += itemSubtotal;
+        taxGroups[taxKey].tax += tax;
       } else {
         if (item.taxType === 'mixed') {
-          tax = itemSubtotal * 0.9 * 0.2; // 90%@20% + 10%@0%
-          taxKey = 'mixed';
+          // 90% der Summe mit 20% Steuersatz
+          const subtotalAt20 = itemSubtotal * 0.9;
+          const taxAt20 = subtotalAt20 * 0.2;
+          
+          // 10% der Summe mit 0% Steuersatz
+          const subtotalAt0 = itemSubtotal * 0.1;
+          const taxAt0 = 0;
+          
+          // Separate Einträge für 20% und 0%
+          const taxKey20 = '20%';
+          const taxKey0 = '0%';
+          
+          if (!taxGroups[taxKey20]) {
+            taxGroups[taxKey20] = { subtotal: 0, tax: 0 };
+          }
+          if (!taxGroups[taxKey0]) {
+            taxGroups[taxKey0] = { subtotal: 0, tax: 0 };
+          }
+          
+          taxGroups[taxKey20].subtotal += subtotalAt20;
+          taxGroups[taxKey20].tax += taxAt20;
+          
+          taxGroups[taxKey0].subtotal += subtotalAt0;
+          taxGroups[taxKey0].tax += taxAt0;
+          
+          tax = taxAt20 + taxAt0;
         } else {
           const taxRate = parseFloat(item.taxType) / 100;
           tax = itemSubtotal * taxRate;
-          taxKey = `${item.taxType}%`;
+          const taxKey = `${item.taxType}%`;
+          
+          if (!taxGroups[taxKey]) {
+            taxGroups[taxKey] = { subtotal: 0, tax: 0 };
+          }
+          taxGroups[taxKey].subtotal += itemSubtotal;
+          taxGroups[taxKey].tax += tax;
         }
       }
       
       totalTax += tax;
-      
-      if (!taxGroups[taxKey]) {
-        taxGroups[taxKey] = { subtotal: 0, tax: 0 };
-      }
-      taxGroups[taxKey].subtotal += itemSubtotal;
-      taxGroups[taxKey].tax += tax;
     });
+    
     const grandTotal = totalSubtotal + totalTax;
     
     // Kompakte Position: nur 8pt Abstand zur Tabelle
@@ -662,23 +691,24 @@ class PDFService {
     doc.text(`${totalSubtotal.toFixed(2)} €`, boxX + boxWidth - 2, currentY, { align: 'right' });
     currentY += 6; // Weniger Abstand: 6 statt 8
     
-    // Dynamische Steuersätze
-    Object.entries(taxGroups).forEach(([taxKey, group]) => {
-      if (group.tax > 0) {
+    // Dynamische Steuersätze - sortiert nach Steuersatz
+    const sortedTaxGroups = Object.entries(taxGroups).sort(([a], [b]) => {
+      const rateA = parseFloat(a.replace('%', ''));
+      const rateB = parseFloat(b.replace('%', ''));
+      return rateB - rateA; // Höchster Steuersatz zuerst
+    });
+    
+    sortedTaxGroups.forEach(([taxKey, group]) => {
+      if (group.tax > 0 || taxKey === '0%') { // Zeige auch 0% Steuersatz wenn vorhanden
         doc.setFont(undefined, 'normal');
         doc.setTextColor(80, 80, 80);
         
-        let label = '';
-        if (taxKey === 'mixed') {
-          label = i18n.t('pdf.taxRate90') + ':';
-        } else {
-          label = `${taxKey} ${i18n.t('pdf.vat')}:`;
-        }
+        const label = `STEUERSATZ von ${taxKey}:`;
         
         doc.text(label, boxX + 2, currentY);
         doc.setTextColor(40, 40, 40);
         doc.setFont(undefined, 'bold');
-        doc.text(`${group.tax.toFixed(2)} €`, boxX + boxWidth - 2, currentY, { align: 'right' });
+        doc.text(`${group.subtotal.toFixed(2)} €`, boxX + boxWidth - 2, currentY, { align: 'right' });
         currentY += 6;
       }
     });

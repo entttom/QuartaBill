@@ -7,8 +7,14 @@ und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [1.7.6] - 2025-01-02
 
-### 🔧 Technische Verbesserungen
-- **CI/CD Pipeline**: Korrektur des Release-Workflows, um Auto-Update-Dateien (`latest.yml`, `latest-mac.yml`, etc.) und `.zip`-Dateien für macOS korrekt in die GitHub Releases aufzunehmen. Dies stellt die Auto-Update-Funktionalität für alle Plattformen sicher.
+### 🔧 Verbessert
+- **90/10 Steuersatz-Darstellung**: Der gemischte Steuersatz (90%@20% + 10%@0%) wird nun in der PDF-Rechnung als zwei separate Zeilen angezeigt:
+  - "STEUERSATZ von 20%: [Betrag von 90% der Summe]"
+  - "STEUERSATZ von 0%: [Betrag von 10% der Summe]"
+- **Berechnungsgrundlage**: Nach dem Doppelpunkt wird die Berechnungsgrundlage angezeigt (nicht der Steuerbetrag)
+- **Benutzerfreundlichkeit**: Klarere Aufschlüsselung der Steuerberechnung bei gemischten Steuersätzen
+
+---
 
 ## [1.7.5] - 2025-01-02
 
