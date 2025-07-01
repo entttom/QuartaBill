@@ -1,6 +1,6 @@
 {
   "name": "quartabill",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "description": "QuartaBill - Pauschale Quartalsabrechnungen automatisieren",
   "main": "public/electron.js",
   "homepage": "./",
@@ -54,7 +54,6 @@
     "compression": "maximum",
     "npmRebuild": false,
     "buildDependenciesFromSource": false,
-    "generateUpdatesFilesForAllChannels": true,
     "afterSign": "scripts/notarize.js",
     "win": {
       "target": [
@@ -96,11 +95,6 @@
       "entitlementsInherit": "electron/entitlements.mac.plist",
       "notarize": {
         "teamId": "RG7FE682S2"
-      },
-      "publish": {
-        "provider": "github",
-        "owner": "entttom",
-        "repo": "QuartaBill"
       }
     },
     "linux": {
@@ -125,22 +119,7 @@
             "x64"
           ]
         }
-      ],
-      "publish": {
-        "provider": "github",
-        "owner": "entttom",
-        "repo": "QuartaBill"
-      }
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "allowElevation": true,
-      "installerIcon": "icon.iconset/icon_256x256.png",
-      "uninstallerIcon": "icon.iconset/icon_256x256.png"
+      ]
     }
   },
   "author": {
