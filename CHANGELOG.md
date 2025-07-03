@@ -5,6 +5,25 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [2.0.1] - 2025-01-27
+
+### 🔧 Verbessert
+- **Hardcodierte App-Versionen entfernt**: UpdateChecker und BackupService verwenden jetzt zentrale Versionsverwaltung
+- **UI-Verbesserungen**: Mehr Platz um Betriebssystem-Badges für bessere Optik und Benutzerfreundlichkeit
+- **Konsistente Versionsverwaltung**: Einheitliche Verwendung von APP_VERSION aus src/utils/version.js
+
+### 🐛 Behoben
+- **Update-Checker**: Korrekte Versionsvergleiche durch dynamische Version statt hardcodierter '1.3.1'
+- **Backup-Service**: Backup-Dateien enthalten jetzt korrekte App-Version statt hardcodierter '1.3.0'
+- **Kommentare**: Alle Verweise auf alte Versionen auf 2.0.0 aktualisiert
+
+### 🎨 UI/UX
+- **Betriebssystem-Badges**: Erhöhtes Padding und bessere Abstände für professionelleres Aussehen
+- **Visuelle Hierarchie**: Klarere Unterscheidung zwischen aktuellem und anderen Betriebssystemen
+- **Luftigere Darstellung**: Verbesserte Abstände in Accordion-Bereichen
+
+---
+
 ## [2.0.0] - 2025-01-27
 
 ### 🎉 Major Release
