@@ -5,6 +5,34 @@ Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
 und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [2.0.0] - 2025-01-27
+
+### 🎉 Major Release
+- **Vollständige Überarbeitung**: Komplette Neustrukturierung der Anwendung für bessere Wartbarkeit und Performance
+- **Moderne Architektur**: Umstellung auf React 18 und aktuelle Electron-Version
+- **Verbesserte Benutzerfreundlichkeit**: Überarbeitete UI/UX mit Material-UI v5
+- **Erweiterte Funktionalität**: Neue Features für professionelle Rechnungserstellung
+
+### ✨ Neu hinzugefügt
+- **🌍 Mehrsprachigkeit**: Vollständige deutsche und englische Lokalisierung
+- **📱 Responsive Design**: Optimierte Benutzeroberfläche für verschiedene Bildschirmgrößen
+- **🔧 Erweiterte Einstellungen**: Umfassende Konfigurationsmöglichkeiten
+- **📊 Verbesserte Datenverwaltung**: Robustere Speicherung und Backup-Funktionen
+- **🎨 Moderne UI**: Material-UI v5 Design-System für professionelles Aussehen
+
+### 🔧 Verbessert
+- **Performance**: Deutlich verbesserte Ladezeiten und Reaktionsgeschwindigkeit
+- **Stabilität**: Robustere Fehlerbehandlung und Datenverwaltung
+- **Code-Qualität**: Saubere, wartbare Codebase mit modernen Best Practices
+- **Dokumentation**: Umfassende Dokumentation und Hilfetexte
+
+### 🐛 Behoben
+- **Alle bekannten Bugs**: Behebung aller gemeldeten Probleme aus vorherigen Versionen
+- **Kompatibilität**: Verbesserte Kompatibilität mit verschiedenen Betriebssystemen
+- **Sicherheit**: Aktualisierte Abhängigkeiten und Sicherheitsverbesserungen
+
+---
+
 ## [1.7.7] - 2025-01-02
 
 ### 🐛 Behoben
