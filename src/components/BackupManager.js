@@ -2,7 +2,7 @@
  * BackupManager.js
  * 
  * React-Komponente für Backup & Export-Funktionalitäten
- * Version 1.3.0 Feature
+ * Version 2.0.0 Feature
  * 
  * @author Dr. Thomas Entner
  */

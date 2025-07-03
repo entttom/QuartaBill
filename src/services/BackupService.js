@@ -2,13 +2,14 @@
  * BackupService.js
  * 
  * Service für Backup, Export und Import-Funktionalitäten
- * Version 1.3.0 Feature
+ * Version 2.0.0 Feature
  * 
  * @author Dr. Thomas Entner
  */
 
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { APP_VERSION } from '../utils/version';
 
 class BackupService {
   constructor() {
@@ -53,14 +54,14 @@ class BackupService {
       
       // Alle Daten sammeln
       const backupData = {
-        version: '1.3.0',
+        version: APP_VERSION,
         timestamp: new Date().toISOString(),
         data: {
           customers: this.getCustomersData(),
           settings: this.getSettingsData(),
           invoiceSettings: this.getInvoiceSettingsData(),
           metadata: {
-            appVersion: '1.3.0',
+            appVersion: APP_VERSION,
             platform: window.require('os').platform(),
             nodeVersion: process.version
           }

@@ -1,7 +1,7 @@
 /**
  * UpdateChecker.js
  * 
- * Auto-Update Checker Komponente für Version 1.3.0
+ * Auto-Update Checker Komponente für Version 2.0.0
  * Überprüft automatisch auf neue Versionen und zeigt Benachrichtigungen
  * 
  * @author Dr. Thomas Entner
@@ -35,6 +35,7 @@ import {
   Star as StarIcon
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { APP_VERSION } from '../utils/version';
 
 const UpdateChecker = () => {
   const { t } = useTranslation();
@@ -47,8 +48,8 @@ const UpdateChecker = () => {
   const [checking, setChecking] = useState(false);
   const [lastChecked, setLastChecked] = useState(null);
 
-  // Aktuelle Version aus package.json
-  const currentVersion = '1.3.1';
+  // Aktuelle Version aus zentraler Versionsverwaltung
+  const currentVersion = APP_VERSION;
   const repositoryUrl = 'https://api.github.com/repos/entttom/QuartaBill/releases/latest';
 
   // Beim Component Mount prüfen
