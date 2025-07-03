@@ -116,9 +116,10 @@ function PlatformPathFields({
         key={platform}
         sx={{ 
           display: 'flex', 
-          gap: 1, 
+          gap: 1.5, 
           alignItems: 'center',
-          mb: isMain ? 0 : 1
+          mb: isMain ? 0 : 1.5,
+          p: isMain ? 0 : 0.5
         }}
       >
         {!isMain && (
@@ -128,7 +129,11 @@ function PlatformPathFields({
             size="small"
             color={platformInfo.color}
             variant="outlined"
-            sx={{ minWidth: '100px' }}
+            sx={{ 
+              minWidth: '100px',
+              px: 1.5,
+              py: 0.5
+            }}
           />
         )}
         <TextField
@@ -157,12 +162,16 @@ function PlatformPathFields({
     <Box>
              {/* Aktuelles Betriebssystem - prominent angezeigt */}
       <Box sx={{ mb: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, p: 1 }}>
           <Chip
             icon={currentPlatformInfo.icon}
             label={`${currentPlatformInfo.name} (${t('common.currentPlatform').toLowerCase()})`}
             color={currentPlatformInfo.color}
-            sx={{ fontWeight: 'bold' }}
+            sx={{ 
+              fontWeight: 'bold',
+              px: 2,
+              py: 1
+            }}
           />
         </Box>
         {renderPathField(currentPlatform, true)}
@@ -194,7 +203,7 @@ function PlatformPathFields({
               {t('common.otherPlatforms')} ({otherPlatforms.length})
             </Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ pt: 0 }}>
+          <AccordionDetails sx={{ pt: 1, px: 2 }}>
             <Alert severity="info" sx={{ mb: 2, fontSize: '0.875rem' }}>
               <Typography variant="caption">
                 {t('settings.paths.platformInfo')}
